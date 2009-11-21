@@ -1,6 +1,6 @@
 # Scrup
 
-[<img src="http://github.com/rsms/scrup/raw/master/resources/icon.png" width="128" alt="Scrup icon" align="right" />](http://hunch.se/scrup/dist/scrup-1.0.zip)
+[<img src="http://farm3.static.flickr.com/2567/4121191747_3002198bb5_o.png" width="126" height="96" alt="Scrup icon" align="right" />](http://hunch.se/scrup/dist/scrup-1.0.zip)
 
 Take a screenshot in OS X and have a URL to the picture in your pasteboard a second later.
 
