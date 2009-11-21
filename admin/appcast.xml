@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+	<channel>
+		<title>Scrup releases</title>
+		<link>http://github.com/rsms/scrup</link>
+		<description>Appcast for Scrup</description>
+		<language>en</language>
+	</channel>
+</rss>
