@@ -16,7 +16,7 @@ For Mac OS X 10.6 Snow Leopard.
 
 - Scrup appears in the top right corner of your screen and looks like a twirly hand with and arrow. Click it and select "Preferences..."
 
-- In the "Receiver URL" text field, enter the URL to something which receives files. For instance a copy of `recv.php` which you have uploaded to your server.
+- In the "Receiver URL" text field, enter the URL to something which receives files. For instance a copy of [`recv.php`](http://github.com/rsms/scrup/blob/master/recv.php) which you have uploaded to your server.
 
 - Take a screenshot and you should see the Scrup icon turning into a check mark, indicating success. (If you see a red badge something failed. Open Console.app and look what Scrup says.)
 
@@ -31,7 +31,7 @@ For Mac OS X 10.6 Snow Leopard.
 
 - The URL is placed in the pasteboard, ready for you to  ⌘V somewhere.
 
-There is an example PHP implementation called `recv.php` which you can use and/or modify to setup your receiver. Make sure to set your URL in the preferences.
+There is an example PHP implementation called [`recv.php`](http://github.com/rsms/scrup/blob/master/recv.php) which you can use and/or modify to setup your receiver. Make sure to set your URL in the preferences.
 
 ## Authors
 
