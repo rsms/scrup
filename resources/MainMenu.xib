@@ -1194,6 +1194,14 @@
 						<reference key="NSOnImage" ref="756751024"/>
 						<reference key="NSMixedImage" ref="908425081"/>
 					</object>
+					<object class="NSMenuItem" id="785853546">
+						<reference key="NSMenu" ref="742165362"/>
+						<string key="NSTitle">Quit Scrup</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="756751024"/>
+						<reference key="NSMixedImage" ref="908425081"/>
+					</object>
 					<object class="NSMenuItem" id="605175181">
 						<reference key="NSMenu" ref="742165362"/>
 						<bool key="NSIsDisabled">YES</bool>
@@ -1212,14 +1220,6 @@
 						<reference key="NSOnImage" ref="756751024"/>
 						<reference key="NSMixedImage" ref="908425081"/>
 					</object>
-					<object class="NSMenuItem" id="785853546">
-						<reference key="NSMenu" ref="742165362"/>
-						<string key="NSTitle">Quit Scrup</string>
-						<string key="NSKeyEquiv"/>
-						<int key="NSMnemonicLoc">2147483647</int>
-						<reference key="NSOnImage" ref="756751024"/>
-						<reference key="NSMixedImage" ref="908425081"/>
-					</object>
 					<object class="NSMenuItem" id="66668474">
 						<reference key="NSMenu" ref="742165362"/>
 						<bool key="NSIsDisabled">YES</bool>
@@ -1230,7 +1230,7 @@
 						<reference key="NSOnImage" ref="756751024"/>
 						<reference key="NSMixedImage" ref="908425081"/>
 					</object>
-					<object class="NSMenuItem" id="362262979">
+					<object class="NSMenuItem" id="107405902">
 						<reference key="NSMenu" ref="742165362"/>
 						<bool key="NSIsDisabled">YES</bool>
 						<string key="NSTitle">Recent scrups:</string>
@@ -1263,7 +1263,7 @@
 							<reference key="NSSupport" ref="660482190"/>
 							<reference key="NSControlView" ref="742256029"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<object class="NSCustomResource" key="NSNormalImage" id="99130757">
 								<string key="NSClassName">NSImage</string>
 								<string key="NSResourceName">NSSwitch</string>
@@ -1306,7 +1306,7 @@
 							<reference key="NSSupport" ref="660482190"/>
 							<reference key="NSControlView" ref="300772961"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="99130757"/>
 							<reference key="NSAlternateImage" ref="33469887"/>
 							<string key="NSAlternateContents"/>
@@ -1328,7 +1328,7 @@
 							<reference key="NSSupport" ref="660482190"/>
 							<reference key="NSControlView" ref="553263116"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="99130757"/>
 							<reference key="NSAlternateImage" ref="33469887"/>
 							<string key="NSAlternateContents"/>
@@ -1366,7 +1366,7 @@
 							<reference key="NSSupport" ref="660482190"/>
 							<reference key="NSControlView" ref="357064836"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="99130757"/>
 							<reference key="NSAlternateImage" ref="33469887"/>
 							<string key="NSAlternateContents"/>
@@ -1388,7 +1388,7 @@
 							<reference key="NSSupport" ref="660482190"/>
 							<reference key="NSControlView" ref="215057869"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="99130757"/>
 							<reference key="NSAlternateImage" ref="33469887"/>
 							<string key="NSAlternateContents"/>
@@ -1426,7 +1426,7 @@
 							<reference key="NSSupport" ref="660482190"/>
 							<reference key="NSControlView" ref="911117612"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="99130757"/>
 							<reference key="NSAlternateImage" ref="33469887"/>
 							<string key="NSAlternateContents"/>
@@ -2579,12 +2579,12 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="336234616"/>
-							<reference ref="785853546"/>
 							<reference ref="605175181"/>
 							<reference ref="127135428"/>
-							<reference ref="362262979"/>
+							<reference ref="107405902"/>
 							<reference ref="66668474"/>
 							<reference ref="851468806"/>
+							<reference ref="785853546"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -3290,7 +3290,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1044</int>
-						<reference key="object" ref="362262979"/>
+						<reference key="object" ref="107405902"/>
 						<reference key="parent" ref="742165362"/>
 					</object>
 					<object class="IBObjectRecord">
