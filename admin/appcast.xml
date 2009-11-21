@@ -5,5 +5,17 @@
 		<link>http://github.com/rsms/scrup</link>
 		<description>Appcast for Scrup</description>
 		<language>en</language>
+		<item>
+			<title>Version 1.0</title>
+			<sparkle:releaseNotesLink>http://hunch.se/scrup/release-notes.html#version-1.0</sparkle:releaseNotesLink>
+			<pubDate>Sat, 21 Nov 2009 03:23:16 +0100</pubDate>
+			<enclosure
+				url="http://hunch.se/scrup/dist/scrup-1.0.zip"
+				sparkle:version="1.0"
+				type="application/octet-stream"
+				length="559439"
+				sparkle:dsaSignature="MCwCFCLA7now7rLR1YOPgU9ehnUENdThAhQsuzGir88ORF6XE1L8FHWMGUfuoQ=="
+			/>
+		</item>
 	</channel>
 </rss>
