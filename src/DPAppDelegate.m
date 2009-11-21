@@ -426,7 +426,7 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 }
 
 -(void)updateListOfRecentUploads {
-	NSInteger i, n, x, limit = 10;
+	NSInteger i, n, limit = 10;
 	NSArray *keys;
 	
 	// todo: reuse/move existing items instead of removing them just to then create them again.

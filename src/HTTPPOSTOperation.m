@@ -33,7 +33,7 @@
 
 -(void)main {
 	NSError *err;
-	NSString *uti, *mimeType = nil;
+	NSString *mimeType = nil;
 	
 	// determine file type
 	if (!(mimeType = [self mimeTypeForFileAtPath:path error:nil]))
