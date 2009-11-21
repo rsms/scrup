@@ -80,7 +80,7 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	
 	// read recvURL
 	if (![defaults objectForKey:@"recvURL"])
-		[defaults setObject:@"http://hunch.se/scrup/recv.php?name={filename}" forKey:@"recvURL"];
+		[defaults setObject:@"http://your.host/recv.php?name={filename}" forKey:@"recvURL"];
 	
 	return self;
 }
