@@ -12,12 +12,15 @@
 
 -(id)initWithPath:(NSString *)s URL:(NSURL *)u delegate:(id)d {
 	self = [super init];
+	
 	path = s;
 	url = u;
 	delegate = d;
 	response = nil;
 	responseData = nil;
 	request = [[NSMutableURLRequest alloc] initWithURL:url];
+	
+	return self;
 }
 
 -(NSString *)mimeTypeForFileAtPath:(NSString *)p error:(NSError **)err {
