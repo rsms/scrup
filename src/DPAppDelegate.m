@@ -253,6 +253,7 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 
 -(void)httpPostOperationDidFail:(HTTPPOSTOperation *)op withError:(NSError *)error {
 	// schedule in main thread since we want to avoid locks and stuff
+	NSLog(@"[%@] failed with error %@", op, error);
 	[self performSelectorOnMainThread:@selector(_httpPostOperationDidFail:) withObject:[NSArray arrayWithObjects:op, error, nil] waitUntilDone:NO];
 }
 
@@ -260,7 +261,6 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	HTTPPOSTOperation *op = [args objectAtIndex:0];
 	NSError *error = [args objectAtIndex:1];
 	nCurrOps--;
-	NSLog(@"[%@] failed with error %@", op, error);
 	
 	// Remove record of screenshot
 	[uploadedScreenshots removeObjectForKey:[op.path lastPathComponent]];
