@@ -227,23 +227,29 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 
 -(void)_httpPostOperationDidSucceed:(HTTPPOSTOperation *)op {
 	nCurrOps--;
-	[self updateMenuItem:self];
 	NSString *rspstr = [[NSString alloc] initWithData:op.responseData encoding:NSUTF8StringEncoding];
 	NSLog(@"[%@] succeeded with HTTP %d %@ %@", op, 
 				[op.response statusCode], [op.response allHeaderFields], rspstr);
-	NSMutableDictionary *rec = [self uploadedScreenshotForOperation:op];
-	if (rec) {
-		[rec setObject:rspstr forKey:@"url"];
-		//NSLog(@"rec => %@", rec);
-	}
 	
 	// Parse response as a single URL
 	NSURL *scrupURL = [NSURL URLWithString:rspstr];
 	if (!scrupURL) {
 		NSLog(@"error: invalid URL returned by receiver");
+		
+		// Remove record of screenshot
+		[uploadedScreenshots removeObjectForKey:[op.path lastPathComponent]];
+		
+		// Display "error" icon
 		[self momentarilyDisplayIcon:iconError];
 	}
 	else {
+		// add url to scrup record
+		NSMutableDictionary *rec = [self uploadedScreenshotForOperation:op];
+		if (rec) {
+			[rec setObject:rspstr forKey:@"url"];
+			//NSLog(@"rec => %@", rec);
+		}
+		
 		// Put URL in pasteboard
 		// this code is >=10.6 only:
 		NSPasteboard *pb = [NSPasteboard generalPasteboard];
@@ -253,10 +259,11 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 		
 		// Display "OK" icon
 		[self momentarilyDisplayIcon:iconOk];
+		[self updateListOfRecentUploads];
 	}
 	
 	// Update menu item
-	[self updateListOfRecentUploads];
+	[self updateMenuItem:self];
 }
 
 -(void)httpPostOperationDidFail:(HTTPPOSTOperation *)op withError:(NSError *)error {
@@ -460,7 +467,17 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 }
 
 -(IBAction)openUploadedImageURL:(id)sender {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[[sender representedObject] objectForKey:@"url"]]];
+	NSDictionary *rec;
+	NSString *urlstr;
+	NSURL *url;
+	
+	if (sender
+			&& (rec = [sender representedObject]) 
+			&& (urlstr = [rec objectForKey:@"url"]) 
+			&& (url = [NSURL URLWithString:urlstr]))
+	{
+		[[NSWorkspace sharedWorkspace] openURL:url];
+	}
 }
 
 - (IBAction)displayViewForFoldersSettings:(id)sender {
