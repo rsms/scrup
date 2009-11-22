@@ -237,15 +237,23 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 		//NSLog(@"rec => %@", rec);
 	}
 	
-	// Put URL in pasteboard
-	// this code is >=10.6 only:
-	NSPasteboard *pb = [NSPasteboard generalPasteboard];
-	[pb clearContents];
-	[pb writeObjects:[NSArray arrayWithObject:[NSURL URLWithString:rspstr]]];
-	//NSLog(@"%@", [pb types]);
-	
-	// Display "OK" icon
-	[self momentarilyDisplayIcon:iconOk];
+	// Parse response as a single URL
+	NSURL *scrupURL = [NSURL URLWithString:rspstr];
+	if (!scrupURL) {
+		NSLog(@"error: invalid URL returned by receiver");
+		[self momentarilyDisplayIcon:iconError];
+	}
+	else {
+		// Put URL in pasteboard
+		// this code is >=10.6 only:
+		NSPasteboard *pb = [NSPasteboard generalPasteboard];
+		[pb clearContents];
+		[pb writeObjects:[NSArray arrayWithObject:scrupURL]];
+		//NSLog(@"%@", [pb types]);
+		
+		// Display "OK" icon
+		[self momentarilyDisplayIcon:iconOk];
+	}
 	
 	// Update menu item
 	[self updateListOfRecentUploads];
