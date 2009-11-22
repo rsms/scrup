@@ -60,8 +60,7 @@
 	NSString* domain = [self domain] ;
 	NSError* newError = [NSError errorWithDomain:domain
 											code:code
-										userInfo:userInfo] ;
-	[userInfo release] ;
+										userInfo:userInfo];
 	return newError ;
 }
 
