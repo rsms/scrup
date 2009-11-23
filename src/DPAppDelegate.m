@@ -33,7 +33,7 @@
 	nCurrOps = 0;
 	isObservingDesktop = NO;
 	knownScreenshotsOnDesktop = [NSDictionary dictionary];
-	screenshotLocation = [@"~/Desktop" stringByExpandingTildeInPath];
+	screenshotLocation = [@"~/Desktop" stringByExpandingTildeInPath]; // default
 	
 	// read general settings from defaults
 	n = [defaults objectForKey:@"showInMenuBar"];
@@ -558,8 +558,12 @@
 #pragma mark -
 #pragma mark NSApplication delegate methods
 
+#if !(DEBUG)
+#import "PFMoveApplication.h"
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+	PFMoveToApplicationsFolderIfNecessary();
 }
+#endif
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	[self updateListOfRecentUploads];

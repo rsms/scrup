@@ -25,6 +25,12 @@
 		3A1504AE10618DDF00263983 /* DPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A1504AD10618DDF00263983 /* DPAppDelegate.m */; };
 		3A199BA810BAF1E300E1F99C /* status-item-paused.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A199BA710BAF1E300E1F99C /* status-item-paused.png */; };
 		3A199BC910BAF3FF00E1F99C /* status-item-selected-paused.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A199BC810BAF3FF00E1F99C /* status-item-selected-paused.png */; };
+		3A1C74FE10BB0F4500BC6030 /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A1C74FD10BB0F4500BC6030 /* PFMoveApplication.m */; };
+		3A1C750F10BB0F8400BC6030 /* MoveApplication.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3A1C750410BB0F8400BC6030 /* MoveApplication.strings */; };
+		3A1C751010BB0F8400BC6030 /* MoveApplication.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3A1C750710BB0F8400BC6030 /* MoveApplication.strings */; };
+		3A1C751110BB0F8400BC6030 /* MoveApplication.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3A1C750A10BB0F8400BC6030 /* MoveApplication.strings */; };
+		3A1C751210BB0F8400BC6030 /* MoveApplication.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3A1C750D10BB0F8400BC6030 /* MoveApplication.strings */; };
+		3A1C752510BB0FF500BC6030 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1C752410BB0FF500BC6030 /* Security.framework */; };
 		3A4B48A710B755040054DF06 /* status-item-error.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A4B48A510B755040054DF06 /* status-item-error.png */; };
 		3A4B48A810B755040054DF06 /* status-item-ok.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A4B48A610B755040054DF06 /* status-item-ok.png */; };
 		3A5DB2781062C89000B5F45F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3A5DB2771062C89000B5F45F /* MainMenu.xib */; };
@@ -41,8 +47,6 @@
 		3A9D2A5F1061B083008923FD /* status-item-sending.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9D2A5C1061B083008923FD /* status-item-sending.png */; };
 		3A9D2A601061B083008923FD /* status-item-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9D2A5D1061B083008923FD /* status-item-selected.png */; };
 		3A9DE50C10999E35008F35E2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A9DE50B10999E35008F35E2 /* CoreServices.framework */; };
-		3AB56FEC10B5531B00A36677 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AB56FEB10B5531B00A36677 /* libssl.dylib */; };
-		3AB56FFA10B5538600A36677 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AB56FF910B5538600A36677 /* libcrypto.dylib */; };
 		3ABE5EAF10B588700085BAC3 /* HTTPPOSTOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -83,6 +87,13 @@
 		3A1504AD10618DDF00263983 /* DPAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DPAppDelegate.m; path = src/DPAppDelegate.m; sourceTree = "<group>"; };
 		3A199BA710BAF1E300E1F99C /* status-item-paused.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-paused.png"; path = "resources/status-item-paused.png"; sourceTree = "<group>"; };
 		3A199BC810BAF3FF00E1F99C /* status-item-selected-paused.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-selected-paused.png"; path = "resources/status-item-selected-paused.png"; sourceTree = "<group>"; };
+		3A1C74FC10BB0F4500BC6030 /* PFMoveApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PFMoveApplication.h; path = src/PFMoveApplication.h; sourceTree = "<group>"; };
+		3A1C74FD10BB0F4500BC6030 /* PFMoveApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PFMoveApplication.m; path = src/PFMoveApplication.m; sourceTree = "<group>"; };
+		3A1C750510BB0F8400BC6030 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = MoveApplication.strings; sourceTree = "<group>"; };
+		3A1C750810BB0F8400BC6030 /* French */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = French; path = MoveApplication.strings; sourceTree = "<group>"; };
+		3A1C750B10BB0F8400BC6030 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = MoveApplication.strings; sourceTree = "<group>"; };
+		3A1C750E10BB0F8400BC6030 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Spanish; path = MoveApplication.strings; sourceTree = "<group>"; };
+		3A1C752410BB0FF500BC6030 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		3A4B48A510B755040054DF06 /* status-item-error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-error.png"; path = "resources/status-item-error.png"; sourceTree = "<group>"; };
 		3A4B48A610B755040054DF06 /* status-item-ok.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-ok.png"; path = "resources/status-item-ok.png"; sourceTree = "<group>"; };
 		3A5DB2771062C89000B5F45F /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainMenu.xib; path = resources/MainMenu.xib; sourceTree = "<group>"; };
@@ -103,8 +114,6 @@
 		3A9D2A5C1061B083008923FD /* status-item-sending.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-sending.png"; path = "resources/status-item-sending.png"; sourceTree = "<group>"; };
 		3A9D2A5D1061B083008923FD /* status-item-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-selected.png"; path = "resources/status-item-selected.png"; sourceTree = "<group>"; };
 		3A9DE50B10999E35008F35E2 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
-		3AB56FEB10B5531B00A36677 /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
-		3AB56FF910B5538600A36677 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		3ABE5EAD10B588700085BAC3 /* HTTPPOSTOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPPOSTOperation.h; path = src/HTTPPOSTOperation.h; sourceTree = "<group>"; };
 		3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HTTPPOSTOperation.m; path = src/HTTPPOSTOperation.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; name = Info.plist; path = resources/Info.plist; sourceTree = "<group>"; };
@@ -119,8 +128,7 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				3A919A57106586E4002D0F4B /* Sparkle.framework in Frameworks */,
 				3A9DE50C10999E35008F35E2 /* CoreServices.framework in Frameworks */,
-				3AB56FEC10B5531B00A36677 /* libssl.dylib in Frameworks */,
-				3AB56FFA10B5538600A36677 /* libcrypto.dylib in Frameworks */,
+				3A1C752510BB0FF500BC6030 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,11 +138,10 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3AB56FF910B5538600A36677 /* libcrypto.dylib */,
 				3A9DE50B10999E35008F35E2 /* CoreServices.framework */,
 				3A919A56106586E4002D0F4B /* Sparkle.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				3AB56FEB10B5531B00A36677 /* libssl.dylib */,
+				3A1C752410BB0FF500BC6030 /* Security.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -186,6 +193,10 @@
 		29B97317FDCFA39411CA2CEA /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				3A1C750410BB0F8400BC6030 /* MoveApplication.strings */,
+				3A1C750710BB0F8400BC6030 /* MoveApplication.strings */,
+				3A1C750A10BB0F8400BC6030 /* MoveApplication.strings */,
+				3A1C750D10BB0F8400BC6030 /* MoveApplication.strings */,
 				3A919A8B106590CC002D0F4B /* dsa_pub.pem */,
 				3A9196291063D08A002D0F4B /* icon.icns */,
 				3A9D2A5B1061B083008923FD /* status-item-standby.png */,
@@ -228,6 +239,8 @@
 		3A7AD03710669AF800AF4940 /* 3rd party */ = {
 			isa = PBXGroup;
 			children = (
+				3A1C74FC10BB0F4500BC6030 /* PFMoveApplication.h */,
+				3A1C74FD10BB0F4500BC6030 /* PFMoveApplication.m */,
 				3A919AA2106599EE002D0F4B /* SSYLoginItems.h */,
 				3A919AA1106599EE002D0F4B /* SSYLoginItems.m */,
 			);
@@ -264,6 +277,13 @@
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "scrup" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				Spanish,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Dropub */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -289,6 +309,10 @@
 				3A4B48A810B755040054DF06 /* status-item-ok.png in Resources */,
 				3A199BA810BAF1E300E1F99C /* status-item-paused.png in Resources */,
 				3A199BC910BAF3FF00E1F99C /* status-item-selected-paused.png in Resources */,
+				3A1C750F10BB0F8400BC6030 /* MoveApplication.strings in Resources */,
+				3A1C751010BB0F8400BC6030 /* MoveApplication.strings in Resources */,
+				3A1C751110BB0F8400BC6030 /* MoveApplication.strings in Resources */,
+				3A1C751210BB0F8400BC6030 /* MoveApplication.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +347,7 @@
 				3A919A0410657FF0002D0F4B /* NSString+DPAdditions.m in Sources */,
 				3A919AA3106599EE002D0F4B /* SSYLoginItems.m in Sources */,
 				3ABE5EAF10B588700085BAC3 /* HTTPPOSTOperation.m in Sources */,
+				3A1C74FE10BB0F4500BC6030 /* PFMoveApplication.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +360,45 @@
 			targetProxy = 3A919A51106586A9002D0F4B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		3A1C750410BB0F8400BC6030 /* MoveApplication.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3A1C750510BB0F8400BC6030 /* English */,
+			);
+			name = MoveApplication.strings;
+			path = resources/English.lproj;
+			sourceTree = "<group>";
+		};
+		3A1C750710BB0F8400BC6030 /* MoveApplication.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3A1C750810BB0F8400BC6030 /* French */,
+			);
+			name = MoveApplication.strings;
+			path = resources/French.lproj;
+			sourceTree = "<group>";
+		};
+		3A1C750A10BB0F8400BC6030 /* MoveApplication.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3A1C750B10BB0F8400BC6030 /* Japanese */,
+			);
+			name = MoveApplication.strings;
+			path = resources/Japanese.lproj;
+			sourceTree = "<group>";
+		};
+		3A1C750D10BB0F8400BC6030 /* MoveApplication.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3A1C750E10BB0F8400BC6030 /* Spanish */,
+			);
+			name = MoveApplication.strings;
+			path = resources/Spanish.lproj;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		3A919A3010658585002D0F4B /* Debug */ = {
