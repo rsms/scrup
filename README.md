@@ -1,6 +1,6 @@
 # Scrup
 
-[<img src="http://farm3.static.flickr.com/2567/4121191747_3002198bb5_o.png" width="126" height="96" alt="Scrup icon" align="right" />](http://hunch.se/scrup/dist/scrup-1.0.zip) <img src="http://farm3.static.flickr.com/2522/4122092624_fb9f0b98a0_o.png" width="350" height="229" alt="Scrup in the menu bar" />
+[<img src="http://farm3.static.flickr.com/2567/4121191747_3002198bb5_o.png" width="126" height="96" alt="Scrup icon" align="right" />](http://hunch.se/scrup/dist/scrup-1.1.zip) <img src="http://farm3.static.flickr.com/2522/4122092624_fb9f0b98a0_o.png" width="350" height="229" alt="Scrup in the menu bar" />
 
 Take a screenshot in OS X and have a URL to the picture in your pasteboard a second later.
 
@@ -10,7 +10,7 @@ For Mac OS X 10.6 Snow Leopard.
 
 ## Download & install
 
-- [Download Scrup 1.0](http://hunch.se/scrup/dist/scrup-1.0.zip)
+- [Download Scrup 1.0](http://hunch.se/scrup/dist/scrup-1.1.zip)
 
 - Move Scrup to your Applications folder and double-click the bastard.
 
