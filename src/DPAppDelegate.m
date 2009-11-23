@@ -1,6 +1,8 @@
 #import "DPAppDelegate.h"
 #import "SSYLoginItems.h"
 #import "HTTPPOSTOperation.h"
+#import "NSImage+HUAdditions.h"
+#import "NSBitmapImageRep+HUAdditions.h"
 
 #import <CoreServices/CoreServices.h>
 
@@ -8,7 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define SCREENSHOT_LOG_LIMIT 100
+#define SCREENSHOT_LOG_LIMIT 10
 
 /*@interface NSStatusBar (Unofficial)
 -(id)_statusItemWithLength:(float)f withPriority:(int)d;
@@ -21,6 +23,7 @@
 
 - (id)init {
 	NSNumber *n;
+	NSFileManager *fm = [NSFileManager defaultManager];
 	
 	self = [super init];
 	
@@ -34,7 +37,12 @@
 	isObservingDesktop = NO;
 	knownScreenshotsOnDesktop = [NSDictionary dictionary];
 	screenshotLocation = [@"~/Desktop" stringByExpandingTildeInPath]; // default
-	
+	cacheDir = [@"~/Library/Caches/se.notion.scrup" stringByExpandingTildeInPath];
+	thumbCacheDir = [cacheDir stringByAppendingPathComponent:@"thumbnails"];
+	thumbSize = NSMakeSize(128.0, 128.0);
+	enableThumbnails = YES;
+	filePrefixMatch = [defaults objectForKey:@"filePrefixMatch"];
+		
 	// read general settings from defaults
 	n = [defaults objectForKey:@"showInMenuBar"];
 	showInMenuBar = (!n || [n boolValue]); // default YES
@@ -42,6 +50,8 @@
 	showQueueCountInMenuBar = (n && [n boolValue]); // default NO
 	n = [defaults objectForKey:@"paused"];
 	paused = (n && [n boolValue]); // default NO
+	n = [defaults objectForKey:@"enableThumbnails"];
+	enableThumbnails = (!n || [n boolValue]); // default YES
 	
 	// read showInDock
 	showInDock = YES;
@@ -71,6 +81,12 @@
 			NSLog(@"using com.apple.screencapture location => \"%@\"", screenshotLocation);
 			#endif
 		}
+	}
+	
+	// Make sure paths exist
+	if (![fm fileExistsAtPath:thumbCacheDir]) {
+		[fm createDirectoryAtPath:thumbCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
+		// todo: handle error from mkdir thumbCacheDir
 	}
 	
 	return self;
@@ -111,8 +127,9 @@
 	int fd;
 	
 	for (NSString *fn in den) {
-		if (![fn hasPrefix:@"Screen shot "] || ![fn hasSuffix:@".png"])
+		if ( !(filePrefixMatch == nil || [filePrefixMatch length] == 0 || [fn hasPrefix:filePrefixMatch]) || ![fn hasSuffix:@".png"]) {
 			continue;
+		}
 		path = [dirpath stringByAppendingPathComponent:fn];
 		
 		// must be able to stat and must be a regular file
@@ -282,6 +299,8 @@
 		
 		// Display "OK" icon
 		[self momentarilyDisplayIcon:iconOk];
+		if (enableThumbnails)
+			[self writeThumbnailForScreenshotAtPath:op.path];
 		[self updateListOfRecentUploads];
 	}
 	
@@ -378,6 +397,31 @@
 	[self updateMenuItem:self];
 }
 
+- (NSString *)filePrefixMatch {
+	return filePrefixMatch;
+}
+
+- (void)setFilePrefixMatch:(NSString *)s {
+	#if DEBUG
+	NSLog(@"filePrefixMatch = %@", s);
+	#endif
+	filePrefixMatch = s;
+	[defaults setObject:filePrefixMatch forKey:@"filePrefixMatch"];
+}
+
+- (BOOL)enableThumbnails {
+	return enableThumbnails;
+}
+
+- (void)setEnableThumbnails:(BOOL)y {
+	#if DEBUG
+	NSLog(@"enableThumbnails = %d", y);
+	#endif
+	enableThumbnails = y;
+	[defaults setBool:enableThumbnails forKey:@"enableThumbnails"];
+	[self updateListOfRecentUploads];
+}
+
 - (BOOL)paused {
 	return paused;
 }
@@ -470,7 +514,7 @@
 }
 
 -(void)updateListOfRecentUploads {
-	NSInteger i, n, limit = 10;
+	NSInteger i, n, limit = SCREENSHOT_LOG_LIMIT;
 	NSArray *keys;
 	
 	// todo: reuse/move existing items instead of removing them just to then create them again.
@@ -484,10 +528,32 @@
 	for (NSString *key in keys) {
 		NSDictionary *m = [uploadedScreenshots objectForKey:key];
 		NSDate *d = [m objectForKey:@"du"];
-		NSString *title = [d descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S" timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
+		NSString *calfmt = @"%Y-%m-%d %H:%M:%S";
+		NSTimeInterval age = -[d timeIntervalSinceNow];
+		if (age < 60*60) // <1h
+			calfmt = @"%H:%M:%S";
+		else if (age < 60*60*23) // <23h
+			calfmt = @"%H:%M";
+		else if (age < 60*60*24*6) // <~1w
+			calfmt = @"%a %H:%M"; // Fri 19:01
+		else if (age < 60*60*24*250) // <~1y
+			calfmt = @"%a %b %e"; // Fri Nov 7
+		NSString *title = [d descriptionWithCalendarFormat:calfmt timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
 		if (i < n)
 			[statusItemMenu removeItemAtIndex:i];
 		NSMenuItem *mi = [statusItemMenu insertItemWithTitle:title action:@selector(openUploadedImageURL:) keyEquivalent:@"" atIndex:i];
+		
+		// set thumbnail
+		if (enableThumbnails) {
+			NSImage *im = [[NSImage alloc] initWithContentsOfFile:[thumbCacheDir stringByAppendingPathComponent:key]];
+			if (im)
+				[mi setImage:im];
+			#if DEBUG
+			else
+				NSLog(@"info: no thumb for %@", key);
+			#endif
+		}
+		
 		[mi setRepresentedObject:m];
 		if (!limit--)
 			break;
@@ -509,14 +575,14 @@
 	}
 }
 
-- (IBAction)displayViewForFoldersSettings:(id)sender {
+- (IBAction)displayViewForGeneralSettings:(id)sender {
 	if ([mainWindow contentView] != generalSettingsView)
-		[mainWindow setContentView:generalSettingsView];// display:YES animate:YES];
+		[mainWindow setContentView:generalSettingsView display:YES animate:YES];
 }
 
 - (IBAction)displayViewForAdvancedSettings:(id)sender {
 	if ([mainWindow contentView] != advancedSettingsView)
-		[mainWindow setContentView:advancedSettingsView];// display:YES animate:YES];
+		[mainWindow setContentView:advancedSettingsView display:YES animate:YES];
 }
 
 - (IBAction)saveState:(id)sender {
@@ -524,7 +590,7 @@
 }
 
 - (IBAction)orderFrontFoldersSettingsWindow:(id)sender {
-	[self displayViewForFoldersSettings:sender];
+	[self displayViewForGeneralSettings:sender];
 	[toolbar setSelectedItemIdentifier:DPToolbarFoldersItemIdentifier];
 	[self orderFrontSettingsWindow:sender];
 }
@@ -607,7 +673,7 @@
 		[item setLabel:@"General"];
 		[item setToolTip:@"General settings"];
 		[item setTarget:self];
-		[item setAction:@selector(displayViewForFoldersSettings:)];
+		[item setAction:@selector(displayViewForGeneralSettings:)];
 	}
 	else if (itemIdentifier == DPToolbarSettingsItemIdentifier) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
@@ -627,15 +693,57 @@
 	return [uploadedScreenshots objectForKey:[op.path lastPathComponent]];
 }
 
+
 -(void)vacuumUploadedScreenshots {
+	NSFileManager *fm = [NSFileManager defaultManager];
+	
 	if ([uploadedScreenshots count] > SCREENSHOT_LOG_LIMIT) {
 		NSArray *rmkeys;
 		rmkeys = [[uploadedScreenshots allKeys] sortedArrayUsingComparator:^(id a, id b) {
 			return [b compare:a options:NSNumericSearch];
 		}];
 		rmkeys = [rmkeys subarrayWithRange:NSMakeRange(SCREENSHOT_LOG_LIMIT, [rmkeys count]-SCREENSHOT_LOG_LIMIT)];
+		
+		// remove any thumbnails
+		// todo: remove all thumbnails which is NOT in [uploadedScreenshots allKeys] instead
+		//       of removing those we know of.
+		for (NSString *fn in rmkeys) {
+			#if DEBUG
+			BOOL removed =
+			#endif
+			[fm removeItemAtPath:[thumbCacheDir stringByAppendingPathComponent:fn] error:nil];
+			#if DEBUG
+			if (removed)
+				NSLog(@"removed old screenshot thumbnail %@", fn);
+			#endif
+		}
+		
 		[uploadedScreenshots removeObjectsForKeys:rmkeys];
 	}
+}
+
+
+-(void)writeThumbnailForScreenshotAtPath:(NSString *)path {
+	NSImage *im;
+	NSData *bmData;
+	NSBitmapImageRep *bmrep;
+	NSString *thumbPath;
+	
+	im = [[NSImage alloc] initWithContentsOfFile:path];
+	if (!im)
+		return;
+	im = [im imageByScalingProportionallyToSize:thumbSize];
+	bmrep = [[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]];
+	bmData = [bmrep PNGRepresentationAsProgressive:NO];
+	if (!bmData || ![bmData length]) {
+		NSLog(@"failed to create thumbnail for %@", path);
+		return;
+	}
+	thumbPath = [thumbCacheDir stringByAppendingPathComponent:[path lastPathComponent]];
+	[bmData writeToFile:thumbPath atomically:YES];
+#if DEBUG
+	NSLog(@"wrote thumbnail to %@", thumbPath);
+#endif
 }
 
 

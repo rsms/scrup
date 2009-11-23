@@ -13,14 +13,23 @@
 	IBOutlet SUUpdater *updater;
 	IBOutlet NSTextField *receiverURL;
 	IBOutlet NSMenuItem *pauseMenuItem;
-	BOOL openAtLogin, showInDock, showInMenuBar, showQueueCountInMenuBar, paused;
-	int nCurrOps;
+	BOOL openAtLogin,
+		showInDock,
+		showInMenuBar,
+		showQueueCountInMenuBar,
+		paused,
+		enableThumbnails;
+	NSString *filePrefixMatch;
 	
+	int nCurrOps;
 	NSDate *uidRefDate;
 	BOOL isObservingDesktop;
 	NSMutableDictionary *uploadedScreenshots;
 	NSDictionary *knownScreenshotsOnDesktop; // fn => dateModified
 	NSString *screenshotLocation; // com.apple.screencapture location
+	NSString *cacheDir;
+	NSString *thumbCacheDir;
+	NSSize thumbSize;
 	
 	NSImage *iconStandby;
 	NSImage *iconPaused;
@@ -46,7 +55,7 @@
  */
 -(NSDictionary *)findUnprocessedScreenshotsOnDesktop;
 
--(IBAction)displayViewForFoldersSettings:(id)sender;
+-(IBAction)displayViewForGeneralSettings:(id)sender;
 -(IBAction)displayViewForAdvancedSettings:(id)sender;
 -(IBAction)orderFrontFoldersSettingsWindow:(id)sender;
 -(IBAction)orderFrontSettingsWindow:(id)sender;
@@ -66,5 +75,6 @@
 
 -(NSMutableDictionary *)uploadedScreenshotForOperation:(HTTPPOSTOperation *)op;
 -(void)vacuumUploadedScreenshots;
+-(void)writeThumbnailForScreenshotAtPath:(NSString *)path;
 
 @end

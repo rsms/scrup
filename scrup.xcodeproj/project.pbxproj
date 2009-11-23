@@ -31,6 +31,8 @@
 		3A1C751110BB0F8400BC6030 /* MoveApplication.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3A1C750A10BB0F8400BC6030 /* MoveApplication.strings */; };
 		3A1C751210BB0F8400BC6030 /* MoveApplication.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3A1C750D10BB0F8400BC6030 /* MoveApplication.strings */; };
 		3A1C752510BB0FF500BC6030 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1C752410BB0FF500BC6030 /* Security.framework */; };
+		3A1C755010BB135D00BC6030 /* NSImage+HUAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A1C754F10BB135D00BC6030 /* NSImage+HUAdditions.m */; };
+		3A1C755310BB143500BC6030 /* NSBitmapImageRep+HUAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A1C755210BB143500BC6030 /* NSBitmapImageRep+HUAdditions.m */; };
 		3A4B48A710B755040054DF06 /* status-item-error.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A4B48A510B755040054DF06 /* status-item-error.png */; };
 		3A4B48A810B755040054DF06 /* status-item-ok.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A4B48A610B755040054DF06 /* status-item-ok.png */; };
 		3A5DB2781062C89000B5F45F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3A5DB2771062C89000B5F45F /* MainMenu.xib */; };
@@ -94,6 +96,10 @@
 		3A1C750B10BB0F8400BC6030 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = MoveApplication.strings; sourceTree = "<group>"; };
 		3A1C750E10BB0F8400BC6030 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Spanish; path = MoveApplication.strings; sourceTree = "<group>"; };
 		3A1C752410BB0FF500BC6030 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		3A1C754E10BB135D00BC6030 /* NSImage+HUAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSImage+HUAdditions.h"; path = "src/NSImage+HUAdditions.h"; sourceTree = "<group>"; };
+		3A1C754F10BB135D00BC6030 /* NSImage+HUAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSImage+HUAdditions.m"; path = "src/NSImage+HUAdditions.m"; sourceTree = "<group>"; };
+		3A1C755110BB143500BC6030 /* NSBitmapImageRep+HUAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBitmapImageRep+HUAdditions.h"; path = "src/NSBitmapImageRep+HUAdditions.h"; sourceTree = "<group>"; };
+		3A1C755210BB143500BC6030 /* NSBitmapImageRep+HUAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBitmapImageRep+HUAdditions.m"; path = "src/NSBitmapImageRep+HUAdditions.m"; sourceTree = "<group>"; };
 		3A4B48A510B755040054DF06 /* status-item-error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-error.png"; path = "resources/status-item-error.png"; sourceTree = "<group>"; };
 		3A4B48A610B755040054DF06 /* status-item-ok.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-ok.png"; path = "resources/status-item-ok.png"; sourceTree = "<group>"; };
 		3A5DB2771062C89000B5F45F /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainMenu.xib; path = resources/MainMenu.xib; sourceTree = "<group>"; };
@@ -232,6 +238,10 @@
 				3A91998810657080002D0F4B /* NSTask+DPAdditions.m */,
 				3A919A0210657FF0002D0F4B /* NSString+DPAdditions.h */,
 				3A919A0310657FF0002D0F4B /* NSString+DPAdditions.m */,
+				3A1C754E10BB135D00BC6030 /* NSImage+HUAdditions.h */,
+				3A1C754F10BB135D00BC6030 /* NSImage+HUAdditions.m */,
+				3A1C755110BB143500BC6030 /* NSBitmapImageRep+HUAdditions.h */,
+				3A1C755210BB143500BC6030 /* NSBitmapImageRep+HUAdditions.m */,
 			);
 			name = mixins;
 			sourceTree = "<group>";
@@ -348,6 +358,8 @@
 				3A919AA3106599EE002D0F4B /* SSYLoginItems.m in Sources */,
 				3ABE5EAF10B588700085BAC3 /* HTTPPOSTOperation.m in Sources */,
 				3A1C74FE10BB0F4500BC6030 /* PFMoveApplication.m in Sources */,
+				3A1C755010BB135D00BC6030 /* NSImage+HUAdditions.m in Sources */,
+				3A1C755310BB143500BC6030 /* NSBitmapImageRep+HUAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
