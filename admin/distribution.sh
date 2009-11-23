@@ -107,18 +107,18 @@ mate -a <<EOF
 
 1. Complete the new entry created in release-notes.html
 
-	mate '$WD/admin/release-notes.html'
+mate '$WD/admin/release-notes.html'
 
 2. Publish the archive, release notes and appcast -- in that order:
 
-	scp '$BUILT_PRODUCTS_DIR/$ARCHIVE_FILENAME' hunch.se:/var/www/hunch.se/www/public/scrup/dist/
-	scp '$WD/admin/release-notes.html' hunch.se:/var/www/hunch.se/www/public/scrup/release-notes.html
-	scp '$WD/admin/appcast.xml' hunch.se:/var/www/hunch.se/www/public/scrup/appcast.xml
+scp '$BUILT_PRODUCTS_DIR/$ARCHIVE_FILENAME' hunch.se:/var/www/hunch.se/www/public/scrup/dist/
+scp '$WD/admin/release-notes.html' hunch.se:/var/www/hunch.se/www/public/scrup/release-notes.html
+scp '$WD/admin/appcast.xml' hunch.se:/var/www/hunch.se/www/public/scrup/appcast.xml
 
 3. Commit, tag and push the source
 
-	git ci 'Release $VERSION' -a
-	git tag -m 'Release $VERSION' 'v$VERSION'
-	git pu
+git ci 'Release $VERSION' -a
+git tag -sm 'Release $VERSION' 'v$VERSION'
+git pu
 
 EOF
