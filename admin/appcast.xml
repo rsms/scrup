@@ -17,5 +17,17 @@
 				sparkle:dsaSignature="MCwCFCLA7now7rLR1YOPgU9ehnUENdThAhQsuzGir88ORF6XE1L8FHWMGUfuoQ=="
 			/>
 		</item>
+		<item>
+			<title>Version 1.1</title>
+			<sparkle:releaseNotesLink>http://hunch.se/scrup/release-notes.html#version-1.1</sparkle:releaseNotesLink>
+			<pubDate>Mon, 23 Nov 2009 18:09:21 +0100</pubDate>
+			<enclosure
+				url="http://hunch.se/scrup/dist/scrup-1.1.zip"
+				sparkle:version="1.1"
+				type="application/octet-stream"
+				length="569787"
+				sparkle:dsaSignature="MCwCFHVZhYtIaOUWshJIDA1nKNsyJxIFAhRWCJY1/1NtX0W6jRHXTdTYoVcf7w=="
+			/>
+		</item>
 	</channel>
 </rss>

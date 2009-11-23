@@ -11,6 +11,25 @@
 		</style>
 	</head>
 	<body>
+		<section id="version-1.1">
+			<h2>Version 1.1</h2>
+			<ul>
+				<li>Gracefully notify users of OS X &lt;10.6 with the fact that Scrup requires &gt;=10.6.</li>
+				<li>When paused a "zzZ" icon is displayed to indicate the inactive state.</li>
+				<li>I/O contention work-arounds and fixes.</li>
+				<li>Better error handling, especially for network related problems 
+					(no connection, I/O exhaustion, etc).</li>
+				<li>Obeys <tt>com.apple.screencapture location</tt> if set (See 
+					<a href="http://www.macosxhints.com/article.php?story=20050824073301844" 
+					target="_blank">this Mac OS X hints article</a> for more info.
+					Thanks to <a href="http://micro.dentarg.net/">Patrik Ragnarsson</a> 
+					for this).</li>
+				<li>Fixed a "bug" (bad behaviour) where old screenshots would be batch-uploaded 
+					upon reactivation or launch. Now only fresh screenshots are processe.
+					If Scrup is paused the file will never be processed, unless modified after 
+					Scrup has been activated again.</li>
+			</ul>
+		</section>
 		<section id="version-1.0">
 			<h2>Version 1.0</h2>
 			<ul>
