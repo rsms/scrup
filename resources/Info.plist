@@ -12,6 +12,8 @@
 	<string>dsa_pub.pem</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.6.0</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
