@@ -5,6 +5,7 @@
 	NSHTTPURLResponse *response;
 	NSData *responseData;
 	id delegate;
+	//NSTimeInterval connectionRetryInterval;
 }
 @property(assign) NSString *path;
 @property(assign) NSURL *url;
@@ -13,6 +14,7 @@
 @property(assign) NSData *responseData;
 @property(assign) id delegate;
 -(id)initWithPath:(NSString *)path URL:(NSURL *)url delegate:(id)delegate;
+-(void)sendRequestAllowingRetries:(int)nretries;
 @end
 
 @protocol HTTPPOSTOperationDelegate

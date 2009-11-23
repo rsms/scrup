@@ -55,6 +55,7 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	nCurrOps = 0;
 	fseventsIsObservingDesktop = NO;
 	knownScreenshotsOnDesktop = [NSDictionary dictionary];
+	screenshotLocation = [@"~/Desktop" stringByExpandingTildeInPath];
 	
 	// read general settings from defaults
 	n = [defaults objectForKey:@"showInMenuBar"];
@@ -82,17 +83,32 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	if (![defaults objectForKey:@"recvURL"])
 		[defaults setObject:@"http://your.host/recv.php?name={filename}" forKey:@"recvURL"];
 	
+	// read com.apple.screencapture location, if set
+	NSDictionary *screencaptureDefaults = [defaults persistentDomainForName:@"com.apple.screencapture"];
+	if (screencaptureDefaults) {
+		NSString *loc = [screencaptureDefaults objectForKey:@"location"];
+		if (loc && [[NSFileManager defaultManager] fileExistsAtPath:loc]) {
+			screenshotLocation = loc;
+			#if DEBUG
+			NSLog(@"using com.apple.screencapture location => \"%@\"", screenshotLocation);
+			#endif
+		}
+	}
+	
 	return self;
 }
 
 - (void)awakeFromNib {
 	// Setup icons
 	iconStandby = [NSImage imageNamed:@"status-item-standby.png"];
+	iconPaused = [NSImage imageNamed:@"status-item-paused.png"];
 	iconSending = [NSImage imageNamed:@"status-item-sending.png"];
 	iconOk = [NSImage imageNamed:@"status-item-ok.png"];
 	iconError = [NSImage imageNamed:@"status-item-error.png"];
 	iconSelected = [NSImage imageNamed:@"status-item-selected.png"];
-	icon = iconStandby;
+	iconSelectedPaused = [NSImage imageNamed:@"status-item-selected-paused.png"];
+	iconState = paused ? iconPaused : iconStandby;
+	icon = iconState;
 	
 	[self enableOrDisableMenuItem:self];
 	
@@ -103,15 +119,25 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 #pragma mark -
 #pragma mark Handling screenshots
 
--(NSDictionary *)screenshotsAtPath:(NSString *)dirpath {
+
+-(NSDictionary *)screenshotsOnDesktop {
+	NSDate *lmod = [NSDate dateWithTimeIntervalSinceNow:-10]; // max 10 sec old
+	return [self screenshotsAtPath:screenshotLocation modifiedAfterDate:lmod];
+}
+
+-(NSDictionary *)screenshotsAtPath:(NSString *)dirpath modifiedAfterDate:(NSDate *)lmod {
 	NSDirectoryEnumerator *den = [[NSFileManager defaultManager] enumeratorAtPath:dirpath];
 	NSMutableDictionary *files = [NSMutableDictionary dictionary];
 	NSString *path;
+	NSDate *mod;
+	int fd;
 	
 	for (NSString *fn in den) {
 		if (![fn hasPrefix:@"Screen shot "] || ![fn hasSuffix:@".png"])
 			continue;
 		path = [dirpath stringByAppendingPathComponent:fn];
+		
+		// must be able to stat and must be a regular file
 		struct stat s;
 		if (stat([path UTF8String], &s) != 0) {
 			NSLog(@"error: stat(\"%@\") failed", path);
@@ -121,15 +147,49 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 			//NSLog(@"skipping non-file %@", path);
 			continue;
 		}
-		[files setObject:[NSDate dateWithTimeIntervalSince1970:s.st_mtime] forKey:path];
+		
+		// Are we able to aquire an exclusive lock? Then the file is probably not being written to.
+		if ((fd = open([path UTF8String], O_RDWR | O_EXLOCK | O_NONBLOCK)) == -1) {
+			NSLog(@"warn: skipping/delaying locked \"%@\"", fn);
+			// kqueue will emit an event once the file is completely written, we
+			// will then implicitly try again.
+			continue;
+		}
+		else {
+			close(fd);
+		}
+		
+		// check last modified date
+		mod = [NSDate dateWithTimeIntervalSince1970:s.st_mtime];
+		NSComparisonResult c = [mod compare:lmod];
+		if (c == NSOrderedDescending || c == NSOrderedSame) {
+			[files setObject:mod forKey:path];
+		}
+		/*#if DEBUG
+		else {
+			// might be VERY verbose
+			NSLog(@"skipping old \"%@\"", fn);
+		}
+		#endif*/
 	}
 	
 	return files;
 }
 
 
--(NSDictionary *)screenshotsOnDesktop {
-	return [self screenshotsAtPath:[@"~/Desktop" stringByExpandingTildeInPath]];
+-(void)checkForScreenshotsAtPath:(NSString *)dirpath {
+	NSDictionary *files;
+	NSArray *sortedKeys;
+	
+	if (!(files = [self findUnprocessedScreenshotsOnDesktop]))
+		return;
+	sortedKeys = [files keysSortedByValueUsingComparator:^(id a, id b) {
+		return [b compare:a];
+	}];
+	for (NSString *path in sortedKeys) {
+		[self vacuumUploadedScreenshots];
+		[self processScreenshotAtPath:path modifiedAtDate:[files objectForKey:path]];
+	}
 }
 
 
@@ -158,21 +218,6 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	return files;
 }
 
-
-- (void)checkForScreenshotsAtPath:(NSString *)dirpath {
-	NSDictionary *files;
-	NSArray *sortedKeys;
-	
-	if (!(files = [self findUnprocessedScreenshotsOnDesktop]))
-		return;
-	sortedKeys = [files keysSortedByValueUsingComparator:^(id a, id b) {
-		return [b compare:a];
-	}];
-	for (NSString *path in sortedKeys) {
-		[self vacuumUploadedScreenshots];
-		[self processScreenshotAtPath:path modifiedAtDate:[files objectForKey:path]];
-	}
-}
 
 -(void)processScreenshotAtPath:(NSString *)path modifiedAtDate:(NSDate *)dateModified {
 	NSString *fn;
@@ -273,9 +318,9 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 }
 
 -(void)_httpPostOperationDidFail:(NSArray *)args {
-	HTTPPOSTOperation *op = [args objectAtIndex:0];
-	NSError *error = [args objectAtIndex:1];
 	nCurrOps--;
+	HTTPPOSTOperation *op = [args objectAtIndex:0];
+	//NSError *error = [args objectAtIndex:1];
 	
 	// Remove record of screenshot
 	[uploadedScreenshots removeObjectForKey:[op.path lastPathComponent]];
@@ -360,10 +405,8 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 }
 
 - (void)setPaused:(BOOL)y {
-	#if DEBUG
-		NSLog(@"paused = %d", y);
-	#endif
 	paused = y;
+	
 	[defaults setBool:paused forKey:@"paused"];
 	if (paused)
 		[pauseMenuItem setTitle:@"Paused"];
@@ -375,6 +418,14 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 		else if (!paused && ![self isObservingDesktop])
 			[self startObservingDesktop];
 	}
+	
+	// update icon
+	BOOL x = icon == iconState;
+	iconState = paused ? iconPaused : iconStandby;
+	if (x)
+		icon = iconState;
+	[statusItem setAlternateImage:paused ? iconSelectedPaused : iconSelected];
+	[self resetIcon];
 }
 
 
@@ -407,11 +458,11 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	// _statusItemWithLength:0 withPriority:INT_MAX
 	if (!statusItem && (statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:0])) {
 		[statusItem setLength:0];
-		[statusItem setAlternateImage:[NSImage imageNamed:@"status-item-selected.png"]];
+		[statusItem setAlternateImage:paused ? iconSelectedPaused : iconSelected];
 		[statusItem setHighlightMode:YES];
 		[statusItem setMenu:statusItemMenu];
 		[statusItem setLength:NSVariableStatusItemLength];
-		[statusItem setImage:iconStandby];
+		[statusItem setImage:iconState];
 		[self updateMenuItem:sender];
 	}
 }
@@ -427,7 +478,7 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	if (!statusItem)
 		return;
 	
-	icon = nCurrOps ? iconSending : iconStandby;
+	icon = nCurrOps ? iconSending : iconState;
 	
 	if (showQueueCountInMenuBar) {
 		[statusItem setLength:NSVariableStatusItemLength];
@@ -507,7 +558,11 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 }
 
 - (void)setupFSEvents {
-	CFStringRef path = (CFStringRef)[@"~/Desktop" stringByExpandingTildeInPath];
+	CFStringRef path = (CFStringRef)screenshotLocation;
+	if (!path) {
+		NSLog(@"error: screenshotLocation == NULL");
+		return;
+	}
 	CFArrayRef pathsToWatch = CFArrayCreate(NULL, (const void **)&path, 1, NULL);
 	CFTimeInterval latency = 0.0; // seconds
 	FSEventStreamContext ctx = (FSEventStreamContext){ 

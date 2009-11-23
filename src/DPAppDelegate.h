@@ -15,6 +15,7 @@
 	IBOutlet NSMenuItem *pauseMenuItem;
 	BOOL openAtLogin, showInDock, showInMenuBar, showQueueCountInMenuBar, paused;
 	int nCurrOps;
+	NSString *screenshotLocation; // com.apple.screencapture location
 	
 	NSDate *uidRefDate;
 	FSEventStreamRef fsevstream;
@@ -23,17 +24,21 @@
 	NSDictionary *knownScreenshotsOnDesktop; // fn => dateModified
 	
 	NSImage *iconStandby;
+	NSImage *iconPaused;
 	NSImage *iconSending;
 	NSImage *iconOk;
 	NSImage *iconError;
 	NSImage *iconSelected;
+	NSImage *iconSelectedPaused;
+	
+	NSImage *iconState; // Current state icon (iconStandby or iconPaused)
 	NSImage *icon; // Current icon
 }
 
 @property(assign) BOOL openAtLogin, showInDock, showInMenuBar, showQueueCountInMenuBar, paused;
 
 -(void)checkForScreenshotsAtPath:(NSString *)dirpath;
--(NSDictionary *)screenshotsAtPath:(NSString *)dirpath;
+-(NSDictionary *)screenshotsAtPath:(NSString *)dirpath modifiedAfterDate:(NSDate *)lmod;
 -(NSDictionary *)screenshotsOnDesktop;
 -(void)processScreenshotAtPath:(NSString *)path modifiedAtDate:(NSDate *)dateModified;
 /**

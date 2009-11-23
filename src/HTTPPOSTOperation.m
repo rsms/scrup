@@ -19,6 +19,7 @@
 	response = nil;
 	responseData = nil;
 	request = [[NSMutableURLRequest alloc] initWithURL:url];
+	//connectionRetryInterval = 10.0;
 	
 	return self;
 }
@@ -59,13 +60,53 @@
 	[request setValue:[NSString stringWithFormat:@"%llu", [fattrs fileSize]] forHTTPHeaderField:@"Content-Length"];
 	
 	// perform request
-	if ([delegate respondsToSelector:@selector(httpPostOperationWillBegin:)])
+	if ([delegate respondsToSelector:@selector(httpPostOperationWillBegin:)]) {
 		[delegate httpPostOperationWillBegin:self];
-	else
-		NSLog(@"[%@] sending request", self);
+	}
+	else {
+		NSLog(@"[%@] sending request %@ %@ %@", self, [request HTTPMethod], [request URL],
+					[request allHTTPHeaderFields]);
+	}
+	
+	[self sendRequestAllowingRetries:20];
+}
+
+-(void)sendRequestAllowingRetries:(int)nretries {
+	NSError *err;
+	NSDictionary *fattrs;
+	
+	// send and recv...
 	responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
 	
-	// response
+	// error check
+	if (!responseData && err && [err domain] == NSURLErrorDomain && nretries) {
+		NSInteger code = [err code];
+		// retry forever?
+		/*if (code == kCFURLErrorCannotConnectToHost ||
+				code == kCFURLErrorNetworkConnectionLost ||
+				code == kCFURLErrorNotConnectedToInternet ||
+				code == kCFErrorHTTPConnectionLost) {
+			// Discussion: Currently we do not retry connections based on the assumption
+			// that you do not want old screenshots to be uploaded when you get an internet connection
+			// at a later date. Fall through to error callback instead.
+			//[NSThread sleepForTimeInterval:connectionRetryInterval];
+			//[self sendRequestAllowingRetries:nretries]; // do not modify <nretries>
+		}
+		else*/ if (code == kCFURLErrorRequestBodyStreamExhausted) {
+			#if DEBUG
+			NSLog(@"warning: [%@] got CFURLErrorRequestBodyStreamExhausted from CF. Retrying...", self);
+			#endif
+			// wait a short amount of time then try again once
+			[NSThread sleepForTimeInterval:0.5];
+			[request setHTTPBodyStream:[NSInputStream inputStreamWithFileAtPath:path]];
+			if ((fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&err]))
+				[request setValue:[NSString stringWithFormat:@"%llu", [fattrs fileSize]] forHTTPHeaderField:@"Content-Length"];
+			[self sendRequestAllowingRetries:nretries-1];
+			return;
+		}
+	}
+	
+	// parse response
 	if (!responseData) {
 		if ([delegate respondsToSelector:@selector(httpPostOperationDidFail:withError:)])
 			[delegate httpPostOperationDidFail:self withError:err];
@@ -79,16 +120,18 @@
 				[delegate httpPostOperationDidSucceed:self];
 			}
 			else {
-				NSString *urlStr = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
 				NSLog(@"[%@] succeeded with HTTP %d %@ %@", self, 
-							[response statusCode], [response allHeaderFields], urlStr);
+							[response statusCode], [response allHeaderFields],
+							[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
 			}
 		}
 		// response: failure
 		else {
 			NSString *rspStr = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
 			if ([delegate respondsToSelector:@selector(httpPostOperationDidFail:withError:)]) {
-				err = [NSError errorWithDomain:NSStringFromClass(isa) code:[response statusCode] userInfo:[NSDictionary dictionaryWithObject:rspStr forKey:NSLocalizedDescriptionKey]];
+				err = [NSError errorWithDomain:NSStringFromClass(isa)
+																	code:[response statusCode] 
+															userInfo:[NSDictionary dictionaryWithObject:rspStr forKey:NSLocalizedDescriptionKey]];
 				[delegate httpPostOperationDidFail:self withError:err];
 			}
 			else {
