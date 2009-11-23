@@ -15,13 +15,12 @@
 	IBOutlet NSMenuItem *pauseMenuItem;
 	BOOL openAtLogin, showInDock, showInMenuBar, showQueueCountInMenuBar, paused;
 	int nCurrOps;
-	NSString *screenshotLocation; // com.apple.screencapture location
 	
 	NSDate *uidRefDate;
-	FSEventStreamRef fsevstream;
-	BOOL fseventsIsObservingDesktop;
+	BOOL isObservingDesktop;
 	NSMutableDictionary *uploadedScreenshots;
 	NSDictionary *knownScreenshotsOnDesktop; // fn => dateModified
+	NSString *screenshotLocation; // com.apple.screencapture location
 	
 	NSImage *iconStandby;
 	NSImage *iconPaused;
@@ -59,10 +58,8 @@
 
 -(void)updateListOfRecentUploads;
 
--(void)setupFSEvents;
--(BOOL)startObservingDesktop;
+-(void)startObservingDesktop;
 -(void)stopObservingDesktop;
--(BOOL)isObservingDesktop;
 
 -(void)momentarilyDisplayIcon:(NSImage *)icon;
 -(void)resetIcon;

@@ -10,27 +10,6 @@
 
 #define SCREENSHOT_LOG_LIMIT 100
 
-static void _on_fsevent(ConstFSEventStreamRef streamRef,
-												void *userdata,
-												size_t nevents,
-												void *_paths,
-												const FSEventStreamEventFlags eventFlags[],
-												const FSEventStreamEventId eventIds[])
-{
-	int i;
-	char **paths = _paths;
-	id self = (id)userdata;
-	
-	for (i=0; i<nevents; i++) {
-		/* flags are unsigned long, IDs are uint64_t */
-		#if DEBUG
-		printf("Change %llu in %s, flags %lu\n", eventIds[i], paths[i], eventFlags[i]);
-		#endif
-		[self checkForScreenshotsAtPath:[NSString stringWithUTF8String:paths[i]]];
-	}
-}
-
-
 /*@interface NSStatusBar (Unofficial)
 -(id)_statusItemWithLength:(float)f withPriority:(int)d;
 @end*/
@@ -47,13 +26,12 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	
 	// init members
 	defaults = [NSUserDefaults standardUserDefaults];
-	fsevstream = NULL;
 	uidRefDate = [NSDate dateWithTimeIntervalSince1970:1258600000];
 	uploadedScreenshots = [defaults objectForKey:@"screenshots"];
 	if (!uploadedScreenshots)
 		uploadedScreenshots = [NSMutableDictionary dictionary];
 	nCurrOps = 0;
-	fseventsIsObservingDesktop = NO;
+	isObservingDesktop = NO;
 	knownScreenshotsOnDesktop = [NSDictionary dictionary];
 	screenshotLocation = [@"~/Desktop" stringByExpandingTildeInPath];
 	
@@ -121,7 +99,7 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 
 
 -(NSDictionary *)screenshotsOnDesktop {
-	NSDate *lmod = [NSDate dateWithTimeIntervalSinceNow:-10]; // max 10 sec old
+	NSDate *lmod = [NSDate dateWithTimeIntervalSinceNow:-5]; // max 5 sec old
 	return [self screenshotsAtPath:screenshotLocation modifiedAfterDate:lmod];
 }
 
@@ -413,9 +391,9 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	else
 		[pauseMenuItem setTitle:@"Pause"];
 	if ([NSApp isRunning]) {
-		if (paused && [self isObservingDesktop])
+		if (paused && isObservingDesktop)
 			[self stopObservingDesktop];
-		else if (!paused && ![self isObservingDesktop])
+		else if (!paused && !isObservingDesktop)
 			[self startObservingDesktop];
 	}
 	
@@ -557,47 +535,24 @@ static void _on_fsevent(ConstFSEventStreamRef streamRef,
 	[mainWindow makeKeyAndOrderFront:sender];
 }
 
-- (void)setupFSEvents {
-	CFStringRef path = (CFStringRef)screenshotLocation;
-	if (!path) {
-		NSLog(@"error: screenshotLocation == NULL");
-		return;
-	}
-	CFArrayRef pathsToWatch = CFArrayCreate(NULL, (const void **)&path, 1, NULL);
-	CFTimeInterval latency = 0.0; // seconds
-	FSEventStreamContext ctx = (FSEventStreamContext){ 
-    0, //version
-    (void *)self, //info
-    NULL, //CFAllocatorRetainCallBack retain; 
-    NULL, //CFAllocatorReleaseCallBack release; 
-    NULL //CFAllocatorCopyDescriptionCallBack copyDescription; 
-	};
-	fsevstream = FSEventStreamCreate(CFAllocatorGetDefault(),
-																	 &_on_fsevent,
-																	 &ctx,
-																	 pathsToWatch,
-																	 kFSEventStreamEventIdSinceNow, /* Or a previous event ID */
-																	 latency,
-																	 kFSEventStreamCreateFlagNone /* Flags explained in reference */
-																	 );
-	FSEventStreamScheduleWithRunLoop(fsevstream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);	
+-(void)onDirectoryNotification:(NSNotification *)n {
+	[self checkForScreenshotsAtPath:screenshotLocation];
 }
 
-- (BOOL)startObservingDesktop {
-	if (fsevstream == NULL)
-		[self setupFSEvents];
-	fseventsIsObservingDesktop = FSEventStreamStart(fsevstream);
-	return fseventsIsObservingDesktop;
+- (void)startObservingDesktop {
+	if (isObservingDesktop)
+		return;
+	NSDistributedNotificationCenter *dnc = [NSDistributedNotificationCenter defaultCenter];
+	[dnc addObserver:self selector:@selector(onDirectoryNotification:) name:@"com.apple.carbon.core.DirectoryNotification" object:nil suspensionBehavior:NSNotificationSuspensionBehaviorDrop];
+	isObservingDesktop = YES;
 }
 
 - (void)stopObservingDesktop {
-	if (fsevstream != NULL)
-		FSEventStreamStop(fsevstream);
-	fseventsIsObservingDesktop = NO;
-}
-
-- (BOOL)isObservingDesktop {
-	return fseventsIsObservingDesktop;
+	if (!isObservingDesktop)
+		return;
+	NSDistributedNotificationCenter *dnc = [NSDistributedNotificationCenter defaultCenter];
+	[dnc removeObserver:self name:@"com.apple.carbon.core.DirectoryNotification" object:nil];
+	isObservingDesktop = NO;
 }
 
 #pragma mark -
