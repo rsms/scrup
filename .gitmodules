@@ -1,0 +1,3 @@
+[submodule "pngcrush"]
+	path = pngcrush
+	url = git://pmt.git.sourceforge.net/gitroot/pmt/pmt
