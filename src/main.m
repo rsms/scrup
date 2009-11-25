@@ -1,15 +1,40 @@
 #import "DPAppDelegate.h"
+#import "ASLLogger.h"
 
 NSOperationQueue *g_opq;
-NSString *DPToolbarFoldersItemIdentifier = @"DPToolbarFoldersItem";
-NSString *DPToolbarSettingsItemIdentifier = @"DPToolbarSettingsItem";
-NSString *DPErrorDomain = @"DPError";
+BOOL g_debug = NO;
+
+NSString *DPToolbarGeneralSettingsItemIdentifier = @"DPToolbarGeneralSettingsItem";
+NSString *DPToolbarProcessingSettingsItemIdentifier = @"DPToolbarProcessingSettingsItem";
+NSString *DPToolbarAdvancedSettingsItemIdentifier = @"DPToolbarAdvancedSettingsItem";
+NSString *SCErrorDomain = @"ScrupError";
 
 int main(int argc, const char *argv[]) {
+	// create a global operation queue
 	g_opq = [[NSOperationQueue alloc] init];
 	
+	// read "debug" from user defaults
+	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+	if (ud)
+		g_debug = [ud boolForKey:@"debug"];
+	
+	// setup logging
+	[ASLLogger setFacility:@"se.notion.Scrup"];
+	if (g_debug) {
+		// Send no messages to syslogd, but instead send everything on stderr. We do this
+		// instead of rising the connection level since default syslogd conf in OS X discards
+		// info and debug messages by default. The stderrthing is a trick which normalizes
+		// all messages to warning.
+		ASLLogger *log = [ASLLogger defaultLogger];
+		log.connection.level = ASLLoggerLevelNone;
+		[log addFileHandle:[NSFileHandle fileHandleWithStandardError]];
+		[log debug:@"started in debug mode"];
+	}
+	
+	// main runloop
 	NSApplicationMain(argc, argv);
 	
+	// tear down operation queue
 	[g_opq cancelAllOperations];
 	NSArray *ops = g_opq.operations;
 	if ([ops count]) {

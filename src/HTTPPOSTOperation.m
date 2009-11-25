@@ -8,7 +8,7 @@
 @end
 
 @implementation HTTPPOSTOperation
-@synthesize path, url, request, response, responseData, delegate;
+@synthesize path, url, request, response, responseData, delegate, log;
 
 -(id)initWithPath:(NSString *)s URL:(NSURL *)u delegate:(id)d {
 	self = [super init];
@@ -20,6 +20,11 @@
 	responseData = nil;
 	request = [[NSMutableURLRequest alloc] initWithURL:url];
 	//connectionRetryInterval = 10.0;
+	log = [ASLLogger loggerForModule:[self description]];
+	if (g_debug) {
+		log.connection.level = ASLLoggerLevelNone;
+		[log addFileHandle:[NSFileHandle fileHandleWithStandardError]];
+	}
 	
 	return self;
 }
@@ -39,6 +44,9 @@
 	NSError *err;
 	NSString *mimeType = nil;
 	
+	if ([delegate respondsToSelector:@selector(preprocessFileBeforeSending:)])
+		[delegate preprocessFileBeforeSending:self];
+	
 	// determine file type
 	if (!(mimeType = [self mimeTypeForFileAtPath:path error:nil]))
 		mimeType = @"application/octet-stream";
@@ -49,7 +57,7 @@
 		if ([delegate respondsToSelector:@selector(httpPostOperationDidFail:withError:)])
 			[delegate httpPostOperationDidFail:self withError:err];
 		else
-			NSLog(@"[%@] failed to read file attributes of '%@' %@ -- aborting", self, path, err);
+			[log warn:@"failed to read file attributes of '%@' %@ -- aborting", path, err];
 		return;
 	}
 	
@@ -64,8 +72,8 @@
 		[delegate httpPostOperationWillBegin:self];
 	}
 	else {
-		NSLog(@"[%@] sending request %@ %@ %@", self, [request HTTPMethod], [request URL],
-					[request allHTTPHeaderFields]);
+		[log notice:@"sending request %@ %@ %@", [request HTTPMethod], [request URL],
+					[request allHTTPHeaderFields]];
 	}
 	
 	[self sendRequestAllowingRetries:20];
@@ -93,9 +101,7 @@
 			//[self sendRequestAllowingRetries:nretries]; // do not modify <nretries>
 		}
 		else*/ if (code == kCFURLErrorRequestBodyStreamExhausted) {
-			#if DEBUG
-			NSLog(@"warning: [%@] got CFURLErrorRequestBodyStreamExhausted from CF. Retrying...", self);
-			#endif
+			[log warn:@"got CFURLErrorRequestBodyStreamExhausted from CF. Retrying..."];
 			// wait a short amount of time then try again once
 			[NSThread sleepForTimeInterval:0.5];
 			[request setHTTPBodyStream:[NSInputStream inputStreamWithFileAtPath:path]];
@@ -111,7 +117,7 @@
 		if ([delegate respondsToSelector:@selector(httpPostOperationDidFail:withError:)])
 			[delegate httpPostOperationDidFail:self withError:err];
 		else
-			NSLog(@"[%@] failed with error %@", self, err);
+			[log warn:@"failed with error %@", err];
 	}
 	else {
 		// response: success
@@ -120,9 +126,9 @@
 				[delegate httpPostOperationDidSucceed:self];
 			}
 			else {
-				NSLog(@"[%@] succeeded with HTTP %d %@ %@", self, 
+				[log notice:@"succeeded with HTTP %d %@ %@", 
 							[response statusCode], [response allHeaderFields],
-							[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+							[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]];
 			}
 		}
 		// response: failure
@@ -135,8 +141,8 @@
 				[delegate httpPostOperationDidFail:self withError:err];
 			}
 			else {
-				NSLog(@"[%@] failed with HTTP %d %@ %@", self, 
-							[response statusCode], [response allHeaderFields], rspStr);
+				[log warn:@"failed with HTTP %d %@ %@",
+							[response statusCode], [response allHeaderFields], rspStr];
 			}
 		}
 	}

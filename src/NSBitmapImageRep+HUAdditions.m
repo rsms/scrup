@@ -15,4 +15,13 @@
 			[NSNumber numberWithBool:progressive], NSImageProgressive, nil]];
 }
 
+- (NSBitmapImageRep *)bitmapImageRepByConvertingTosRGBColorSpace {
+	return [self bitmapImageRepByConvertingToColorSpace:[NSColorSpace sRGBColorSpace]
+																			renderingIntent:NSColorRenderingIntentDefault];
+}
+
+- (NSData *)PNGRepresentationInsRGBColorSpace {
+	return [[self bitmapImageRepByConvertingTosRGBColorSpace] PNGRepresentationAsProgressive:NO];
+}
+
 @end

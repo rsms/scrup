@@ -6,9 +6,11 @@
 [[NSAlert alertWithMessageText:NSString_title defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:NSString_msg, ##__VA_ARGS__ ] runModal]
 
 extern NSOperationQueue *g_opq;
-extern NSString *DPToolbarFoldersItemIdentifier;
-extern NSString *DPToolbarSettingsItemIdentifier;
-extern NSString *DPErrorDomain;
+extern NSString *DPToolbarGeneralSettingsItemIdentifier;
+extern NSString *DPToolbarProcessingSettingsItemIdentifier;
+extern NSString *DPToolbarAdvancedSettingsItemIdentifier;
+extern NSString *SCErrorDomain;
+extern BOOL g_debug;
 
 //#import "NSArray+DPAdditions.h"
 //#import "NSDictionary+DPAdditions.h"
@@ -17,5 +19,7 @@ extern NSString *DPErrorDomain;
 #import "NSError+DPAdditions.h"
 #import "NSTask+DPAdditions.h"
 #import "NSString+DPAdditions.h"
+
+#import "ASLLogger.h"
 
 #endif

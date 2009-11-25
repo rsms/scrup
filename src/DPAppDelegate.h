@@ -9,6 +9,7 @@
 	IBOutlet NSMenu *statusItemMenu;
 	IBOutlet NSToolbar *toolbar;
 	IBOutlet NSView *generalSettingsView;
+	IBOutlet NSView *processingSettingsView;
 	IBOutlet NSView *advancedSettingsView;
 	IBOutlet SUUpdater *updater;
 	IBOutlet NSTextField *receiverURL;
@@ -18,8 +19,12 @@
 		showInMenuBar,
 		showQueueCountInMenuBar,
 		paused,
-		enableThumbnails;
+		enableThumbnails,
+		convertImagesTosRGB,
+		enablePngcrush,
+		trashAfterSuccessfulUpload;
 	NSString *filePrefixMatch;
+	ASLLogger *log;
 	
 	int nCurrOps;
 	NSDate *uidRefDate;
@@ -43,7 +48,9 @@
 	NSImage *icon; // Current icon
 }
 
-@property(assign) BOOL openAtLogin, showInDock, showInMenuBar, showQueueCountInMenuBar, paused;
+@property(assign) BOOL openAtLogin, showInDock, showInMenuBar, 
+	showQueueCountInMenuBar, paused, convertImagesTosRGB, enablePngcrush,
+	trashAfterSuccessfulUpload;
 
 -(void)checkForScreenshotsAtPath:(NSString *)dirpath;
 -(NSDictionary *)screenshotsAtPath:(NSString *)dirpath modifiedAfterDate:(NSDate *)lmod;
@@ -56,8 +63,9 @@
 -(NSDictionary *)findUnprocessedScreenshotsOnDesktop;
 
 -(IBAction)displayViewForGeneralSettings:(id)sender;
+-(IBAction)displayViewForProcessingSettings:(id)sender;
 -(IBAction)displayViewForAdvancedSettings:(id)sender;
--(IBAction)orderFrontFoldersSettingsWindow:(id)sender;
+
 -(IBAction)orderFrontSettingsWindow:(id)sender;
 -(IBAction)enableMenuItem:(id)sender;
 -(IBAction)disableMenuItem:(id)sender;
@@ -76,5 +84,6 @@
 -(NSMutableDictionary *)uploadedScreenshotForOperation:(HTTPPOSTOperation *)op;
 -(void)vacuumUploadedScreenshots;
 -(void)writeThumbnailForScreenshotAtPath:(NSString *)path;
+-(BOOL)pngcrushPNGImageAtPath:(NSString *)path brute:(BOOL)brute;
 
 @end

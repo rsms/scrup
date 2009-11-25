@@ -16,6 +16,8 @@
 -(id)_statusItemWithLength:(float)f withPriority:(int)d;
 @end*/
 
+extern int pngcrush_main(int argc, char *argv[]);
+
 @implementation DPAppDelegate
 
 #pragma mark -
@@ -27,6 +29,9 @@
 	
 	self = [super init];
 	
+	// logging
+	log = [ASLLogger defaultLogger];
+	
 	// init members
 	defaults = [NSUserDefaults standardUserDefaults];
 	uidRefDate = [NSDate dateWithTimeIntervalSince1970:1258600000];
@@ -37,21 +42,24 @@
 	isObservingDesktop = NO;
 	knownScreenshotsOnDesktop = [NSDictionary dictionary];
 	screenshotLocation = [@"~/Desktop" stringByExpandingTildeInPath]; // default
-	cacheDir = [@"~/Library/Caches/se.notion.scrup" stringByExpandingTildeInPath];
+	cacheDir = [@"~/Library/Caches/se.notion.Scrup" stringByExpandingTildeInPath];
 	thumbCacheDir = [cacheDir stringByAppendingPathComponent:@"thumbnails"];
 	thumbSize = NSMakeSize(128.0, 128.0);
 	enableThumbnails = YES;
 	filePrefixMatch = [defaults objectForKey:@"filePrefixMatch"];
 		
-	// read general settings from defaults
-	n = [defaults objectForKey:@"showInMenuBar"];
-	showInMenuBar = (!n || [n boolValue]); // default YES
-	n = [defaults objectForKey:@"showQueueCountInMenuBar"];
-	showQueueCountInMenuBar = (n && [n boolValue]); // default NO
-	n = [defaults objectForKey:@"paused"];
-	paused = (n && [n boolValue]); // default NO
-	n = [defaults objectForKey:@"enableThumbnails"];
-	enableThumbnails = (!n || [n boolValue]); // default YES
+	// set boolean properties from user defaults or give them default values
+	#define SETDEFBOOL(_member_, _defval_) \
+		n = [defaults objectForKey:@#_member_];\
+		_member_ = n ? [n boolValue] : (_defval_);
+	SETDEFBOOL(showInMenuBar, YES);
+	SETDEFBOOL(showQueueCountInMenuBar, NO);
+	SETDEFBOOL(paused, NO);
+	SETDEFBOOL(enableThumbnails, YES);
+	SETDEFBOOL(enablePngcrush, YES);
+	SETDEFBOOL(convertImagesTosRGB, YES);
+	SETDEFBOOL(trashAfterSuccessfulUpload, NO);
+	#undef SETDEFBOOL
 	
 	// read showInDock
 	showInDock = YES;
@@ -68,8 +76,7 @@
 		[self setOpenAtLogin:YES];
 	
 	// read recvURL
-	if (![defaults objectForKey:@"recvURL"])
-		[defaults setObject:@"http://your.host/recv.php?name={filename}" forKey:@"recvURL"];
+	//[defaults setObject:@"http://your.host/recv.php?name={filename}" forKey:@"recvURL"];
 	
 	// read com.apple.screencapture location, if set
 	NSDictionary *screencaptureDefaults = [defaults persistentDomainForName:@"com.apple.screencapture"];
@@ -77,9 +84,7 @@
 		NSString *loc = [screencaptureDefaults objectForKey:@"location"];
 		if (loc && [[NSFileManager defaultManager] fileExistsAtPath:loc]) {
 			screenshotLocation = loc;
-			#if DEBUG
-			NSLog(@"using com.apple.screencapture location => \"%@\"", screenshotLocation);
-			#endif
+			[log info:@"using com.apple.screencapture location => \"%@\"", screenshotLocation];
 		}
 	}
 	
@@ -107,7 +112,13 @@
 	[self enableOrDisableMenuItem:self];
 	
 	// set default selected toolbar item and view
-	[toolbar setSelectedItemIdentifier:DPToolbarFoldersItemIdentifier];
+	[toolbar setSelectedItemIdentifier:DPToolbarGeneralSettingsItemIdentifier];
+	
+	// no recvURL? Probably first launch, so show the settings window
+	if (![defaults objectForKey:@"recvURL"] || [[receiverURL stringValue] length] == 0) {
+		[self orderFrontSettingsWindow:self];
+		[receiverURL becomeFirstResponder];
+	}
 }
 
 #pragma mark -
@@ -135,7 +146,7 @@
 		// must be able to stat and must be a regular file
 		struct stat s;
 		if (stat([path UTF8String], &s) != 0) {
-			NSLog(@"error: stat(\"%@\") failed", path);
+			[log error:@"stat(\"%@\") failed", path];
 			continue;
 		}
 		if (!S_ISREG(s.st_mode)) {
@@ -145,7 +156,7 @@
 		
 		// Are we able to aquire an exclusive lock? Then the file is probably not being written to.
 		if ((fd = open([path UTF8String], O_RDWR | O_EXLOCK | O_NONBLOCK)) == -1) {
-			NSLog(@"warn: skipping/delaying locked \"%@\"", fn);
+			[log notice:@"skipping/delaying locked \"%@\"", fn];
 			// kqueue will emit an event once the file is completely written, we
 			// will then implicitly try again.
 			continue;
@@ -217,9 +228,7 @@
 -(void)processScreenshotAtPath:(NSString *)path modifiedAtDate:(NSDate *)dateModified {
 	NSString *fn;
 	
-	#if DEBUG
-	NSLog(@"processing screenshot \"%@\"", path);
-	#endif
+	[log info:@"processing screenshot \"%@\"", path];
 	
 	fn = [path lastPathComponent];
 	
@@ -259,6 +268,23 @@
 	[g_opq addOperation:postOp];
 }
 
+-(void)preprocessFileBeforeSending:(HTTPPOSTOperation *)op {
+	// This callback is called from a send operation thread, so in here
+	// we can spend quality time with <op>.
+	
+	// convert to sRGB
+	if (convertImagesTosRGB) {
+		NSBitmapImageRep *bm = [NSBitmapImageRep imageRepWithContentsOfFile:op.path];
+		NSData *sRGBPNGData = [bm PNGRepresentationInsRGBColorSpace];
+		[sRGBPNGData writeToFile:op.path atomically:YES];
+		[op.log info:@"converted \"%@\" to sRGB", op.path];
+	}
+	
+	// pngcrush
+	if (enablePngcrush)
+		[self pngcrushPNGImageAtPath:op.path brute:NO];
+}
+
 
 -(void)httpPostOperationDidSucceed:(HTTPPOSTOperation *)op {
 	// schedule in main thread since we want to avoid locks and stuff
@@ -268,13 +294,13 @@
 -(void)_httpPostOperationDidSucceed:(HTTPPOSTOperation *)op {
 	nCurrOps--;
 	NSString *rspstr = [[NSString alloc] initWithData:op.responseData encoding:NSUTF8StringEncoding];
-	NSLog(@"[%@] succeeded with HTTP %d %@ %@", op, 
-				[op.response statusCode], [op.response allHeaderFields], rspstr);
+	[op.log debug:@"succeeded with HTTP %d %@ %@", 
+				[op.response statusCode], [op.response allHeaderFields], rspstr];
 	
 	// Parse response as a single URL
 	NSURL *scrupURL = [NSURL URLWithString:rspstr];
 	if (!scrupURL) {
-		NSLog(@"error: invalid URL returned by receiver");
+		[log error:@"invalid URL returned by receiver"];
 		
 		// Remove record of screenshot
 		[uploadedScreenshots removeObjectForKey:[op.path lastPathComponent]];
@@ -299,8 +325,24 @@
 		
 		// Display "OK" icon
 		[self momentarilyDisplayIcon:iconOk];
+		
+		// Write thumbnail
 		if (enableThumbnails)
 			[self writeThumbnailForScreenshotAtPath:op.path];
+		
+		// Trash the file
+		if (trashAfterSuccessfulUpload) {
+			if (![[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
+																									 source:[op.path stringByDeletingLastPathComponent]
+																							destination:@""
+																										files:[NSArray arrayWithObject:[op.path lastPathComponent]]
+																											tag:NULL])
+			{
+				[log warn:@"could not move \"\" to trash", op.path];
+			}
+		}
+		
+		// Update list of recent
 		[self updateListOfRecentUploads];
 	}
 	
@@ -310,7 +352,7 @@
 
 -(void)httpPostOperationDidFail:(HTTPPOSTOperation *)op withError:(NSError *)error {
 	// schedule in main thread since we want to avoid locks and stuff
-	NSLog(@"[%@] failed with error %@", op, error);
+	[op.log error:@"failed with error %@", error];
 	[self performSelectorOnMainThread:@selector(_httpPostOperationDidFail:) withObject:[NSArray arrayWithObjects:op, error, nil] waitUntilDone:NO];
 }
 
@@ -420,6 +462,43 @@
 	enableThumbnails = y;
 	[defaults setBool:enableThumbnails forKey:@"enableThumbnails"];
 	[self updateListOfRecentUploads];
+}
+
+- (BOOL)convertImagesTosRGB {
+	return convertImagesTosRGB;
+}
+
+- (void)setConvertImagesTosRGB:(BOOL)y {
+	#if DEBUG
+	NSLog(@"convertImagesTosRGB = %d", y);
+	#endif
+	convertImagesTosRGB = y;
+	[defaults setBool:convertImagesTosRGB forKey:@"convertImagesTosRGB"];
+}
+
+- (BOOL)trashAfterSuccessfulUpload {
+	return trashAfterSuccessfulUpload;
+}
+
+- (void)setTrashAfterSuccessfulUpload:(BOOL)y {
+	#if DEBUG
+	NSLog(@"trashAfterSuccessfulUpload = %d", y);
+	#endif
+	trashAfterSuccessfulUpload = y;
+	[defaults setBool:trashAfterSuccessfulUpload forKey:@"trashAfterSuccessfulUpload"];
+}
+
+
+- (BOOL)enablePngcrush {
+	return enablePngcrush;
+}
+
+- (void)setEnablePngcrush:(BOOL)y {
+	#if DEBUG
+	NSLog(@"enablePngcrush = %d", y);
+	#endif
+	enablePngcrush = y;
+	[defaults setBool:enablePngcrush forKey:@"enablePngcrush"];
 }
 
 - (BOOL)paused {
@@ -548,10 +627,8 @@
 			NSImage *im = [[NSImage alloc] initWithContentsOfFile:[thumbCacheDir stringByAppendingPathComponent:key]];
 			if (im)
 				[mi setImage:im];
-			#if DEBUG
 			else
-				NSLog(@"info: no thumb for %@", key);
-			#endif
+				[log debug:@"no thumb for %@", key];
 		}
 		
 		[mi setRepresentedObject:m];
@@ -576,23 +653,22 @@
 }
 
 - (IBAction)displayViewForGeneralSettings:(id)sender {
-	if ([mainWindow contentView] != generalSettingsView)
+	if (generalSettingsView && [mainWindow contentView] != generalSettingsView)
 		[mainWindow setContentView:generalSettingsView display:YES animate:YES];
 }
 
+- (IBAction)displayViewForProcessingSettings:(id)sender {
+	if (processingSettingsView && [mainWindow contentView] != processingSettingsView)
+		[mainWindow setContentView:processingSettingsView display:YES animate:YES];
+}
+
 - (IBAction)displayViewForAdvancedSettings:(id)sender {
-	if ([mainWindow contentView] != advancedSettingsView)
+	if (advancedSettingsView && [mainWindow contentView] != advancedSettingsView)
 		[mainWindow setContentView:advancedSettingsView display:YES animate:YES];
 }
 
 - (IBAction)saveState:(id)sender {
 	[defaults setObject:uploadedScreenshots forKey:@"screenshots"];
-}
-
-- (IBAction)orderFrontFoldersSettingsWindow:(id)sender {
-	[self displayViewForGeneralSettings:sender];
-	[toolbar setSelectedItemIdentifier:DPToolbarFoldersItemIdentifier];
-	[self orderFrontSettingsWindow:sender];
 }
 
 - (IBAction)orderFrontSettingsWindow:(id)sender {
@@ -649,15 +725,20 @@
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)_toolbar {
 	return [NSArray arrayWithObjects:
-		DPToolbarFoldersItemIdentifier,
-		DPToolbarSettingsItemIdentifier,
-		NSToolbarFlexibleSpaceItemIdentifier,
-		NSToolbarSpaceItemIdentifier,
-		NSToolbarSeparatorItemIdentifier, nil];
+					DPToolbarGeneralSettingsItemIdentifier,
+					DPToolbarProcessingSettingsItemIdentifier,
+					DPToolbarAdvancedSettingsItemIdentifier,
+					NSToolbarFlexibleSpaceItemIdentifier,
+					NSToolbarSpaceItemIdentifier,
+					NSToolbarSeparatorItemIdentifier, nil];
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)_toolbar {
-	return [NSArray arrayWithObjects:DPToolbarFoldersItemIdentifier, DPToolbarSettingsItemIdentifier, nil];	
+	return [NSArray arrayWithObjects:
+					DPToolbarGeneralSettingsItemIdentifier,
+					DPToolbarProcessingSettingsItemIdentifier,
+					DPToolbarAdvancedSettingsItemIdentifier,
+					nil];	
 }
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)_toolbar {
@@ -667,7 +748,7 @@
 - (NSToolbarItem *)toolbar:(NSToolbar *)_toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
 {
 	NSToolbarItem *item = nil;
-	if (itemIdentifier == DPToolbarFoldersItemIdentifier) {
+	if (itemIdentifier == DPToolbarGeneralSettingsItemIdentifier) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
 		[item setImage:[NSImage imageNamed:@"NSPreferencesGeneral"]];
 		[item setLabel:@"General"];
@@ -675,11 +756,19 @@
 		[item setTarget:self];
 		[item setAction:@selector(displayViewForGeneralSettings:)];
 	}
-	else if (itemIdentifier == DPToolbarSettingsItemIdentifier) {
+	else if (itemIdentifier == DPToolbarProcessingSettingsItemIdentifier) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
+		[item setImage:[NSImage imageNamed:@"toolbar-processing"]];
+		[item setLabel:@"Processing"];
+		[item setToolTip:@"How images are picked up and processed"];
+		[item setTarget:self];
+		[item setAction:@selector(displayViewForProcessingSettings:)];
+	}
+	else if (itemIdentifier == DPToolbarAdvancedSettingsItemIdentifier) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
 		[item setImage:[NSImage imageNamed:@"NSAdvanced"]];
 		[item setLabel:@"Advanced"];
-		[item setToolTip:@"Optional settings"];
+		[item setToolTip:@"You probably don't need to change these things in here"];
 		[item setTarget:self];
 		[item setAction:@selector(displayViewForAdvancedSettings:)];
 	}
@@ -708,18 +797,79 @@
 		// todo: remove all thumbnails which is NOT in [uploadedScreenshots allKeys] instead
 		//       of removing those we know of.
 		for (NSString *fn in rmkeys) {
-			#if DEBUG
-			BOOL removed =
-			#endif
-			[fm removeItemAtPath:[thumbCacheDir stringByAppendingPathComponent:fn] error:nil];
-			#if DEBUG
+			BOOL removed = [fm removeItemAtPath:[thumbCacheDir stringByAppendingPathComponent:fn] error:nil];
 			if (removed)
-				NSLog(@"removed old screenshot thumbnail %@", fn);
-			#endif
+				[log debug:@"removed old screenshot thumbnail %@", fn];
 		}
 		
 		[uploadedScreenshots removeObjectsForKeys:rmkeys];
 	}
+}
+
+
+-(BOOL)pngcrushPNGImageAtPath:(NSString *)path brute:(BOOL)brute {
+	NSFileManager *fm = [NSFileManager defaultManager];
+	char *tmpntpl = NULL;
+	NSError *err = nil;
+	NSString *tmppath;
+	BOOL success = NO;
+	
+	NSDictionary *attrs;
+	if ((attrs = [fm attributesOfItemAtPath:path error:&err])) {
+		[log debug:@"[pngcrush] original size: %llu B", [attrs fileSize]];
+	}
+	
+	#define PNCARGC 8
+	char *argv[PNCARGC] = {
+		"libpngcrush",
+		"-q", // quiet
+		"-fix", // fix otherwise fatal conditions such as bad CRCs
+		//"-reduce", // do lossless color-type or bit-depth reduction if possible // cur. not sup.
+		brute ? "-brute" : "-q",
+		"-rem","allb", // remove all meta except from tRNS and gAMA
+		"/tmp/input",
+		"/tmp/output"
+	};
+	argv[PNCARGC-2] = (char *)/* this is safe -- it won't be altered */[path UTF8String];
+	tmppath = [[path stringByDeletingLastPathComponent] stringByAppendingString:@".pngcrush.XXXXXX"];
+	tmpntpl = strdup([tmppath UTF8String]);
+	argv[PNCARGC-1] = mktemp(tmpntpl);
+	
+	if (argv[PNCARGC-1] == NULL) {
+		[log error:@"[pngcrush] mktemp(\"%s\") failed", tmpntpl];
+		return NO;
+	}
+	
+	int pncr = pngcrush_main(PNCARGC, (char **)argv);
+	
+	if (pncr == 0) {
+		tmppath = [NSString stringWithUTF8String:argv[PNCARGC-1]];
+		
+		if ((attrs = [fm attributesOfItemAtPath:tmppath error:&err]))
+			[log debug:@"[pngcrush] crushed \"%@\" to size: %llu B", path, [attrs fileSize]];
+		else
+			[log debug:@"debug: [pngcrush] crushed \"%@\"", path];
+		
+		if (![fm removeItemAtPath:path error:&err]){
+			[log error:@"[pngcrush] unlink(\"%@\") failed -- %@", path, err];
+		}
+		if (![fm moveItemAtPath:tmppath toPath:path error:&err]) {
+			[log error:@"error: [pngcrush] rename(\"%s\", \"%@\") failed -- %@", argv[PNCARGC-1], path, err];
+			[fm removeItemAtPath:tmppath error:nil];
+		}
+		else {
+			success = YES;
+		}
+	}
+	else {
+		[log error:@"error: [pngcrush] pngcrush_main(<%d args>) failed with code %d", PNCARGC, pncr];
+		[fm removeItemAtPath:tmppath error:nil];
+	}
+	#undef PNCARGC
+	
+	if (tmpntpl)
+		free(tmpntpl);
+	return success;
 }
 
 
@@ -732,18 +882,25 @@
 	im = [[NSImage alloc] initWithContentsOfFile:path];
 	if (!im)
 		return;
-	im = [im imageByScalingProportionallyToSize:thumbSize];
+	im = [im imageByScalingProportionallyWithinSize:thumbSize];
 	bmrep = [[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]];
-	bmData = [bmrep PNGRepresentationAsProgressive:NO];
+	
+	if (convertImagesTosRGB)
+		bmData = [bmrep PNGRepresentationInsRGBColorSpace];
+	else
+		bmData = [bmrep PNGRepresentationAsProgressive:NO];
+	
 	if (!bmData || ![bmData length]) {
-		NSLog(@"failed to create thumbnail for %@", path);
+		[log warn:@"failed to create thumbnail for %@", path];
 		return;
 	}
 	thumbPath = [thumbCacheDir stringByAppendingPathComponent:[path lastPathComponent]];
-	[bmData writeToFile:thumbPath atomically:YES];
-#if DEBUG
-	NSLog(@"wrote thumbnail to %@", thumbPath);
-#endif
+	[bmData writeToFile:thumbPath atomically:NO];
+	
+	if (enablePngcrush)
+		[self pngcrushPNGImageAtPath:thumbPath brute:NO];
+	
+	[log debug:@"wrote thumbnail to %@", thumbPath];
 }
 
 

@@ -3,7 +3,7 @@
 @implementation NSError (DPAdditions)
 
 + (NSError *)droPubErrorWithDescription:(NSString *)msg code:(NSInteger)code {
-	return [NSError errorWithDomain:DPErrorDomain code:code userInfo:[NSDictionary dictionaryWithObject:msg forKey:NSLocalizedDescriptionKey]];
+	return [NSError errorWithDomain:SCErrorDomain code:code userInfo:[NSDictionary dictionaryWithObject:msg forKey:NSLocalizedDescriptionKey]];
 }
 
 + (NSError *)droPubErrorWithDescription:(NSString *)msg {
