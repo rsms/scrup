@@ -119,7 +119,31 @@ extern int pngcrush_main(int argc, char *argv[]);
 		[self orderFrontSettingsWindow:self];
 		[receiverURL becomeFirstResponder];
 	}
+	
+	// Start perpetual state debug loop in a background thread
+	#if DEBUG
+	[self performSelectorInBackground:@selector(debugPerpetualStateCheck) withObject:nil];
+	#endif
 }
+
+#if DEBUG
+-(void)debugPerpetualStateCheck {
+	ASLLogger *tlog;
+	NSDistributedNotificationCenter *dnc;
+	
+	tlog = [ASLLogger loggerForModule:@"state"];
+	if (g_debug) {
+		tlog.connection.level = ASLLoggerLevelNone;
+		[tlog addFileHandle:[NSFileHandle fileHandleWithStandardError]];
+	}
+	dnc = [NSDistributedNotificationCenter defaultCenter];
+	
+	while (1) {
+		[tlog debug:@"DNC: %s", [dnc suspended] ? "suspended" : "active"];
+		[NSThread sleepForTimeInterval:10];
+	}
+}
+#endif
 
 #pragma mark -
 #pragma mark Handling screenshots
@@ -684,14 +708,18 @@ extern int pngcrush_main(int argc, char *argv[]);
 - (void)startObservingDesktop {
 	if (isObservingDesktop)
 		return;
+	[log info:@"starting observation of com.apple.carbon.core.DirectoryNotification"];
 	NSDistributedNotificationCenter *dnc = [NSDistributedNotificationCenter defaultCenter];
-	[dnc addObserver:self selector:@selector(onDirectoryNotification:) name:@"com.apple.carbon.core.DirectoryNotification" object:nil suspensionBehavior:NSNotificationSuspensionBehaviorDrop];
+	// We need to use NSNotificationSuspensionBehaviorDeliverImmediately here because we're
+	// experiencing a weird suspension bug causing DNC to be suspended seemingly stochastic.
+	[dnc addObserver:self selector:@selector(onDirectoryNotification:) name:@"com.apple.carbon.core.DirectoryNotification" object:nil suspensionBehavior:NSNotificationSuspensionBehaviorDeliverImmediately];
 	isObservingDesktop = YES;
 }
 
 - (void)stopObservingDesktop {
 	if (!isObservingDesktop)
 		return;
+	[log info:@"stopping observation of com.apple.carbon.core.DirectoryNotification"];
 	NSDistributedNotificationCenter *dnc = [NSDistributedNotificationCenter defaultCenter];
 	[dnc removeObserver:self name:@"com.apple.carbon.core.DirectoryNotification" object:nil];
 	isObservingDesktop = NO;
@@ -708,6 +736,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 #endif
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+	[log debug:@"event: applicationDidFinishLaunching"];
 	[self updateListOfRecentUploads];
 	knownScreenshotsOnDesktop = [self screenshotsOnDesktop];
 	if (!paused)
