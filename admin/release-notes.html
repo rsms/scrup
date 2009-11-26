@@ -11,6 +11,33 @@
 		</style>
 	</head>
 	<body>
+		<section id="version-1.2">
+			<h2>Version 1.2</h2><a href="http://farm3.static.flickr.com/2700/4134384795_3c432eafb5_o.png"><img src="http://farm3.static.flickr.com/2700/4134384795_3c432eafb5_o.png" width="200" alt="Screen shot" align="right" /></a>
+			<ul>
+				<li>Support for international, non-english systems.</li>
+				<li>Images in the menu making it easy to find previous uploads.</li>
+				<li>Image processing:
+					<ul>
+						<li>New options for processing images (found in Preferences).</li>
+						<li>Produces much smaller file sizes (by using pngcrush and normalizing 
+							color space — these settings are optional but enabled by default).</li>
+						<li>Ability to trash scrups after they have been uploaded (not enabled by default).</li>
+						<li>Ability to run arbitrary shell command or script which can register, 
+							filter and process an image before it's uploaded, or decide if it should be 
+							uploaded at all.</li>
+					</ul>
+				</li>
+				<li>Details:
+					<ul>
+						<li>Lower resource usage (using DNC instead of FSEvents).</li>
+						<li>Using ASL/syslog for logging. The boolean user defaults key
+							<tt>debug</tt> can be set to true to enable debug and info level 
+							messages to be logged.</li>
+						<li>Minor stability fixes and UI improvments.</li>
+					</ul>
+				</li>
+			</ul>
+		</section>
 		<section id="version-1.1">
 			<h2>Version 1.1</h2>
 			<ul>
