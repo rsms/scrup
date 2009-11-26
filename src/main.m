@@ -14,9 +14,13 @@ int main(int argc, const char *argv[]) {
 	g_opq = [[NSOperationQueue alloc] init];
 	
 	// read "debug" from user defaults
+	#if DEBUG
+	g_debug = YES;
+	#else
 	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 	if (ud)
 		g_debug = [ud boolForKey:@"debug"];
+	#endif
 	
 	// setup logging
 	[ASLLogger setFacility:@"se.notion.Scrup"];
