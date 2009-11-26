@@ -20,7 +20,7 @@
 @end
 
 @protocol HTTPPOSTOperationDelegate
--(void)preprocessFileBeforeSending:(HTTPPOSTOperation *)op;
+-(BOOL)preprocessFileBeforeSending:(HTTPPOSTOperation *)op;
 -(void)httpPostOperationWillBegin:(HTTPPOSTOperation *)op;
 -(void)httpPostOperationDidSucceed:(HTTPPOSTOperation *)op;
 -(void)httpPostOperationDidFail:(HTTPPOSTOperation *)op withError:(NSError *)error;

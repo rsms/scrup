@@ -297,8 +297,6 @@
 		29B97315FDCFA39411CA2CEA /* src */ = {
 			isa = PBXGroup;
 			children = (
-				3AE5602510BC97BA006A7F94 /* pngcrush-generated.c */,
-				3AE55FA610BC9566006A7F94 /* pngcrush */,
 				32CA4F630368D1EE00C91783 /* prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				3AE5626F10BCB36B006A7F94 /* ASLLogger.h */,
@@ -367,6 +365,7 @@
 		3A7AD03710669AF800AF4940 /* 3rd party */ = {
 			isa = PBXGroup;
 			children = (
+				3AE55FA610BC9566006A7F94 /* pngcrush */,
 				3A1C74FC10BB0F4500BC6030 /* PFMoveApplication.h */,
 				3A1C74FD10BB0F4500BC6030 /* PFMoveApplication.m */,
 				3A919AA2106599EE002D0F4B /* SSYLoginItems.h */,
@@ -378,6 +377,7 @@
 		3AE55FA610BC9566006A7F94 /* pngcrush */ = {
 			isa = PBXGroup;
 			children = (
+				3AE5602510BC97BA006A7F94 /* pngcrush-generated.c */,
 				3AE55FCB10BC95A4006A7F94 /* pngcrush.h */,
 				3AE55FB310BC95A4006A7F94 /* zutil.h */,
 				3AE55FB410BC95A4006A7F94 /* zutil.c */,

@@ -44,8 +44,18 @@
 	NSError *err;
 	NSString *mimeType = nil;
 	
-	if ([delegate respondsToSelector:@selector(preprocessFileBeforeSending:)])
-		[delegate preprocessFileBeforeSending:self];
+	if ([delegate respondsToSelector:@selector(preprocessFileBeforeSending:)]) {
+		if (![delegate preprocessFileBeforeSending:self]) {
+			[log debug:@"aborted by delegate"];
+			err = [NSError errorWithDomain:NSStringFromClass(isa)
+																code:0
+														userInfo:[NSDictionary dictionaryWithObject:@"aborted by delegate" forKey:NSLocalizedDescriptionKey]];
+			if ([delegate respondsToSelector:@selector(httpPostOperationDidFail:withError:)])
+				[delegate httpPostOperationDidFail:self withError:err];
+			[self cancel];
+			return;
+		}
+	}
 	
 	// determine file type
 	if (!(mimeType = [self mimeTypeForFileAtPath:path error:nil]))
@@ -100,7 +110,8 @@
 			//[NSThread sleepForTimeInterval:connectionRetryInterval];
 			//[self sendRequestAllowingRetries:nretries]; // do not modify <nretries>
 		}
-		else*/ if (code == kCFURLErrorRequestBodyStreamExhausted) {
+		else*/
+		if (code == kCFURLErrorRequestBodyStreamExhausted) {
 			[log warn:@"got CFURLErrorRequestBodyStreamExhausted from CF. Retrying..."];
 			// wait a short amount of time then try again once
 			[NSThread sleepForTimeInterval:0.5];

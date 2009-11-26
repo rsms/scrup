@@ -22,8 +22,10 @@
 		enableThumbnails,
 		convertImagesTosRGB,
 		enablePngcrush,
-		trashAfterSuccessfulUpload;
+		trashAfterSuccessfulUpload,
+		enablePostProcessShellCommand;
 	NSString *filePrefixMatch;
+	NSString *postProcessShellCommand;
 	ASLLogger *log;
 	
 	int nCurrOps;

@@ -47,7 +47,10 @@ extern int pngcrush_main(int argc, char *argv[]);
 	thumbSize = NSMakeSize(128.0, 128.0);
 	enableThumbnails = YES;
 	filePrefixMatch = [defaults objectForKey:@"filePrefixMatch"];
-		
+	postProcessShellCommand = [defaults objectForKey:@"postProcessShellCommand"];
+	if (!postProcessShellCommand)
+		postProcessShellCommand = @"say scrupped at $(date +%X) &";
+	
 	// set boolean properties from user defaults or give them default values
 	#define SETDEFBOOL(_member_, _defval_) \
 		n = [defaults objectForKey:@#_member_];\
@@ -59,6 +62,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	SETDEFBOOL(enablePngcrush, YES);
 	SETDEFBOOL(convertImagesTosRGB, YES);
 	SETDEFBOOL(trashAfterSuccessfulUpload, NO);
+	SETDEFBOOL(enablePostProcessShellCommand, NO);
 	#undef SETDEFBOOL
 	
 	// read showInDock
@@ -292,7 +296,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	[g_opq addOperation:postOp];
 }
 
--(void)preprocessFileBeforeSending:(HTTPPOSTOperation *)op {
+-(BOOL)preprocessFileBeforeSending:(HTTPPOSTOperation *)op {
 	// This callback is called from a send operation thread, so in here
 	// we can spend quality time with <op>.
 	
@@ -307,6 +311,19 @@ extern int pngcrush_main(int argc, char *argv[]);
 	// pngcrush
 	if (enablePngcrush)
 		[self pngcrushPNGImageAtPath:op.path brute:NO];
+	
+	// post-process script
+	if (enablePostProcessShellCommand && postProcessShellCommand && [postProcessShellCommand length]) {
+		NSString *cmd = [postProcessShellCommand stringByReplacingOccurrencesOfString:@"{path}" withString:[op.path stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"]];
+		[op.log notice:@"executing shell command: %@", cmd];
+		int r = system([cmd UTF8String]);
+		if (r != 0) {
+			[op.log notice:@"shell command exited %d", r];
+			return NO;
+		}
+	}
+	
+	return YES;
 }
 
 
@@ -463,6 +480,30 @@ extern int pngcrush_main(int argc, char *argv[]);
 	[self updateMenuItem:self];
 }
 
+- (BOOL)enablePostProcessShellCommand {
+	return enablePostProcessShellCommand;
+}
+
+- (void)setEnablePostProcessShellCommand:(BOOL)y {
+	#if DEBUG
+	NSLog(@"enablePostProcessShellCommand = %d", y);
+	#endif
+	enablePostProcessShellCommand = y;
+	[defaults setBool:enablePostProcessShellCommand forKey:@"enablePostProcessShellCommand"];
+}
+
+- (NSString *)postProcessShellCommand {
+	return postProcessShellCommand;
+}
+
+- (void)setPostProcessShellCommand:(NSString *)s {
+	#if DEBUG
+	NSLog(@"postProcessShellCommand = %@", s);
+	#endif
+	postProcessShellCommand = s;
+	[defaults setObject:postProcessShellCommand forKey:@"postProcessShellCommand"];
+}
+
 - (NSString *)filePrefixMatch {
 	return filePrefixMatch;
 }
@@ -567,6 +608,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 }
 
 -(void)resetIcon {
+	icon = nCurrOps ? iconSending : iconState;
 	if (statusItem)
 		[statusItem setImage:icon];
 }
