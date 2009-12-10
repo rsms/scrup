@@ -33,6 +33,17 @@ For Mac OS X 10.6 Snow Leopard.
 
 There is an example PHP implementation called [`recv.php`](http://github.com/rsms/scrup/blob/master/recv.php) which you can use and/or modify to setup your receiver. Make sure to set your URL in the preferences.
 
+## Building
+
+You'll need libpngcrush to build Scrup.
+
+	cd scrup-source
+	wget http://downloads.sourceforge.net/project/pmt/pngcrush/00-1.7.5/pngcrush-1.7.5.tar.bz2
+	tar xjf pngcrush-1.7.5.tar.bz2
+	ln -s pngcrush-1.7.5 pngcrush
+
+Now, build Scrup in Xcode.
+
 ## Authors
 
 - Rasmus Andersson <http://hunch.se/>
