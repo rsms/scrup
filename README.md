@@ -35,14 +35,12 @@ There is an example PHP implementation called [`recv.php`](http://github.com/rsm
 
 ## Building
 
-You'll need libpngcrush to build Scrup.
+You'll need libpngcrush to build Scrup. libpngcrush is an external submodule of Scrup which you'll need to update after you've checked out the scrup source:
 
 	cd scrup-source
-	wget http://downloads.sourceforge.net/project/pmt/pngcrush/00-1.7.5/pngcrush-1.7.5.tar.bz2
-	tar xjf pngcrush-1.7.5.tar.bz2
-	ln -s pngcrush-1.7.5 pngcrush
+	git submodule update --init pngcrush
 
-Now, build Scrup in Xcode.
+You only need to do this once. Now, build Scrup in Xcode.
 
 ## Authors
 
