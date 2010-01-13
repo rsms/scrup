@@ -86,7 +86,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 	NSDictionary *screencaptureDefaults = [defaults persistentDomainForName:@"com.apple.screencapture"];
 	if (screencaptureDefaults) {
 		NSString *loc = [screencaptureDefaults objectForKey:@"location"];
-		if (loc && [[NSFileManager defaultManager] fileExistsAtPath:loc]) {
+		if (
+				loc
+				&& (loc = [loc stringByExpandingTildeInPath])
+				&& [[NSFileManager defaultManager] fileExistsAtPath:loc]
+			 )
+		{
 			screenshotLocation = loc;
 			[log info:@"using com.apple.screencapture location => \"%@\"", screenshotLocation];
 		}
