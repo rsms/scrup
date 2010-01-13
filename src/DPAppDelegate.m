@@ -9,8 +9,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <sys/xattr.h>
 
-#define SCREENSHOT_LOG_LIMIT 10
+#define SCREENSHOT_LOG_LIMIT 10 /* todo: make configurable */
 
 /*@interface NSStatusBar (Unofficial)
 -(id)_statusItemWithLength:(float)f withPriority:(int)d;
@@ -168,47 +169,69 @@ extern int pngcrush_main(int argc, char *argv[]);
  */
 -(NSDictionary *)screenshotsAtPath:(NSString *)dirpath modifiedAfterDate:(NSDate *)lmod {
 	NSFileManager *fm = [NSFileManager defaultManager];
-	NSDirectoryEnumerator *den = [fm enumeratorAtPath:dirpath];
+	NSArray *direntries;
 	NSMutableDictionary *files = [NSMutableDictionary dictionary];
 	NSString *path;
 	NSDate *mod;
 	NSError *error;
-	NSDictionary *attrs, *xattrs;
+	NSDictionary *attrs;
 	int fd;
 	
-	for (NSString *fn in den) {
+	direntries = [fm contentsOfDirectoryAtPath:dirpath error:&error];
+	if (!direntries) {
+		[log error:@"%s failed to list contents of directory at '%@' -- %@", _cmd, dirpath, error];
+		return nil;
+	}
+
+	for (NSString *fn in direntries) {
+		//[log debug:@"%s testing %@", _cmd, fn];
+
+		// always skip dotfiles
+		if ([fn hasPrefix:@"."]) {
+			//[log debug:@"%s skipping: filename begins with a dot", _cmd];
+			continue;
+		}
+
+		// if prefix matching is used, test for it
+		if (!(filePrefixMatch == nil || [filePrefixMatch length] == 0 || [fn hasPrefix:filePrefixMatch])) {
+			[log debug:@"%s skipping: filename prefix does not match", _cmd];
+			continue;
+		}
+
 		// skip any file not ending in ".png"
 		// todo: add support for other kinds. I believe there's a defaults property which can be
 		//       changed to output different file types.
-		if (
-				// if filePrefixMatch is used, test it
-				(!(filePrefixMatch == nil || [filePrefixMatch length] == 0 || [fn hasPrefix:filePrefixMatch]))
-			||
-				// otherwise we test for the ".png" suffix
-				(![fn hasSuffix:@".png"])
+		if (([fn length] < 10) ||
+				// ".png" suffix is expected
+				(![fn compare:@".png" options:NSCaseInsensitiveSearch range:NSMakeRange([fn length]-5, 4)] != NSOrderedSame)
 			 )
 		{
+			//[log debug:@"%s skipping: not ending in \".png\" (case-insensitive)", _cmd];
 			continue;
 		}
+
+		// build path
 		path = [dirpath stringByAppendingPathComponent:fn];
-		
+
 		// Skip any file which name does not contain a SP.
 		// This is a semi-ugly fix -- since we want to avoid matching the filename against
 		// all possible screenshot file name schemas (must be hundreds), we make the
 		// assumption that all language formats have this in common: it contains at least one SP.
 		if ([fn rangeOfString:@" "].location == NSNotFound) {
+			//[log debug:@"%s skipping: not containing SP", _cmd];
 			continue;
 		}
 
 		// query file attributes (rich stat)
 		attrs = [fm attributesOfItemAtPath:path error:&error];
 		if (!attrs) {
-			[log error:@"failed to read attributes of '%@' because: %@ -- skipping", path, error];
+			//[log error:@"failed to read attributes of '%@' because: %@ -- skipping", path, error];
 			continue;
 		}
 
-		// must be able to stat and must be a regular file
+		// must be a regular file
 		if ([attrs objectForKey:NSFileType] != NSFileTypeRegular) {
+			//[log debug:@"%s skipping: not a regular file", _cmd];
 			continue;
 		}
 
@@ -216,13 +239,21 @@ extern int pngcrush_main(int argc, char *argv[]);
 		mod = [attrs objectForKey:NSFileModificationDate];
 		if (lmod && (!mod || [mod compare:lmod] == NSOrderedAscending)) {
 			// file is too old
+			//[log debug:@"%s skipping: too old", _cmd];
 			continue;
 		}
 
 		// confirm xattr:com.apple.metadata:kMDItemIsScreenCapture
-		xattrs = [attrs objectForKey:@"NSFileExtendedAttributes"];
-		if (!xattrs || ![xattrs objectForKey:@"com.apple.metadata:kMDItemIsScreenCapture"]) {
-			// no xattrs or not a screenshot
+		char attrValue[512];
+		ssize_t attrSize = getxattr([path UTF8String], // path
+																"com.apple.metadata:kMDItemIsScreenCapture", // name
+																&attrValue, // value
+																512, // how much data to fetch
+																0, // position
+																XATTR_NOFOLLOW // options
+																);
+		if (attrSize == -1) {
+			[log debug:@"%s skipping: no xattr:com.apple.metadata:kMDItemIsScreenCapture", _cmd];
 			continue;
 		}
 
@@ -236,14 +267,17 @@ extern int pngcrush_main(int argc, char *argv[]);
 
 -(void)checkForScreenshotsAtPath:(NSString *)dirpath {
 	NSDictionary *files;
-	NSArray *sortedKeys;
-	
+	NSArray *paths;
+
+	// find new screenshots
 	if (!(files = [self findUnprocessedScreenshotsOnDesktop]))
 		return;
-	sortedKeys = [files keysSortedByValueUsingComparator:^(id a, id b) {
-		return [b compare:a];
-	}];
-	for (NSString *path in sortedKeys) {
+
+	// sort on key (path)
+	paths = [files keysSortedByValueUsingComparator:^(id a, id b) { return [b compare:a]; }];
+
+	// process each file
+	for (NSString *path in paths) {
 		[self vacuumUploadedScreenshots];
 		[self processScreenshotAtPath:path modifiedAtDate:[files objectForKey:path]];
 	}
@@ -682,6 +716,14 @@ extern int pngcrush_main(int argc, char *argv[]);
 	}
 }
 
+- (NSArray *)sortedUploadedScreenshotKeys {
+	NSMutableArray *a = [NSMutableArray arrayWithCapacity:[uploadedScreenshots count]];
+	for (NSDictionary *rec in [self sortedUploadedScreenshots]) {
+		[a addObject:[rec objectForKey:@"fn"]];
+	}
+	return a;
+}
+
 - (NSArray *)sortedUploadedScreenshots {
 	NSMutableArray *a = [NSMutableArray arrayWithCapacity:[uploadedScreenshots count]];
 	[uploadedScreenshots enumerateKeysAndObjectsWithOptions:0 usingBlock:^(id key, id obj, BOOL *stop) {
@@ -777,8 +819,14 @@ extern int pngcrush_main(int argc, char *argv[]);
 }
 
 -(void)onDirectoryNotification:(NSNotification *)n {
-	[log debug:@"received directory notification => %@ ([object class] => %@)", n, [[n object] class]];
-	[self checkForScreenshotsAtPath:screenshotLocation];
+	id obj = [n object];
+	[log debug:@"received directory notification => %@ ([object class] => %@)", n, obj ? [obj class] : nil];
+	// WARNING: Possible problem: "FNObject 469-101" is a string we have found by trial-and-error
+	// and is far from official or even documented, thus might differ in future OS versions etc.
+	// But since there are a _lot_ of directory notifications received, we need this op.
+	if (obj && [obj isKindOfClass:[NSString class]] && [obj isEqualToString:@"FNObject 469-101"]) {
+		[self checkForScreenshotsAtPath:screenshotLocation];
+	}
 }
 
 - (void)startObservingDesktop {
@@ -893,13 +941,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 
 
 -(void)vacuumUploadedScreenshots {
-	NSFileManager *fm = [NSFileManager defaultManager];
+	NSFileManager *fm;
+	NSArray *rmkeys;
 	
 	if ([uploadedScreenshots count] > SCREENSHOT_LOG_LIMIT) {
-		NSArray *rmkeys;
-		rmkeys = [[uploadedScreenshots allKeys] sortedArrayUsingComparator:^(id a, id b) {
-			return [b compare:a options:NSNumericSearch];
-		}];
+		fm = [NSFileManager defaultManager];
+		rmkeys = [self sortedUploadedScreenshotKeys];
 		rmkeys = [rmkeys subarrayWithRange:NSMakeRange(SCREENSHOT_LOG_LIMIT, [rmkeys count]-SCREENSHOT_LOG_LIMIT)];
 		
 		// remove any thumbnails
@@ -908,7 +955,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 		for (NSString *fn in rmkeys) {
 			BOOL removed = [fm removeItemAtPath:[thumbCacheDir stringByAppendingPathComponent:fn] error:nil];
 			if (removed)
-				[log debug:@"removed old screenshot thumbnail %@", fn];
+				[log debug:@"removed old screenshot record for '%@'", fn];
 		}
 		
 		[uploadedScreenshots removeObjectsForKeys:rmkeys];

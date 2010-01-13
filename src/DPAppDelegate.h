@@ -75,6 +75,8 @@
 -(IBAction)updateMenuItem:(id)sender;
 -(IBAction)saveState:(id)sender;
 
+-(NSArray *)sortedUploadedScreenshots; // sorted on date desc.
+-(NSArray *)sortedUploadedScreenshotKeys; // keys instead of records
 -(void)updateListOfRecentUploads;
 
 -(void)startObservingDesktop;
