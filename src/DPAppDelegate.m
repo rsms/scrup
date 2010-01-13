@@ -239,6 +239,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	
 	if ([currentFiles count]) {
 		newFilenames = [NSMutableSet setWithArray:[currentFiles allKeys]];
+		// filter: remove allready processed screenshots
 		[newFilenames minusSet:[NSSet setWithArray:[knownScreenshotsOnDesktop allKeys]]];
 		if ([newFilenames count]) {
 			files = [NSMutableDictionary dictionaryWithCapacity:1];
@@ -744,6 +745,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 }
 
 -(void)onDirectoryNotification:(NSNotification *)n {
+	[log debug:@"received directory notification => %@ ([object class] => %@)", n, [[n object] class]];
 	[self checkForScreenshotsAtPath:screenshotLocation];
 }
 
