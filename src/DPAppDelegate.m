@@ -9,7 +9,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <sys/xattr.h>
 
 #define SCREENSHOT_LOG_LIMIT 10 /* todo: make configurable */
 
@@ -243,16 +242,20 @@ extern int pngcrush_main(int argc, char *argv[]);
 			continue;
 		}
 
-		// confirm xattr:com.apple.metadata:kMDItemIsScreenCapture
-		char attrValue[512];
-		ssize_t attrSize = getxattr([path UTF8String], // path
-																"com.apple.metadata:kMDItemIsScreenCapture", // name
-																&attrValue, // value
-																512, // how much data to fetch
-																0, // position
-																XATTR_NOFOLLOW // options
-																);
-		if (attrSize == -1) {
+		// find key for NSFileExtendedAttributes
+		NSString *xattrsKey = nil;
+		for (NSString *k in [attrs keyEnumerator]) {
+			if ([k isEqualToString:@"NSFileExtendedAttributes"]) {
+				xattrsKey = k;
+				break;
+			}
+		}
+		if (!xattrsKey) {
+			// no xattrs
+			continue;
+		}
+		NSDictionary *xattrs = [attrs objectForKey:xattrsKey];
+		if (!xattrs || ![xattrs objectForKey:@"com.apple.metadata:kMDItemIsScreenCapture"]) {
 			[log debug:@"%s skipping: no xattr:com.apple.metadata:kMDItemIsScreenCapture", _cmd];
 			continue;
 		}
