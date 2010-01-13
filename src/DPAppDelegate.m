@@ -659,20 +659,29 @@ extern int pngcrush_main(int argc, char *argv[]);
 	}
 }
 
+- (NSArray *)sortedUploadedScreenshots {
+	NSMutableArray *a = [NSMutableArray arrayWithCapacity:[uploadedScreenshots count]];
+	[uploadedScreenshots enumerateKeysAndObjectsWithOptions:0 usingBlock:^(id key, id obj, BOOL *stop) {
+		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary:obj];
+		[d setObject:key forKey:@"fn"];
+		[a addObject:d];
+	}];
+	return [a sortedArrayUsingComparator:^(id a, id b) {
+		if (!a) return (NSComparisonResult)NSOrderedAscending;
+		if (!b) return (NSComparisonResult)NSOrderedDescending;
+		return [(NSDate *)[b objectForKey:@"du"] compare:(NSDate *)[a objectForKey:@"du"]];
+	}];
+}
+
 -(void)updateListOfRecentUploads {
 	NSInteger i, n, limit = SCREENSHOT_LOG_LIMIT;
-	NSArray *keys;
+	NSString *fn;
 	
 	// todo: reuse/move existing items instead of removing them just to then create them again.
 	i = [statusItemMenu indexOfItemWithTag:1337]+1;
 	n = [statusItemMenu numberOfItems];
 	
-	keys = [[uploadedScreenshots allKeys] sortedArrayUsingComparator:^(id a, id b) {
-		return [b compare:a options:NSNumericSearch];
-	}];
-	
-	for (NSString *key in keys) {
-		NSDictionary *m = [uploadedScreenshots objectForKey:key];
+	for (NSDictionary *m in [self sortedUploadedScreenshots]) {
 		NSDate *d = [m objectForKey:@"du"];
 		NSString *calfmt = @"%Y-%m-%d %H:%M:%S";
 		NSTimeInterval age = -[d timeIntervalSinceNow];
@@ -690,12 +699,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 		NSMenuItem *mi = [statusItemMenu insertItemWithTitle:title action:@selector(openUploadedImageURL:) keyEquivalent:@"" atIndex:i];
 		
 		// set thumbnail
-		if (enableThumbnails) {
-			NSImage *im = [[NSImage alloc] initWithContentsOfFile:[thumbCacheDir stringByAppendingPathComponent:key]];
+		if (enableThumbnails && (fn = [m objectForKey:@"fn"])) {
+			NSImage *im = [[NSImage alloc] initWithContentsOfFile:[thumbCacheDir stringByAppendingPathComponent:fn]];
 			if (im)
 				[mi setImage:im];
 			else
-				[log debug:@"no thumb for %@", key];
+				[log debug:@"no thumb for %@", fn];
 		}
 		
 		[mi setRepresentedObject:m];
