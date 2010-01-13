@@ -772,14 +772,18 @@ extern int pngcrush_main(int argc, char *argv[]);
 
 #if !(DEBUG)
 #import "PFMoveApplication.h"
-- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
-	PFMoveToApplicationsFolderIfNecessary();
-}
 #endif
+
+- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+	#if !(DEBUG)
+	PFMoveToApplicationsFolderIfNecessary();
+	#endif
+
+	[self updateListOfRecentUploads];
+}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	[log debug:@"event: applicationDidFinishLaunching"];
-	[self updateListOfRecentUploads];
 	knownScreenshotsOnDesktop = [self screenshotsOnDesktop];
 	if (!paused)
 		[self startObservingDesktop];
