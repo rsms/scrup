@@ -158,55 +158,73 @@ extern int pngcrush_main(int argc, char *argv[]);
 	return [self screenshotsAtPath:screenshotLocation modifiedAfterDate:lmod];
 }
 
+/**
+ * Pick-up workshorse function.
+ */
 -(NSDictionary *)screenshotsAtPath:(NSString *)dirpath modifiedAfterDate:(NSDate *)lmod {
-	NSDirectoryEnumerator *den = [[NSFileManager defaultManager] enumeratorAtPath:dirpath];
+	NSFileManager *fm = [NSFileManager defaultManager];
+	NSDirectoryEnumerator *den = [fm enumeratorAtPath:dirpath];
 	NSMutableDictionary *files = [NSMutableDictionary dictionary];
 	NSString *path;
 	NSDate *mod;
+	NSError *error;
+	NSDictionary *attrs, *xattrs;
 	int fd;
 	
 	for (NSString *fn in den) {
-		if ( !(filePrefixMatch == nil || [filePrefixMatch length] == 0 || [fn hasPrefix:filePrefixMatch]) || ![fn hasSuffix:@".png"]) {
+		// skip any file not ending in ".png"
+		// todo: add support for other kinds. I believe there's a defaults property which can be
+		//       changed to output different file types.
+		if (
+				// if filePrefixMatch is used, test it
+				(!(filePrefixMatch == nil || [filePrefixMatch length] == 0 || [fn hasPrefix:filePrefixMatch]))
+			||
+				// otherwise we test for the ".png" suffix
+				(![fn hasSuffix:@".png"])
+			 )
+		{
 			continue;
 		}
 		path = [dirpath stringByAppendingPathComponent:fn];
 		
+		// Skip any file which name does not contain a SP.
+		// This is a semi-ugly fix -- since we want to avoid matching the filename against
+		// all possible screenshot file name schemas (must be hundreds), we make the
+		// assumption that all language formats have this in common: it contains at least one SP.
+		if ([fn rangeOfString:@" "].location == NSNotFound) {
+			continue;
+		}
+
+		// query file attributes (rich stat)
+		attrs = [fm attributesOfItemAtPath:path error:&error];
+		if (!attrs) {
+			[log error:@"failed to read attributes of '%@' because: %@ -- skipping", path, error];
+			continue;
+		}
+
 		// must be able to stat and must be a regular file
-		struct stat s;
-		if (stat([path UTF8String], &s) != 0) {
-			[log error:@"stat(\"%@\") failed", path];
+		if ([attrs objectForKey:NSFileType] != NSFileTypeRegular) {
 			continue;
 		}
-		if (!S_ISREG(s.st_mode)) {
-			//NSLog(@"skipping non-file %@", path);
-			continue;
-		}
-		
-		// Are we able to aquire an exclusive lock? Then the file is probably not being written to.
-		if ((fd = open([path UTF8String], O_RDWR | O_EXLOCK | O_NONBLOCK)) == -1) {
-			[log notice:@"skipping/delaying locked \"%@\"", fn];
-			// kqueue will emit an event once the file is completely written, we
-			// will then implicitly try again.
-			continue;
-		}
-		else {
-			close(fd);
-		}
-		
+
 		// check last modified date
-		mod = [NSDate dateWithTimeIntervalSince1970:s.st_mtime];
-		NSComparisonResult c = [mod compare:lmod];
-		if (c == NSOrderedDescending || c == NSOrderedSame) {
-			[files setObject:mod forKey:path];
+		mod = [attrs objectForKey:NSFileModificationDate];
+		if (lmod && (!mod || [mod compare:lmod] == NSOrderedAscending)) {
+			// file is too old
+			continue;
 		}
-		/*#if DEBUG
-		else {
-			// might be VERY verbose
-			NSLog(@"skipping old \"%@\"", fn);
+
+		// confirm xattr:com.apple.metadata:kMDItemIsScreenCapture
+		xattrs = [attrs objectForKey:@"NSFileExtendedAttributes"];
+		if (!xattrs || ![xattrs objectForKey:@"com.apple.metadata:kMDItemIsScreenCapture"]) {
+			// no xattrs or not a screenshot
+			continue;
 		}
-		#endif*/
+
+		// ok, let's use this file (set: string path => date modified)
+		[files setObject:mod forKey:path];
 	}
-	
+
 	return files;
 }
 
