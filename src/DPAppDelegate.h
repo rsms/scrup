@@ -35,7 +35,8 @@
 	BOOL isObservingDesktop;
 	NSMutableDictionary *uploadedScreenshots;
 	NSDictionary *knownScreenshotsOnDesktop; // fn => dateModified
-	NSString *screenshotLocation; // com.apple.screencapture location
+	NSString *screenshotLocation; // com.apple.screencapture/location OR "~/Desktop"
+	NSString *screenshotFilenameSuffix; // "." + com.apple.screencapture/type OR ".png"
 	NSString *cacheDir;
 	NSString *thumbCacheDir;
 	NSSize thumbSize;

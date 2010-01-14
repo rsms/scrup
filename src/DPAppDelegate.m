@@ -48,6 +48,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	isObservingDesktop = NO;
 	knownScreenshotsOnDesktop = [NSDictionary dictionary];
 	screenshotLocation = [@"~/Desktop" stringByExpandingTildeInPath]; // default
+	screenshotFilenameSuffix = @".png";
 	cacheDir = [@"~/Library/Caches/se.notion.Scrup" stringByExpandingTildeInPath];
 	thumbCacheDir = [cacheDir stringByAppendingPathComponent:@"thumbnails"];
 	thumbSize = NSMakeSize(128.0, 128.0);
@@ -90,18 +91,25 @@ extern int pngcrush_main(int argc, char *argv[]);
 	// read recvURL
 	//[defaults setObject:@"http://your.host/recv.php?name={filename}" forKey:@"recvURL"];
 	
-	// read com.apple.screencapture location, if set
+	// read defaults:com.apple.screencapture
 	NSDictionary *screencaptureDefaults = [defaults persistentDomainForName:@"com.apple.screencapture"];
 	if (screencaptureDefaults) {
-		NSString *loc = [screencaptureDefaults objectForKey:@"location"];
+		// location
+		NSString *s = [screencaptureDefaults objectForKey:@"location"];
 		if (
-				loc
-				&& (loc = [loc stringByExpandingTildeInPath])
-				&& [[NSFileManager defaultManager] fileExistsAtPath:loc]
+				s
+				&& (s = [s stringByExpandingTildeInPath])
+				&& [[NSFileManager defaultManager] fileExistsAtPath:s]
 			 )
 		{
-			screenshotLocation = loc;
+			screenshotLocation = s;
 			[log info:@"using com.apple.screencapture location => \"%@\"", screenshotLocation];
+		}
+		// type
+		if ((s = [screencaptureDefaults objectForKey:@"type"]) && [s length]) {
+			// trim away "." to be sure not to produce strings like "..png"
+			s = [s stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"."]];
+			screenshotFilenameSuffix = [@"." stringByAppendingString:s];
 		}
 	}
 	
@@ -285,12 +293,10 @@ extern int pngcrush_main(int argc, char *argv[]);
 			continue;
 		}
 
-		// skip any file not ending in ".png"
-		// todo: add support for other kinds. I believe there's a defaults property which can be
-		//       changed to output different file types.
+		// skip any file not ending in screenshotFilenameSuffix (".png" by default)
 		if (([fn length] < 10) ||
 				// ".png" suffix is expected
-				(![fn compare:@".png" options:NSCaseInsensitiveSearch range:NSMakeRange([fn length]-5, 4)] != NSOrderedSame)
+				(![fn compare:screenshotFilenameSuffix options:NSCaseInsensitiveSearch range:NSMakeRange([fn length]-5, 4)] != NSOrderedSame)
 			 )
 		{
 			//[log debug:@"%s skipping: not ending in \".png\" (case-insensitive)", _cmd];
