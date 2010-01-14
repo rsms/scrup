@@ -36,6 +36,8 @@
 		3A4B48A710B755040054DF06 /* status-item-error.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A4B48A510B755040054DF06 /* status-item-error.png */; };
 		3A4B48A810B755040054DF06 /* status-item-ok.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A4B48A610B755040054DF06 /* status-item-ok.png */; };
 		3A5DB2781062C89000B5F45F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3A5DB2771062C89000B5F45F /* MainMenu.xib */; };
+		3A90678910FE9417009B6B2F /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A90678810FE9417009B6B2F /* Quartz.framework */; };
+		3A90685910FE9D29009B6B2F /* DPPreprocessingWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A90685810FE9D29009B6B2F /* DPPreprocessingWindowController.m */; };
 		3A91962A1063D08A002D0F4B /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3A9196291063D08A002D0F4B /* icon.icns */; };
 		3A9197CF1065303A002D0F4B /* NSWindow+DPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9197CE1065303A002D0F4B /* NSWindow+DPAdditions.m */; };
 		3A91991E1065620D002D0F4B /* NSError+DPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A91991D1065620D002D0F4B /* NSError+DPAdditions.m */; };
@@ -98,6 +100,7 @@
 		3AE5605310BC9D02006A7F94 /* libpngcrush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE55FAB10BC9581006A7F94 /* libpngcrush.a */; };
 		3AE5627110BCB36B006A7F94 /* ASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5627010BCB36B006A7F94 /* ASLLogger.m */; };
 		3AE5633D10BCCB21006A7F94 /* toolbar-processing.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AE5633C10BCCB21006A7F94 /* toolbar-processing.png */; };
+		3AF2B0C810FE90610052B40E /* MAAttachedWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AF2B0C710FE90610052B40E /* MAAttachedWindow.m */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -158,6 +161,9 @@
 		3A4B48A510B755040054DF06 /* status-item-error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-error.png"; path = "resources/status-item-error.png"; sourceTree = "<group>"; };
 		3A4B48A610B755040054DF06 /* status-item-ok.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-ok.png"; path = "resources/status-item-ok.png"; sourceTree = "<group>"; };
 		3A5DB2771062C89000B5F45F /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainMenu.xib; path = resources/MainMenu.xib; sourceTree = "<group>"; };
+		3A90678810FE9417009B6B2F /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
+		3A90685710FE9D29009B6B2F /* DPPreprocessingWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPPreprocessingWindowController.h; path = src/DPPreprocessingWindowController.h; sourceTree = "<group>"; };
+		3A90685810FE9D29009B6B2F /* DPPreprocessingWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DPPreprocessingWindowController.m; path = src/DPPreprocessingWindowController.m; sourceTree = "<group>"; };
 		3A9196291063D08A002D0F4B /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = resources/icon.icns; sourceTree = "<group>"; };
 		3A9197CD1065303A002D0F4B /* NSWindow+DPAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSWindow+DPAdditions.h"; path = "src/NSWindow+DPAdditions.h"; sourceTree = "<group>"; };
 		3A9197CE1065303A002D0F4B /* NSWindow+DPAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSWindow+DPAdditions.m"; path = "src/NSWindow+DPAdditions.m"; sourceTree = "<group>"; };
@@ -226,6 +232,8 @@
 		3AE5626F10BCB36B006A7F94 /* ASLLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASLLogger.h; path = src/ASLLogger.h; sourceTree = "<group>"; };
 		3AE5627010BCB36B006A7F94 /* ASLLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASLLogger.m; path = src/ASLLogger.m; sourceTree = "<group>"; };
 		3AE5633C10BCCB21006A7F94 /* toolbar-processing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-processing.png"; path = "resources/toolbar-processing.png"; sourceTree = "<group>"; };
+		3AF2B0C610FE90610052B40E /* MAAttachedWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MAAttachedWindow.h; path = src/MAAttachedWindow.h; sourceTree = "<group>"; };
+		3AF2B0C710FE90610052B40E /* MAAttachedWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MAAttachedWindow.m; path = src/MAAttachedWindow.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; name = Info.plist; path = resources/Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Scrup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -247,6 +255,7 @@
 				3A919A57106586E4002D0F4B /* Sparkle.framework in Frameworks */,
 				3A9DE50C10999E35008F35E2 /* CoreServices.framework in Frameworks */,
 				3A1C752510BB0FF500BC6030 /* Security.framework in Frameworks */,
+				3A90678910FE9417009B6B2F /* Quartz.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +265,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3A90678810FE9417009B6B2F /* Quartz.framework */,
 				3A9DE50B10999E35008F35E2 /* CoreServices.framework */,
 				3A919A56106586E4002D0F4B /* Sparkle.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
@@ -303,6 +313,8 @@
 				3AE5627010BCB36B006A7F94 /* ASLLogger.m */,
 				3A1504AC10618DDF00263983 /* DPAppDelegate.h */,
 				3A1504AD10618DDF00263983 /* DPAppDelegate.m */,
+				3A90685710FE9D29009B6B2F /* DPPreprocessingWindowController.h */,
+				3A90685810FE9D29009B6B2F /* DPPreprocessingWindowController.m */,
 				3ABE5EAD10B588700085BAC3 /* HTTPPOSTOperation.h */,
 				3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */,
 				3A7AD02C10669AC600AF4940 /* mixins */,
@@ -370,6 +382,8 @@
 				3A1C74FD10BB0F4500BC6030 /* PFMoveApplication.m */,
 				3A919AA2106599EE002D0F4B /* SSYLoginItems.h */,
 				3A919AA1106599EE002D0F4B /* SSYLoginItems.m */,
+				3AF2B0C610FE90610052B40E /* MAAttachedWindow.h */,
+				3AF2B0C710FE90610052B40E /* MAAttachedWindow.m */,
 			);
 			name = "3rd party";
 			sourceTree = "<group>";
@@ -628,6 +642,8 @@
 				3A1C755010BB135D00BC6030 /* NSImage+HUAdditions.m in Sources */,
 				3A1C755310BB143500BC6030 /* NSBitmapImageRep+HUAdditions.m in Sources */,
 				3AE5627110BCB36B006A7F94 /* ASLLogger.m in Sources */,
+				3AF2B0C810FE90610052B40E /* MAAttachedWindow.m in Sources */,
+				3A90685910FE9D29009B6B2F /* DPPreprocessingWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

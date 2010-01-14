@@ -18,6 +18,12 @@
 
 extern int pngcrush_main(int argc, char *argv[]);
 
+/*@implementation NSStatusItem (Hack)
+- (NSWindow *)hackWindow {
+	return _fWindow;
+}
+@end*/
+
 @implementation DPAppDelegate
 
 #pragma mark -
@@ -50,6 +56,8 @@ extern int pngcrush_main(int argc, char *argv[]);
 	postProcessShellCommand = [defaults objectForKey:@"postProcessShellCommand"];
 	if (!postProcessShellCommand)
 		postProcessShellCommand = @"say scrupped at $(date +%X) &";
+	preprocessingWindow = nil;
+	preprocessingWindowController = nil;
 	
 	// set boolean properties from user defaults or give them default values
 	#define SETDEFBOOL(_member_, _defval_) \
@@ -133,6 +141,86 @@ extern int pngcrush_main(int argc, char *argv[]);
 	#if DEBUG
 	[self performSelectorInBackground:@selector(debugPerpetualStateCheck) withObject:nil];
 	#endif
+	
+	// XXX
+	/*[self displayPreprocessingUIForScreenshotAtPath:@""
+																						 meta:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate date], @"du", nil] 
+																		 confirmBlock:^{
+																			 NSLog(@"confirmBlock called");
+																		 }];*/
+}
+
+
+- (NSRect)menuItemFrame {
+	// ugly, ugly hack... damn you Apple.
+	NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 20.0, 20.0)];
+	[statusItem setView:view];
+	NSRect wr = [[view window] frame];
+	[statusItem setView:nil];
+	[self setShowInMenuBar:NO];
+	[self setShowInMenuBar:YES];
+	return wr;
+}
+
+
+- (void)togglePreprocessingWindow {
+	if (!preprocessingWindow) {
+		NSRect wr = [self menuItemFrame];
+		NSPoint pt = wr.origin;
+		pt.x += wr.size.width/2.0;
+		
+		preprocessingWindow = [[MAAttachedWindow alloc] initWithView:preprocessingUIView
+																								 attachedToPoint:pt 
+																												inWindow:nil 
+																													onSide:MAPositionBottom 
+																											atDistance:5.0];
+		[preprocessingWindowController setWindow:preprocessingWindow];
+		[preprocessingWindow setDelegate:preprocessingWindowController];
+		[preprocessingWindow makeKeyAndOrderFront:self];
+	}
+	else {
+		[preprocessingWindow orderOut:self];
+		[preprocessingWindow release];
+		preprocessingWindow = nil;
+	}
+	/*Reuse:
+	 else if (![preprocessingWindow isVisible]) {
+		[preprocessingWindow makeKeyAndOrderFront:self];
+	 }
+	 else {
+		[preprocessingWindow orderOut:self];
+	 }*/
+}
+
+
+- (void)displayPreprocessingUIForScreenshotAtPath:(NSString *)path
+																						 meta:(NSMutableDictionary *)meta
+																		 confirmBlock:(void(^)(NSString *path))confirmBlock
+{
+	[log debug:@"displaying preprocessing window for %@", path];
+	
+	if (confirmBlock)
+		confirmBlock = [confirmBlock copy];
+	
+	BOOL appWasActive = [NSApp isActive];
+	
+	void(^_commonDoneBlock)(void) = [^{
+		if (!appWasActive)
+			[NSApp deactivate]; // todo: look at QuickCursor (or similar) and use AX* if enabled to re-activate previously active app & window
+		[self togglePreprocessingWindow];
+	} copy];
+	
+	[preprocessingWindowController editScreenshotAtPath:path meta:meta commitBlock:^(NSString *_path){
+		_commonDoneBlock();
+		if (confirmBlock)
+			confirmBlock(_path);
+	} cancelBlock:^{
+		_commonDoneBlock();
+		[log debug:@"cancel block called"];
+	}];
+	if (!appWasActive)
+		[NSApp activateIgnoringOtherApps:YES];
+	[self togglePreprocessingWindow];
 }
 
 #if DEBUG
@@ -347,14 +435,25 @@ extern int pngcrush_main(int argc, char *argv[]);
 		rec = [NSMutableDictionary dictionaryWithObject:dateModified forKey:@"du"];
 		[uploadedScreenshots setObject:rec forKey:fn];
 	}
-	
-	// POST
-	HTTPPOSTOperation *postOp = [HTTPPOSTOperation alloc];
-	[postOp initWithPath:path URL:url delegate:self];
-	nCurrOps++;
-	[self updateMenuItem:self];
-	[statusItem setImage:iconSending];
-	[g_opq addOperation:postOp];
+
+	// Continuation -- POST
+	void (^continue_block)(NSString *) = ^(NSString *actualPath){
+		HTTPPOSTOperation *postOp = [HTTPPOSTOperation alloc];
+		[postOp initWithPath:actualPath URL:url delegate:self];
+		nCurrOps++;
+		[self updateMenuItem:self];
+		[statusItem setImage:iconSending];
+		[g_opq addOperation:postOp];
+	};
+
+	// UI-based preprocessing?
+	if (self.enablePreprocessingUI) {
+		// todo: impl
+		[self displayPreprocessingUIForScreenshotAtPath:path meta:rec confirmBlock:continue_block];
+	}
+	else {
+		continue_block(path);
+	}
 }
 
 -(BOOL)preprocessFileBeforeSending:(HTTPPOSTOperation *)op {
@@ -655,6 +754,20 @@ extern int pngcrush_main(int argc, char *argv[]);
 	[self resetIcon];
 }
 
+- (BOOL)enablePreprocessingUI {
+	NSNumber *n = [defaults objectForKey:@"enablePreprocessingUI"];
+	if (!n)
+		return YES; // default value
+	return [n boolValue];
+}
+
+- (void)setEnablePreprocessingUI:(BOOL)y {
+	#if DEBUG
+	NSLog(@"enablePreprocessingUI = %d", y);
+	#endif
+	[defaults setBool:y forKey:@"enablePreprocessingUI"];
+}
+
 
 #pragma mark -
 #pragma mark Actions
@@ -872,6 +985,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	knownScreenshotsOnDesktop = [self screenshotsOnDesktop];
 	if (!paused)
 		[self startObservingDesktop];
+	[NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
 }
 
 

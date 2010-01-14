@@ -1,5 +1,7 @@
 #import "Sparkle/SUUpdater.h"
 #import "HTTPPOSTOperation.h"
+#import "MAAttachedWindow.h"
+#import "DPPreprocessingWindowController.h"
 
 @interface DPAppDelegate : NSObject {
 	NSUserDefaults *defaults;
@@ -48,11 +50,15 @@
 	
 	NSImage *iconState; // Current state icon (iconStandby or iconPaused)
 	NSImage *icon; // Current icon
+	
+	MAAttachedWindow *preprocessingWindow;
+	IBOutlet NSView *preprocessingUIView;
+	IBOutlet DPPreprocessingWindowController *preprocessingWindowController;
 }
 
 @property(assign) BOOL openAtLogin, showInDock, showInMenuBar, 
 	showQueueCountInMenuBar, paused, convertImagesTosRGB, enablePngcrush,
-	trashAfterSuccessfulUpload;
+	trashAfterSuccessfulUpload, enablePreprocessingUI;
 
 -(void)checkForScreenshotsAtPath:(NSString *)dirpath;
 -(NSDictionary *)screenshotsAtPath:(NSString *)dirpath modifiedAfterDate:(NSDate *)lmod;
@@ -73,6 +79,7 @@
 -(IBAction)disableMenuItem:(id)sender;
 -(IBAction)enableOrDisableMenuItem:(id)sender;
 -(IBAction)updateMenuItem:(id)sender;
+-(NSRect)menuItemFrame;
 -(IBAction)saveState:(id)sender;
 
 -(NSArray *)sortedUploadedScreenshots; // sorted on date desc.
