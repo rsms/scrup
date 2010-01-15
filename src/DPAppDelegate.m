@@ -59,6 +59,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 		postProcessShellCommand = @"say scrupped at $(date +%X) &";
 	preprocessingWindow = nil;
 	preprocessingWindowController = nil;
+	preprocessingUIBlockQueue = [NSMutableArray array];
 	
 	// set boolean properties from user defaults or give them default values
 	#define SETDEFBOOL(_member_, _defval_) \
@@ -171,6 +172,11 @@ extern int pngcrush_main(int argc, char *argv[]);
 }
 
 
+- (BOOL)preprocessingWindowIsActive {
+	return preprocessingWindow && [preprocessingWindow isVisible];
+}
+
+
 - (void)togglePreprocessingWindow {
 	if (!preprocessingWindow) {
 		NSRect wr = [self menuItemFrame];
@@ -180,56 +186,104 @@ extern int pngcrush_main(int argc, char *argv[]);
 		preprocessingWindow = [[MAAttachedWindow alloc] initWithView:preprocessingUIView
 																								 attachedToPoint:pt 
 																												inWindow:nil 
-																													onSide:MAPositionBottom 
-																											atDistance:5.0];
+																													onSide:MAPositionBottomLeft 
+																											atDistance:0.0];
 		[preprocessingWindowController setWindow:preprocessingWindow];
 		[preprocessingWindow setDelegate:preprocessingWindowController];
+		[preprocessingWindow setDrawsRoundCornerBesideArrow:NO];
+		[preprocessingWindow setBackgroundColor:[NSColor colorWithDeviceWhite:0.8 alpha:1.0]];
+		[preprocessingWindow setBorderColor:[NSColor colorWithDeviceWhite:0.87 alpha:1.0]];
+		[preprocessingWindow setBorderWidth:1.0];
 		[preprocessingWindow makeKeyAndOrderFront:self];
+		
+		if (statusItem) {
+			[statusItem setMenu:nil];
+			[statusItem setTarget:self];
+			[statusItem setAction:@selector(activateApp)];
+		}
 	}
 	else {
 		[preprocessingWindow orderOut:self];
 		[preprocessingWindow release];
 		preprocessingWindow = nil;
+		
+		if (statusItem) {
+			[statusItem setAction:nil];
+			[statusItem setTarget:nil];
+			[statusItem setMenu:statusItemMenu];
+		}
 	}
-	/*Reuse:
-	 else if (![preprocessingWindow isVisible]) {
-		[preprocessingWindow makeKeyAndOrderFront:self];
-	 }
-	 else {
-		[preprocessingWindow orderOut:self];
-	 }*/
 }
 
 
-- (void)displayPreprocessingUIForScreenshotAtPath:(NSString *)path
-																						 meta:(NSMutableDictionary *)meta
-																		 confirmBlock:(void(^)(NSString *path))confirmBlock
-{
-	[log debug:@"displaying preprocessing window for %@", path];
-	
-	if (confirmBlock)
-		confirmBlock = [confirmBlock copy];
-	
-	BOOL appWasActive = [NSApp isActive];
-	
-	void(^_commonDoneBlock)(void) = [^{
-		if (!appWasActive)
-			[NSApp deactivate]; // todo: look at QuickCursor (or similar) and use AX* if enabled to re-activate previously active app & window
-		[self togglePreprocessingWindow];
-	} copy];
-	
-	[preprocessingWindowController editScreenshotAtPath:path meta:meta commitBlock:^(NSString *_path){
-		_commonDoneBlock();
-		if (confirmBlock)
-			confirmBlock(_path);
-	} cancelBlock:^{
-		_commonDoneBlock();
-		[log debug:@"cancel block called"];
-	}];
-	if (!appWasActive)
+- (void)activateApp {
+	if (![NSApp isActive])
 		[NSApp activateIgnoringOtherApps:YES];
-	[self togglePreprocessingWindow];
 }
+
+
+- (void)enqueueDisplayOfPreprocessingUIForScreenshotAtPath:(NSString *)path
+																											meta:(NSMutableDictionary *)meta
+																							commitBlock:(void(^)(NSString *path))commitBlock
+																							cancelBlock:(void(^)(void))cancelBlock
+{
+	[log debug:@"enqueing/displaying preprocessing UI for %@", path];
+	
+	if (commitBlock) commitBlock = [commitBlock copy];
+	if (cancelBlock) cancelBlock = [cancelBlock copy];
+	
+	void(^_block)(void) = ^{
+		BOOL appWasActive = [NSApp isActive];
+		
+		// todo: look at QuickCursor (or similar) and use AX* if enabled to re-activate
+		//       previously active app & window
+		
+		#define DONE_ROUTINE \
+			if (!appWasActive) [NSApp deactivate]; \
+			[self togglePreprocessingWindow];\
+			[self performSelectorOnMainThread:@selector(dequeueDisplayOfPreprocessingUI) withObject:nil waitUntilDone:NO];
+		
+		[preprocessingWindowController editScreenshotAtPath:path meta:meta commitBlock:^(NSString *_path){
+			DONE_ROUTINE
+			if (commitBlock)
+				commitBlock(_path);
+		} cancelBlock:^{
+			DONE_ROUTINE
+			if (cancelBlock)
+				cancelBlock();
+		}];
+		
+		#undef DONE_ROUTINE
+		
+		[self togglePreprocessingWindow];
+		
+		if (!appWasActive)
+			[NSApp activateIgnoringOtherApps:YES];
+	};
+	
+	// enqueue or run now?
+	if (self.preprocessingWindowIsActive) {
+		// enqueue
+		[preprocessingUIBlockQueue addObject:[_block copy]];
+	}
+	else {
+		_block();
+	}
+}
+
+
+- (void(^)(void))dequeueDisplayOfPreprocessingUI {
+	if (preprocessingUIBlockQueue && [preprocessingUIBlockQueue count]) {
+		void(^nextBlock)(void) = [preprocessingUIBlockQueue objectAtIndex:0];
+		[preprocessingUIBlockQueue removeObjectAtIndex:0];
+		[log info:@"invoking next preprocessing UI"];
+		nextBlock();
+	}
+	else {
+		[log debug:@"no more preprocessing UIs to invoke"];
+	}
+}
+
 
 #if DEBUG
 -(void)debugPerpetualStateCheck {
@@ -454,8 +508,10 @@ extern int pngcrush_main(int argc, char *argv[]);
 
 	// UI-based preprocessing?
 	if (self.enablePreprocessingUI) {
-		// todo: impl
-		[self displayPreprocessingUIForScreenshotAtPath:path meta:rec confirmBlock:continue_block];
+		[self enqueueDisplayOfPreprocessingUIForScreenshotAtPath:path
+																												meta:rec
+																								 commitBlock:continue_block
+																								 cancelBlock:nil];
 	}
 	else {
 		continue_block(path);

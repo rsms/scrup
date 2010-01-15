@@ -55,11 +55,15 @@
 	MAAttachedWindow *preprocessingWindow;
 	IBOutlet NSView *preprocessingUIView;
 	IBOutlet DPPreprocessingWindowController *preprocessingWindowController;
+	NSMutableArray *preprocessingUIBlockQueue;
 }
 
+// UI bindings
 @property(assign) BOOL openAtLogin, showInDock, showInMenuBar, 
 	showQueueCountInMenuBar, paused, convertImagesTosRGB, enablePngcrush,
 	trashAfterSuccessfulUpload, enablePreprocessingUI;
+
+@property(readonly) BOOL preprocessingWindowIsActive;
 
 -(void)checkForScreenshotsAtPath:(NSString *)dirpath;
 -(NSDictionary *)screenshotsAtPath:(NSString *)dirpath modifiedAfterDate:(NSDate *)lmod;
@@ -98,4 +102,12 @@
 -(void)writeThumbnailForScreenshotAtPath:(NSString *)path;
 -(BOOL)pngcrushPNGImageAtPath:(NSString *)path brute:(BOOL)brute;
 
+#pragma mark -
+#pragma mark Preprocessing UI
+
+- (void)enqueueDisplayOfPreprocessingUIForScreenshotAtPath:(NSString *)path
+																											meta:(NSMutableDictionary *)meta
+																							 commitBlock:(void(^)(NSString *path))commitBlock
+																							 cancelBlock:(void(^)(void))cancelBlock;
 @end
+

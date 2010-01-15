@@ -52,6 +52,20 @@
 		3A9D2A601061B083008923FD /* status-item-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9D2A5D1061B083008923FD /* status-item-selected.png */; };
 		3A9DE50C10999E35008F35E2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A9DE50B10999E35008F35E2 /* CoreServices.framework */; };
 		3ABE5EAF10B588700085BAC3 /* HTTPPOSTOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */; };
+		3ADC9B3210FF537F00EDEE39 /* DPCheckerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADC9B3110FF537F00EDEE39 /* DPCheckerView.m */; };
+		3ADC9B4310FF54A300EDEE39 /* checker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9B4210FF54A300EDEE39 /* checker.png */; };
+		3ADC9BB510FF8EDB00EDEE39 /* zoom-actual.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9BB410FF8EDB00EDEE39 /* zoom-actual.png */; };
+		3ADC9BB710FF8F4600EDEE39 /* zoom-to-fit.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9BB610FF8F4600EDEE39 /* zoom-to-fit.png */; };
+		3ADC9BC010FF926200EDEE39 /* crop.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9BBF10FF926200EDEE39 /* crop.png */; };
+		3ADC9C5D10FFC04000EDEE39 /* move.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9C5C10FFC04000EDEE39 /* move.png */; };
+		3ADC9C6710FFC42200EDEE39 /* rect.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9C6610FFC42200EDEE39 /* rect.png */; };
+		3ADC9E0910FFECE200EDEE39 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ADC9E0810FFECE200EDEE39 /* QuartzCore.framework */; };
+		3ADC9E7110FFF35F00EDEE39 /* BottomTB_ellipse.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E6C10FFF35F00EDEE39 /* BottomTB_ellipse.png */; };
+		3ADC9E7210FFF35F00EDEE39 /* BottomTB_fonts.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E6D10FFF35F00EDEE39 /* BottomTB_fonts.png */; };
+		3ADC9E7310FFF35F00EDEE39 /* BottomTB_freeText.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E6E10FFF35F00EDEE39 /* BottomTB_freeText.png */; };
+		3ADC9E7410FFF35F00EDEE39 /* BottomTB_line.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E6F10FFF35F00EDEE39 /* BottomTB_line.png */; };
+		3ADC9E7510FFF35F00EDEE39 /* BottomTB_rectangle.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E7010FFF35F00EDEE39 /* BottomTB_rectangle.png */; };
+		3ADC9EB310FFFE2D00EDEE39 /* BottomTB_inspector.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9EB210FFFE2D00EDEE39 /* BottomTB_inspector.png */; };
 		3AE55FE010BC95A4006A7F94 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AE55FB310BC95A4006A7F94 /* zutil.h */; };
 		3AE55FE110BC95A4006A7F94 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 3AE55FB410BC95A4006A7F94 /* zutil.c */; };
 		3AE55FE210BC95A4006A7F94 /* zlibdefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AE55FB510BC95A4006A7F94 /* zlibdefs.h */; };
@@ -183,6 +197,21 @@
 		3A9DE50B10999E35008F35E2 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		3ABE5EAD10B588700085BAC3 /* HTTPPOSTOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPPOSTOperation.h; path = src/HTTPPOSTOperation.h; sourceTree = "<group>"; };
 		3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HTTPPOSTOperation.m; path = src/HTTPPOSTOperation.m; sourceTree = "<group>"; };
+		3ADC9B3010FF537F00EDEE39 /* DPCheckerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPCheckerView.h; path = src/DPCheckerView.h; sourceTree = "<group>"; };
+		3ADC9B3110FF537F00EDEE39 /* DPCheckerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DPCheckerView.m; path = src/DPCheckerView.m; sourceTree = "<group>"; };
+		3ADC9B4210FF54A300EDEE39 /* checker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checker.png; path = resources/checker.png; sourceTree = "<group>"; };
+		3ADC9BB410FF8EDB00EDEE39 /* zoom-actual.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zoom-actual.png"; path = "resources/zoom-actual.png"; sourceTree = "<group>"; };
+		3ADC9BB610FF8F4600EDEE39 /* zoom-to-fit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zoom-to-fit.png"; path = "resources/zoom-to-fit.png"; sourceTree = "<group>"; };
+		3ADC9BBF10FF926200EDEE39 /* crop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = crop.png; path = resources/crop.png; sourceTree = "<group>"; };
+		3ADC9C5C10FFC04000EDEE39 /* move.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = move.png; path = resources/move.png; sourceTree = "<group>"; };
+		3ADC9C6610FFC42200EDEE39 /* rect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rect.png; path = resources/rect.png; sourceTree = "<group>"; };
+		3ADC9E0810FFECE200EDEE39 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		3ADC9E6C10FFF35F00EDEE39 /* BottomTB_ellipse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_ellipse.png; path = resources/BottomTB_ellipse.png; sourceTree = "<group>"; };
+		3ADC9E6D10FFF35F00EDEE39 /* BottomTB_fonts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_fonts.png; path = resources/BottomTB_fonts.png; sourceTree = "<group>"; };
+		3ADC9E6E10FFF35F00EDEE39 /* BottomTB_freeText.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_freeText.png; path = resources/BottomTB_freeText.png; sourceTree = "<group>"; };
+		3ADC9E6F10FFF35F00EDEE39 /* BottomTB_line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_line.png; path = resources/BottomTB_line.png; sourceTree = "<group>"; };
+		3ADC9E7010FFF35F00EDEE39 /* BottomTB_rectangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_rectangle.png; path = resources/BottomTB_rectangle.png; sourceTree = "<group>"; };
+		3ADC9EB210FFFE2D00EDEE39 /* BottomTB_inspector.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_inspector.png; path = resources/BottomTB_inspector.png; sourceTree = "<group>"; };
 		3AE55FAB10BC9581006A7F94 /* libpngcrush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libpngcrush.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AE55FB310BC95A4006A7F94 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zutil.h; path = pngcrush/zutil.h; sourceTree = "<group>"; };
 		3AE55FB410BC95A4006A7F94 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = pngcrush/zutil.c; sourceTree = "<group>"; };
@@ -256,6 +285,7 @@
 				3A9DE50C10999E35008F35E2 /* CoreServices.framework in Frameworks */,
 				3A1C752510BB0FF500BC6030 /* Security.framework in Frameworks */,
 				3A90678910FE9417009B6B2F /* Quartz.framework in Frameworks */,
+				3ADC9E0910FFECE200EDEE39 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +330,7 @@
 				29B97317FDCFA39411CA2CEA /* resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				3ADC9E0810FFECE200EDEE39 /* QuartzCore.framework */,
 			);
 			name = Dropub;
 			sourceTree = "<group>";
@@ -315,6 +346,8 @@
 				3A1504AD10618DDF00263983 /* DPAppDelegate.m */,
 				3A90685710FE9D29009B6B2F /* DPPreprocessingWindowController.h */,
 				3A90685810FE9D29009B6B2F /* DPPreprocessingWindowController.m */,
+				3ADC9B3010FF537F00EDEE39 /* DPCheckerView.h */,
+				3ADC9B3110FF537F00EDEE39 /* DPCheckerView.m */,
 				3ABE5EAD10B588700085BAC3 /* HTTPPOSTOperation.h */,
 				3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */,
 				3A7AD02C10669AC600AF4940 /* mixins */,
@@ -332,6 +365,18 @@
 				3A1C750D10BB0F8400BC6030 /* MoveApplication.strings */,
 				3A919A8B106590CC002D0F4B /* dsa_pub.pem */,
 				3A9196291063D08A002D0F4B /* icon.icns */,
+				3ADC9E6C10FFF35F00EDEE39 /* BottomTB_ellipse.png */,
+				3ADC9E6D10FFF35F00EDEE39 /* BottomTB_fonts.png */,
+				3ADC9E6E10FFF35F00EDEE39 /* BottomTB_freeText.png */,
+				3ADC9E6F10FFF35F00EDEE39 /* BottomTB_line.png */,
+				3ADC9E7010FFF35F00EDEE39 /* BottomTB_rectangle.png */,
+				3ADC9EB210FFFE2D00EDEE39 /* BottomTB_inspector.png */,
+				3ADC9C5C10FFC04000EDEE39 /* move.png */,
+				3ADC9C6610FFC42200EDEE39 /* rect.png */,
+				3ADC9B4210FF54A300EDEE39 /* checker.png */,
+				3ADC9BBF10FF926200EDEE39 /* crop.png */,
+				3ADC9BB410FF8EDB00EDEE39 /* zoom-actual.png */,
+				3ADC9BB610FF8F4600EDEE39 /* zoom-to-fit.png */,
 				3AE5633C10BCCB21006A7F94 /* toolbar-processing.png */,
 				3A9D2A5B1061B083008923FD /* status-item-standby.png */,
 				3A199BA710BAF1E300E1F99C /* status-item-paused.png */,
@@ -553,6 +598,18 @@
 				3A1C751110BB0F8400BC6030 /* MoveApplication.strings in Resources */,
 				3A1C751210BB0F8400BC6030 /* MoveApplication.strings in Resources */,
 				3AE5633D10BCCB21006A7F94 /* toolbar-processing.png in Resources */,
+				3ADC9B4310FF54A300EDEE39 /* checker.png in Resources */,
+				3ADC9BB510FF8EDB00EDEE39 /* zoom-actual.png in Resources */,
+				3ADC9BB710FF8F4600EDEE39 /* zoom-to-fit.png in Resources */,
+				3ADC9BC010FF926200EDEE39 /* crop.png in Resources */,
+				3ADC9C5D10FFC04000EDEE39 /* move.png in Resources */,
+				3ADC9C6710FFC42200EDEE39 /* rect.png in Resources */,
+				3ADC9E7110FFF35F00EDEE39 /* BottomTB_ellipse.png in Resources */,
+				3ADC9E7210FFF35F00EDEE39 /* BottomTB_fonts.png in Resources */,
+				3ADC9E7310FFF35F00EDEE39 /* BottomTB_freeText.png in Resources */,
+				3ADC9E7410FFF35F00EDEE39 /* BottomTB_line.png in Resources */,
+				3ADC9E7510FFF35F00EDEE39 /* BottomTB_rectangle.png in Resources */,
+				3ADC9EB310FFFE2D00EDEE39 /* BottomTB_inspector.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -644,6 +701,7 @@
 				3AE5627110BCB36B006A7F94 /* ASLLogger.m in Sources */,
 				3AF2B0C810FE90610052B40E /* MAAttachedWindow.m in Sources */,
 				3A90685910FE9D29009B6B2F /* DPPreprocessingWindowController.m in Sources */,
+				3ADC9B3210FF537F00EDEE39 /* DPCheckerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,0 +1,4 @@
+@interface DPCheckerView : NSView {
+}
+
+@end
