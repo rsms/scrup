@@ -1,6 +1,6 @@
 #import "Sparkle/SUUpdater.h"
 #import "HTTPPOSTOperation.h"
-#import "MAAttachedWindow.h"
+#import "DPAttachedWindow.h"
 #import "DPPreprocessingWindowController.h"
 
 @interface DPAppDelegate : NSObject {
@@ -52,7 +52,7 @@
 	NSImage *iconState; // Current state icon (iconStandby or iconPaused)
 	NSImage *icon; // Current icon
 	
-	MAAttachedWindow *preprocessingWindow;
+	DPAttachedWindow *preprocessingWindow;
 	IBOutlet NSView *preprocessingUIView;
 	IBOutlet DPPreprocessingWindowController *preprocessingWindowController;
 	NSMutableArray *preprocessingUIBlockQueue;

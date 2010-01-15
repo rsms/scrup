@@ -42,7 +42,7 @@
 	screenshotMeta = meta;
 	commitBlock = b1 ? [b1 copy] : nil;
 	cancelBlock = b2 ? [b2 copy] : nil;
-	
+
 	[filenameTextField setStringValue:[[screenshotPath lastPathComponent] stringByDeletingPathExtension]];
 	imageView.autoresizes = YES;
 	[self openImageAtURL:[NSURL fileURLWithPath:screenshotPath]];
@@ -74,36 +74,36 @@
 	if (commitBlock) {
 		NSString *lcpath, *path = screenshotPath;
 		NSString *fn = [filenameTextField stringValue];
-		
+
 		// renamed?
 		if (![[path lastPathComponent] isEqualToString:fn]) {
 			// filename changed -- move file
 			path = [screenshotPath stringByDeletingLastPathComponent];
 			path = [path stringByAppendingPathComponent:fn];
-			
+
 			// add file extension (this can definitely be done smarter)
 			lcpath = [path lowercaseString];
 			if (![lcpath hasSuffix:@".png"] && ![lcpath hasSuffix:@".jpg"] && ![lcpath hasSuffix:@".jpeg"]) {
 				// Add original extension
 				path = [path stringByAppendingPathExtension:[screenshotPath pathExtension]];
 			}
-			
+
 			NSError *error = nil;
 			if (![[NSFileManager defaultManager] moveItemAtPath:screenshotPath toPath:path error:&error]) {
 				NSLog(@"%s failed to rename '%@' --> '%@' because: %@", _cmd, screenshotPath, path, error);
 				path = screenshotPath;
 			}
 		}
-		
+
 		// todo: track ismodified
-		
+
 		// get and save image
 		CGImageRef image;
 		// This official API returns an image w/o any annotations or other funky stuff.
 		//image = [imageView image];
 		// This inofficial, private method do:
 		image = [imageView imageWithOptions:[NSDictionary dictionaryWithObjectsAndKeys:nil]];
-		
+
 		if (image) {
 			// use ImageIO to save the image in the same format as the original
 			NSURL *url = [NSURL fileURLWithPath:path];
@@ -121,7 +121,7 @@
 		else {
 			NSLog(@"%s error: no image ([imageView image] returned nil)", _cmd);
 		}
-		
+
 		// continue
 		commitBlock(path);
 	}
@@ -135,12 +135,12 @@
 - (IBAction)switchToolMode:(id)sender {
 	NSInteger newTool;
 	BOOL didEnableComplementaryButton = NO;
-	
+
 	if ([sender isKindOfClass:[NSSegmentedControl class]])
 		newTool = [sender selectedSegment];
 	else
 		newTool = [sender tag];
-	
+
 	switch (newTool) {
 		case 0:
 			[imageView setCurrentToolMode:IKToolModeMove];
@@ -182,7 +182,7 @@
 			didEnableComplementaryButton = YES;
 			break;
 	}
-	
+
 	// update commitActionButton state
 	if (!didEnableComplementaryButton && [commitActionButton isEnabled]) {
 		[commitActionButton setImage:nil];
@@ -194,7 +194,7 @@
 
 - (IBAction)crop:(id)sender {
 	BOOL shouldZoomToFit = (imageView.zoomFactor != 1.0);
-	
+
 	// test if the image is currently zoomed to fit
 	if (shouldZoomToFit) {
 		NSSize z1, z2, sz = [imageView imageSize];
@@ -203,10 +203,10 @@
 		if (z1.width != z2.width && z1.height != z2.height)
 			shouldZoomToFit = NO;
 	}
-	
+
 	// perform crop
 	[imageView crop:sender];
-	
+
 	// zoom
 	if (shouldZoomToFit) {
 		[imageView zoomImageToFit:sender];

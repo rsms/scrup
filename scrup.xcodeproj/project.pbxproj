@@ -66,6 +66,7 @@
 		3ADC9E7410FFF35F00EDEE39 /* BottomTB_line.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E6F10FFF35F00EDEE39 /* BottomTB_line.png */; };
 		3ADC9E7510FFF35F00EDEE39 /* BottomTB_rectangle.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E7010FFF35F00EDEE39 /* BottomTB_rectangle.png */; };
 		3ADC9EB310FFFE2D00EDEE39 /* BottomTB_inspector.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9EB210FFFE2D00EDEE39 /* BottomTB_inspector.png */; };
+		3ADC9F1B1100AC9300EDEE39 /* DPAttachedWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADC9F1A1100AC9300EDEE39 /* DPAttachedWindow.m */; };
 		3AE55FE010BC95A4006A7F94 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AE55FB310BC95A4006A7F94 /* zutil.h */; };
 		3AE55FE110BC95A4006A7F94 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 3AE55FB410BC95A4006A7F94 /* zutil.c */; };
 		3AE55FE210BC95A4006A7F94 /* zlibdefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AE55FB510BC95A4006A7F94 /* zlibdefs.h */; };
@@ -212,6 +213,8 @@
 		3ADC9E6F10FFF35F00EDEE39 /* BottomTB_line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_line.png; path = resources/BottomTB_line.png; sourceTree = "<group>"; };
 		3ADC9E7010FFF35F00EDEE39 /* BottomTB_rectangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_rectangle.png; path = resources/BottomTB_rectangle.png; sourceTree = "<group>"; };
 		3ADC9EB210FFFE2D00EDEE39 /* BottomTB_inspector.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_inspector.png; path = resources/BottomTB_inspector.png; sourceTree = "<group>"; };
+		3ADC9F191100AC9300EDEE39 /* DPAttachedWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPAttachedWindow.h; path = src/DPAttachedWindow.h; sourceTree = "<group>"; };
+		3ADC9F1A1100AC9300EDEE39 /* DPAttachedWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DPAttachedWindow.m; path = src/DPAttachedWindow.m; sourceTree = "<group>"; };
 		3AE55FAB10BC9581006A7F94 /* libpngcrush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libpngcrush.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AE55FB310BC95A4006A7F94 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zutil.h; path = pngcrush/zutil.h; sourceTree = "<group>"; };
 		3AE55FB410BC95A4006A7F94 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = pngcrush/zutil.c; sourceTree = "<group>"; };
@@ -348,6 +351,8 @@
 				3A90685810FE9D29009B6B2F /* DPPreprocessingWindowController.m */,
 				3ADC9B3010FF537F00EDEE39 /* DPCheckerView.h */,
 				3ADC9B3110FF537F00EDEE39 /* DPCheckerView.m */,
+				3ADC9F191100AC9300EDEE39 /* DPAttachedWindow.h */,
+				3ADC9F1A1100AC9300EDEE39 /* DPAttachedWindow.m */,
 				3ABE5EAD10B588700085BAC3 /* HTTPPOSTOperation.h */,
 				3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */,
 				3A7AD02C10669AC600AF4940 /* mixins */,
@@ -702,6 +707,7 @@
 				3AF2B0C810FE90610052B40E /* MAAttachedWindow.m in Sources */,
 				3A90685910FE9D29009B6B2F /* DPPreprocessingWindowController.m in Sources */,
 				3ADC9B3210FF537F00EDEE39 /* DPCheckerView.m in Sources */,
+				3ADC9F1B1100AC9300EDEE39 /* DPAttachedWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

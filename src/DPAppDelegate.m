@@ -32,12 +32,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 - (id)init {
 	NSNumber *n;
 	NSFileManager *fm = [NSFileManager defaultManager];
-	
+
 	self = [super init];
-	
+
 	// logging
 	log = [ASLLogger defaultLogger];
-	
+
 	// init members
 	defaults = [NSUserDefaults standardUserDefaults];
 	uidRefDate = [NSDate dateWithTimeIntervalSince1970:1258600000];
@@ -60,7 +60,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	preprocessingWindow = nil;
 	preprocessingWindowController = nil;
 	preprocessingUIBlockQueue = [NSMutableArray array];
-	
+
 	// set boolean properties from user defaults or give them default values
 	#define SETDEFBOOL(_member_, _defval_) \
 		n = [defaults objectForKey:@#_member_];\
@@ -74,24 +74,24 @@ extern int pngcrush_main(int argc, char *argv[]);
 	SETDEFBOOL(trashAfterSuccessfulUpload, NO);
 	SETDEFBOOL(enablePostProcessShellCommand, NO);
 	#undef SETDEFBOOL
-	
+
 	// read showInDock
 	showInDock = YES;
 	NSMutableDictionary *infoPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Info.plist"]];
 	n = [infoPlist objectForKey:@"LSUIElement"];
 	if (n) showInDock = ![n boolValue];
-	
+
 	// prevent lock-out state
 	if (!showInDock && !showInMenuBar)
 		self.showInMenuBar = YES;
-	
+
 	// set openAtLogin to YES by default
 	if (!openAtLogin && ![defaults objectForKey:@"openAtLoginIsSet"])
 		[self setOpenAtLogin:YES];
-	
+
 	// read recvURL
 	//[defaults setObject:@"http://your.host/recv.php?name={filename}" forKey:@"recvURL"];
-	
+
 	// read defaults:com.apple.screencapture
 	NSDictionary *screencaptureDefaults = [defaults persistentDomainForName:@"com.apple.screencapture"];
 	if (screencaptureDefaults) {
@@ -113,13 +113,13 @@ extern int pngcrush_main(int argc, char *argv[]);
 			screenshotFilenameSuffix = [@"." stringByAppendingString:s];
 		}
 	}
-	
+
 	// Make sure paths exist
 	if (![fm fileExistsAtPath:thumbCacheDir]) {
 		[fm createDirectoryAtPath:thumbCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
 		// todo: handle error from mkdir thumbCacheDir
 	}
-	
+
 	return self;
 }
 
@@ -134,26 +134,26 @@ extern int pngcrush_main(int argc, char *argv[]);
 	iconSelectedPaused = [NSImage imageNamed:@"status-item-selected-paused.png"];
 	iconState = paused ? iconPaused : iconStandby;
 	icon = iconState;
-	
+
 	[self enableOrDisableMenuItem:self];
-	
+
 	// set default selected toolbar item and view
 	[toolbar setSelectedItemIdentifier:DPToolbarGeneralSettingsItemIdentifier];
-	
+
 	// no recvURL? Probably first launch, so show the settings window
 	if (![defaults objectForKey:@"recvURL"] || [[receiverURL stringValue] length] == 0) {
 		[self orderFrontSettingsWindow:self];
 		[receiverURL becomeFirstResponder];
 	}
-	
+
 	// Start perpetual state debug loop in a background thread
 	#if DEBUG
 	[self performSelectorInBackground:@selector(debugPerpetualStateCheck) withObject:nil];
 	#endif
-	
+
 	// XXX
 	/*[self displayPreprocessingUIForScreenshotAtPath:@""
-																						 meta:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate date], @"du", nil] 
+																						 meta:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate date], @"du", nil]
 																		 confirmBlock:^{
 																			 NSLog(@"confirmBlock called");
 																		 }];*/
@@ -182,20 +182,22 @@ extern int pngcrush_main(int argc, char *argv[]);
 		NSRect wr = [self menuItemFrame];
 		NSPoint pt = wr.origin;
 		pt.x += wr.size.width/2.0;
-		
-		preprocessingWindow = [[MAAttachedWindow alloc] initWithView:preprocessingUIView
-																								 attachedToPoint:pt 
-																												inWindow:nil 
-																													onSide:MAPositionBottomLeft 
-																											atDistance:0.0];
+
+		preprocessingWindow = (id)[[DPAttachedWindow alloc] initWithView:preprocessingUIView
+																								 attachedToPoint:pt
+																												inWindow:nil
+																													onSide:MAPositionBottomLeft
+																											atDistance:-5.0];
 		[preprocessingWindowController setWindow:preprocessingWindow];
 		[preprocessingWindow setDelegate:preprocessingWindowController];
 		[preprocessingWindow setDrawsRoundCornerBesideArrow:NO];
 		[preprocessingWindow setBackgroundColor:[NSColor colorWithDeviceWhite:0.8 alpha:1.0]];
 		[preprocessingWindow setBorderColor:[NSColor colorWithDeviceWhite:0.87 alpha:1.0]];
 		[preprocessingWindow setBorderWidth:1.0];
+		[preprocessingWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+		[preprocessingWindow setCanHide:NO];
 		[preprocessingWindow makeKeyAndOrderFront:self];
-		
+
 		if (statusItem) {
 			[statusItem setMenu:nil];
 			[statusItem setTarget:self];
@@ -206,7 +208,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 		[preprocessingWindow orderOut:self];
 		[preprocessingWindow release];
 		preprocessingWindow = nil;
-		
+
 		if (statusItem) {
 			[statusItem setAction:nil];
 			[statusItem setTarget:nil];
@@ -228,21 +230,21 @@ extern int pngcrush_main(int argc, char *argv[]);
 																							cancelBlock:(void(^)(void))cancelBlock
 {
 	[log debug:@"enqueing/displaying preprocessing UI for %@", path];
-	
+
 	if (commitBlock) commitBlock = [commitBlock copy];
 	if (cancelBlock) cancelBlock = [cancelBlock copy];
-	
+
 	void(^_block)(void) = ^{
 		BOOL appWasActive = [NSApp isActive];
-		
+
 		// todo: look at QuickCursor (or similar) and use AX* if enabled to re-activate
 		//       previously active app & window
-		
+
 		#define DONE_ROUTINE \
 			if (!appWasActive) [NSApp deactivate]; \
 			[self togglePreprocessingWindow];\
 			[self performSelectorOnMainThread:@selector(dequeueDisplayOfPreprocessingUI) withObject:nil waitUntilDone:NO];
-		
+
 		[preprocessingWindowController editScreenshotAtPath:path meta:meta commitBlock:^(NSString *_path){
 			DONE_ROUTINE
 			if (commitBlock)
@@ -252,15 +254,15 @@ extern int pngcrush_main(int argc, char *argv[]);
 			if (cancelBlock)
 				cancelBlock();
 		}];
-		
+
 		#undef DONE_ROUTINE
-		
+
 		[self togglePreprocessingWindow];
-		
+
 		if (!appWasActive)
 			[NSApp activateIgnoringOtherApps:YES];
 	};
-	
+
 	// enqueue or run now?
 	if (self.preprocessingWindowIsActive) {
 		// enqueue
@@ -291,14 +293,14 @@ extern int pngcrush_main(int argc, char *argv[]);
 -(void)debugPerpetualStateCheck {
 	ASLLogger *tlog;
 	NSDistributedNotificationCenter *dnc;
-	
+
 	tlog = [ASLLogger loggerForModule:@"state"];
 	if (g_debug) {
 		tlog.connection.level = ASLLoggerLevelNone;
 		[tlog addFileHandle:[NSFileHandle fileHandleWithStandardError]];
 	}
 	dnc = [NSDistributedNotificationCenter defaultCenter];
-	
+
 	while (1) {
 		[tlog debug:@"DNC: %s", [dnc suspended] ? "suspended" : "active"];
 		[NSThread sleepForTimeInterval:10];
@@ -327,7 +329,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	NSError *error;
 	NSDictionary *attrs;
 	int fd;
-	
+
 	direntries = [fm contentsOfDirectoryAtPath:dirpath error:&error];
 	if (!direntries) {
 		[log error:@"%s failed to list contents of directory at '%@' -- %@", _cmd, dirpath, error];
@@ -443,10 +445,10 @@ extern int pngcrush_main(int argc, char *argv[]);
 	NSDictionary *currentFiles;
 	NSMutableDictionary *files;
 	NSMutableSet *newFilenames;
-	
+
 	currentFiles = [self screenshotsOnDesktop];
 	files = nil;
-	
+
 	if ([currentFiles count]) {
 		newFilenames = [NSMutableSet setWithArray:[currentFiles allKeys]];
 		// filter: remove allready processed screenshots
@@ -458,7 +460,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 			}
 		}
 	}
-	
+
 	knownScreenshotsOnDesktop = currentFiles;
 	return files;
 }
@@ -466,11 +468,11 @@ extern int pngcrush_main(int argc, char *argv[]);
 
 -(void)processScreenshotAtPath:(NSString *)path modifiedAtDate:(NSDate *)dateModified {
 	NSString *fn;
-	
+
 	[log info:@"processing screenshot \"%@\"", path];
-	
+
 	fn = [path lastPathComponent];
-	
+
 	// receiver URL
 	NSString *surl = [defaults objectForKey:@"recvURL"];
 	if (!surl || ![surl length]) {
@@ -479,15 +481,15 @@ extern int pngcrush_main(int argc, char *argv[]);
 	}
 	NSString *fne = [fn stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	surl = [surl stringByReplacingOccurrencesOfString:@"{filename}" withString:fne];
-	
+
 	// validate URL
 	NSURL *url = [NSURL URLWithString:surl];
 	if (![[url scheme] isEqualToString:@"http"] && ![[url scheme] isEqualToString:@"https"]) {
-		ALERT_MODAL(@"Scrup: Invalid Receiver URL", 
+		ALERT_MODAL(@"Scrup: Invalid Receiver URL",
 								@"The Receiver URL must be a HTTP or HTTPS URL (begin with \"http://\" or \"https://\")");
 		return;
 	}
-	
+
 	// Register
 	NSMutableDictionary *rec = [uploadedScreenshots objectForKey:fn];
 	if (rec) {
@@ -523,7 +525,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 -(BOOL)preprocessFileBeforeSending:(HTTPPOSTOperation *)op {
 	// This callback is called from a send operation thread, so in here
 	// we can spend quality time with <op>.
-	
+
 	// convert to sRGB
 	if (convertImagesTosRGB) {
 		NSBitmapImageRep *bm = [NSBitmapImageRep imageRepWithContentsOfFile:op.path];
@@ -531,11 +533,11 @@ extern int pngcrush_main(int argc, char *argv[]);
 		[sRGBPNGData writeToFile:op.path atomically:YES];
 		[op.log info:@"converted \"%@\" to sRGB", op.path];
 	}
-	
+
 	// pngcrush
 	if (enablePngcrush)
 		[self pngcrushPNGImageAtPath:op.path brute:NO];
-	
+
 	// post-process script
 	if (enablePostProcessShellCommand && postProcessShellCommand && [postProcessShellCommand length]) {
 		NSString *cmd = [postProcessShellCommand stringByReplacingOccurrencesOfString:@"{path}" withString:[op.path stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"]];
@@ -546,7 +548,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 			return NO;
 		}
 	}
-	
+
 	return YES;
 }
 
@@ -559,17 +561,17 @@ extern int pngcrush_main(int argc, char *argv[]);
 -(void)_httpPostOperationDidSucceed:(HTTPPOSTOperation *)op {
 	nCurrOps--;
 	NSString *rspstr = [[NSString alloc] initWithData:op.responseData encoding:NSUTF8StringEncoding];
-	[op.log debug:@"succeeded with HTTP %d %@ %@", 
+	[op.log debug:@"succeeded with HTTP %d %@ %@",
 				[op.response statusCode], [op.response allHeaderFields], rspstr];
-	
+
 	// Parse response as a single URL
 	NSURL *scrupURL = [NSURL URLWithString:rspstr];
 	if (!scrupURL) {
 		[log error:@"invalid URL returned by receiver"];
-		
+
 		// Remove record of screenshot
 		[uploadedScreenshots removeObjectForKey:[op.path lastPathComponent]];
-		
+
 		// Display "error" icon
 		[self momentarilyDisplayIcon:iconError];
 	}
@@ -580,21 +582,21 @@ extern int pngcrush_main(int argc, char *argv[]);
 			[rec setObject:rspstr forKey:@"url"];
 			//NSLog(@"rec => %@", rec);
 		}
-		
+
 		// Put URL in pasteboard
 		// this code is >=10.6 only:
 		NSPasteboard *pb = [NSPasteboard generalPasteboard];
 		[pb clearContents];
 		[pb writeObjects:[NSArray arrayWithObject:scrupURL]];
 		//NSLog(@"%@", [pb types]);
-		
+
 		// Display "OK" icon
 		[self momentarilyDisplayIcon:iconOk];
-		
+
 		// Write thumbnail
 		if (enableThumbnails)
 			[self writeThumbnailForScreenshotAtPath:op.path];
-		
+
 		// Trash the file
 		if (trashAfterSuccessfulUpload) {
 			if (![[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
@@ -606,11 +608,11 @@ extern int pngcrush_main(int argc, char *argv[]);
 				[log warn:@"could not move \"\" to trash", op.path];
 			}
 		}
-		
+
 		// Update list of recent
 		[self updateListOfRecentUploads];
 	}
-	
+
 	// Update menu item
 	[self updateMenuItem:self];
 }
@@ -625,13 +627,13 @@ extern int pngcrush_main(int argc, char *argv[]);
 	nCurrOps--;
 	HTTPPOSTOperation *op = [args objectAtIndex:0];
 	//NSError *error = [args objectAtIndex:1];
-	
+
 	// Remove record of screenshot
 	[uploadedScreenshots removeObjectForKey:[op.path lastPathComponent]];
-	
+
 	// Display "error" icon
 	[self momentarilyDisplayIcon:iconError];
-	
+
 	[self updateMenuItem:self];
 	[self updateListOfRecentUploads];
 }
@@ -796,7 +798,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 
 - (void)setPaused:(BOOL)y {
 	paused = y;
-	
+
 	[defaults setBool:paused forKey:@"paused"];
 	if (paused)
 		[pauseMenuItem setTitle:@"Paused"];
@@ -808,7 +810,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 		else if (!paused && !isObservingDesktop)
 			[self startObservingDesktop];
 	}
-	
+
 	// update icon
 	BOOL x = icon == iconState;
 	iconState = paused ? iconPaused : iconStandby;
@@ -840,7 +842,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	if (statusItem) {
 		[statusItem setImage:ic];
 		[self performSelector:@selector(resetIcon) withObject:nil afterDelay:4.0];
-		// if we call statusItem:setImage: directly, <icon> might have changed at the 
+		// if we call statusItem:setImage: directly, <icon> might have changed at the
 		// future time of invocation, thus we read the value first at call time.
 	}
 }
@@ -882,9 +884,9 @@ extern int pngcrush_main(int argc, char *argv[]);
 - (IBAction)updateMenuItem:(id)sender {
 	if (!statusItem)
 		return;
-	
+
 	icon = nCurrOps ? iconSending : iconState;
-	
+
 	if (showQueueCountInMenuBar) {
 		[statusItem setLength:NSVariableStatusItemLength];
 		[statusItem setTitle:[NSString stringWithFormat:@"%d", nCurrOps]];
@@ -921,11 +923,11 @@ extern int pngcrush_main(int argc, char *argv[]);
 -(void)updateListOfRecentUploads {
 	NSInteger i, n, limit = SCREENSHOT_LOG_LIMIT;
 	NSString *fn;
-	
+
 	// todo: reuse/move existing items instead of removing them just to then create them again.
 	i = [statusItemMenu indexOfItemWithTag:1337]+1;
 	n = [statusItemMenu numberOfItems];
-	
+
 	for (NSDictionary *m in [self sortedUploadedScreenshots]) {
 		NSDate *d = [m objectForKey:@"du"];
 		NSString *calfmt = @"%Y-%m-%d %H:%M:%S";
@@ -942,7 +944,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 		if (i < n)
 			[statusItemMenu removeItemAtIndex:i];
 		NSMenuItem *mi = [statusItemMenu insertItemWithTitle:title action:@selector(openUploadedImageURL:) keyEquivalent:@"" atIndex:i];
-		
+
 		// set thumbnail
 		if (enableThumbnails && (fn = [m objectForKey:@"fn"])) {
 			NSImage *im = [[NSImage alloc] initWithContentsOfFile:[thumbCacheDir stringByAppendingPathComponent:fn]];
@@ -951,7 +953,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 			else
 				[log debug:@"no thumb for %@", fn];
 		}
-		
+
 		[mi setRepresentedObject:m];
 		if (!limit--)
 			break;
@@ -963,10 +965,10 @@ extern int pngcrush_main(int argc, char *argv[]);
 	NSDictionary *rec;
 	NSString *urlstr;
 	NSURL *url;
-	
+
 	if (sender
-			&& (rec = [sender representedObject]) 
-			&& (urlstr = [rec objectForKey:@"url"]) 
+			&& (rec = [sender representedObject])
+			&& (urlstr = [rec objectForKey:@"url"])
 			&& (url = [NSURL URLWithString:urlstr]))
 	{
 		[[NSWorkspace sharedWorkspace] openURL:url];
@@ -1076,7 +1078,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 					DPToolbarGeneralSettingsItemIdentifier,
 					DPToolbarProcessingSettingsItemIdentifier,
 					DPToolbarAdvancedSettingsItemIdentifier,
-					nil];	
+					nil];
 }
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)_toolbar {
@@ -1124,12 +1126,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 -(void)vacuumUploadedScreenshots {
 	NSFileManager *fm;
 	NSArray *rmkeys;
-	
+
 	if ([uploadedScreenshots count] > SCREENSHOT_LOG_LIMIT) {
 		fm = [NSFileManager defaultManager];
 		rmkeys = [self sortedUploadedScreenshotKeys];
 		rmkeys = [rmkeys subarrayWithRange:NSMakeRange(SCREENSHOT_LOG_LIMIT, [rmkeys count]-SCREENSHOT_LOG_LIMIT)];
-		
+
 		// remove any thumbnails
 		// todo: remove all thumbnails which is NOT in [uploadedScreenshots allKeys] instead
 		//       of removing those we know of.
@@ -1138,7 +1140,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 			if (removed)
 				[log debug:@"removed old screenshot record for '%@'", fn];
 		}
-		
+
 		[uploadedScreenshots removeObjectsForKeys:rmkeys];
 	}
 }
@@ -1150,12 +1152,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 	NSError *err = nil;
 	NSString *tmppath;
 	BOOL success = NO;
-	
+
 	NSDictionary *attrs;
 	if ((attrs = [fm attributesOfItemAtPath:path error:&err])) {
 		[log debug:@"[pngcrush] original size: %llu B", [attrs fileSize]];
 	}
-	
+
 	#define PNCARGC 8
 	char *argv[PNCARGC] = {
 		"libpngcrush",
@@ -1171,22 +1173,22 @@ extern int pngcrush_main(int argc, char *argv[]);
 	tmppath = [[path stringByDeletingLastPathComponent] stringByAppendingString:@".pngcrush.XXXXXX"];
 	tmpntpl = strdup([tmppath UTF8String]);
 	argv[PNCARGC-1] = mktemp(tmpntpl);
-	
+
 	if (argv[PNCARGC-1] == NULL) {
 		[log error:@"[pngcrush] mktemp(\"%s\") failed", tmpntpl];
 		return NO;
 	}
-	
+
 	int pncr = pngcrush_main(PNCARGC, (char **)argv);
-	
+
 	if (pncr == 0) {
 		tmppath = [NSString stringWithUTF8String:argv[PNCARGC-1]];
-		
+
 		if ((attrs = [fm attributesOfItemAtPath:tmppath error:&err]))
 			[log debug:@"[pngcrush] crushed \"%@\" to size: %llu B", path, [attrs fileSize]];
 		else
 			[log debug:@"debug: [pngcrush] crushed \"%@\"", path];
-		
+
 		if (![fm removeItemAtPath:path error:&err]){
 			[log error:@"[pngcrush] unlink(\"%@\") failed -- %@", path, err];
 		}
@@ -1203,7 +1205,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 		[fm removeItemAtPath:tmppath error:nil];
 	}
 	#undef PNCARGC
-	
+
 	if (tmpntpl)
 		free(tmpntpl);
 	return success;
@@ -1215,28 +1217,28 @@ extern int pngcrush_main(int argc, char *argv[]);
 	NSData *bmData;
 	NSBitmapImageRep *bmrep;
 	NSString *thumbPath;
-	
+
 	im = [[NSImage alloc] initWithContentsOfFile:path];
 	if (!im)
 		return;
 	im = [im imageByScalingProportionallyWithinSize:thumbSize];
 	bmrep = [[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]];
-	
+
 	if (convertImagesTosRGB)
 		bmData = [bmrep PNGRepresentationInsRGBColorSpace];
 	else
 		bmData = [bmrep PNGRepresentationAsProgressive:NO];
-	
+
 	if (!bmData || ![bmData length]) {
 		[log warn:@"failed to create thumbnail for %@", path];
 		return;
 	}
 	thumbPath = [thumbCacheDir stringByAppendingPathComponent:[path lastPathComponent]];
 	[bmData writeToFile:thumbPath atomically:NO];
-	
+
 	if (enablePngcrush)
 		[self pngcrushPNGImageAtPath:thumbPath brute:NO];
-	
+
 	[log debug:@"wrote thumbnail to %@", thumbPath];
 }
 

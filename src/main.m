@@ -12,7 +12,7 @@ NSString *SCErrorDomain = @"ScrupError";
 int main(int argc, const char *argv[]) {
 	// create a global operation queue
 	g_opq = [[NSOperationQueue alloc] init];
-	
+
 	// read "debug" from user defaults
 	#if DEBUG
 	g_debug = YES;
@@ -21,7 +21,7 @@ int main(int argc, const char *argv[]) {
 	if (ud)
 		g_debug = [ud boolForKey:@"debug"];
 	#endif
-	
+
 	// setup logging
 	[ASLLogger setFacility:@"se.notion.Scrup"];
 	if (g_debug) {
@@ -34,10 +34,10 @@ int main(int argc, const char *argv[]) {
 		[log addFileHandle:[NSFileHandle fileHandleWithStandardError]];
 		[log debug:@"started in debug mode"];
 	}
-	
+
 	// main runloop
 	NSApplicationMain(argc, argv);
-	
+
 	// tear down operation queue
 	[g_opq cancelAllOperations];
 	NSArray *ops = g_opq.operations;
@@ -45,6 +45,6 @@ int main(int argc, const char *argv[]) {
 		NSLog(@"waiting for %u operations to complete...", [ops count]);
 		[g_opq waitUntilAllOperationsAreFinished];
 	}
-	
+
 	return 0;
 }
