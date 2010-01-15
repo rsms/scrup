@@ -265,6 +265,8 @@ extern int pngcrush_main(int argc, char *argv[]);
 	if (self.preprocessingWindowIsActive) {
 		// enqueue
 		[preprocessingUIBlockQueue addObject:[_block copy]];
+		// make sure the app is active/focused
+		[self activateApp];
 	}
 	else {
 		_block();
