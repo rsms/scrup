@@ -46,7 +46,6 @@
 	[filenameTextField setStringValue:[[screenshotPath lastPathComponent] stringByDeletingPathExtension]];
 	imageView.autoresizes = YES;
 	[self openImageAtURL:[NSURL fileURLWithPath:screenshotPath]];
-	//[imageView setImageWithURL:[NSURL fileURLWithPath:screenshotPath]];
 }
 
 
