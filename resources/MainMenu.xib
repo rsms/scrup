@@ -21,8 +21,10 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="513"/>
 			<integer value="1168"/>
+			<integer value="513"/>
+			<integer value="1107"/>
+			<integer value="629"/>
 			<integer value="57"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -1381,7 +1383,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 				<string key="NSClassName">DPAppDelegate</string>
 			</object>
 			<object class="NSCustomView" id="288943491">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1616,6 +1618,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					</object>
 				</object>
 				<string key="NSFrameSize">{542, 218}</string>
+				<reference key="NSSuperview"/>
 				<string key="NSClassName">NSView</string>
 			</object>
 			<object class="NSUserDefaultsController" id="464234050">
@@ -1625,14 +1628,14 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 				<string key="NSClassName">SUUpdater</string>
 			</object>
 			<object class="NSCustomView" id="471131200">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<object class="NSTextField" id="225809161">
 						<reference key="NSNextResponder" ref="471131200"/>
 						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{194, 209}, {331, 44}}</string>
+						<string key="NSFrame">{{194, 210}, {331, 44}}</string>
 						<reference key="NSSuperview" ref="471131200"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="614412107">
@@ -1657,7 +1660,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 						<object class="NSButtonCell" key="NSCell" id="831511109">
 							<int key="NSCellFlags">-2080244224</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">Display edit &amp; confirm window before uploading</string>
+							<string key="NSContents">Edit images before uploading</string>
 							<reference key="NSSupport" ref="660482190"/>
 							<reference key="NSControlView" ref="356837571"/>
 							<int key="NSButtonFlags">1211912703</int>
@@ -1899,6 +1902,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					</object>
 				</object>
 				<string key="NSFrameSize">{542, 374}</string>
+				<reference key="NSSuperview"/>
 				<string key="NSClassName">NSView</string>
 			</object>
 			<object class="NSCustomView" id="920170468">
@@ -1957,7 +1961,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					<object class="NSButton" id="549667444">
 						<reference key="NSNextResponder" ref="920170468"/>
 						<int key="NSvFlags">290</int>
-						<string key="NSFrame">{{198, 51}, {413.55, 23}}</string>
+						<string key="NSFrame">{{199.405, 51}, {412.145, 23}}</string>
 						<reference key="NSSuperview" ref="920170468"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="752375349">
@@ -2044,7 +2048,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					<object class="NSSegmentedControl" id="381914504">
 						<reference key="NSNextResponder" ref="920170468"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{10, 51}, {189, 23}}</string>
+						<string key="NSFrame">{{11, 51}, {189, 23}}</string>
 						<reference key="NSSuperview" ref="920170468"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="635216854">
