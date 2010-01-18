@@ -71,14 +71,37 @@
 	#if DEBUG
 		NSLog(@"%s %@", _cmd, sender);
 	#endif
-	if (commitBlock) {
-		NSString *lcpath, *path = screenshotPath;
-		NSString *fn = [filenameTextField stringValue];
 
-		// renamed?
-		if (![[path lastPathComponent] isEqualToString:fn]) {
-			// filename changed -- move file
-			path = [screenshotPath stringByDeletingLastPathComponent];
+	if (!commitBlock) {
+		NSLog(@"%s warning: no commitBlock (nil)", _cmd);
+		return;
+	}
+
+	NSString *lcpath, *path = screenshotPath;
+	NSString *fn = [filenameTextField stringValue];
+	NSString *originalName = [[screenshotPath lastPathComponent] stringByDeletingPathExtension];
+
+	// filename empty or starts with a dot?
+	if ([fn length] == 0 || [fn characterAtIndex:0] == (unichar)'.') {
+		NSAlert *alert;
+		if ([fn length] == 0) {
+			alert = [NSAlert alertWithMessageText:@"Empty filename" defaultButton:@"Use original filename" alternateButton:@"Cancel" otherButton:nil informativeTextWithFormat:@"The filename is empty. This might result in the file being hidden."];
+		}
+		else {
+			alert = [NSAlert alertWithMessageText:@"Weird filename" defaultButton:@"Use original filename" alternateButton:@"Cancel" otherButton:nil informativeTextWithFormat:@"The filename begins with \".\". This might result in the file being hidden."];
+		}
+		if ([alert runModal] == 0) {
+			[filenameTextField setStringValue:originalName];
+			return;
+		}
+	}
+
+	// renamed?
+	if (![originalName isEqualToString:fn]) {
+		// filename changed -- move file
+		path = [screenshotPath stringByDeletingLastPathComponent];
+		NSLog(@"length = %d", [fn length]);
+		if ([fn length] != 0) {
 			path = [path stringByAppendingPathComponent:fn];
 
 			// add file extension (this can definitely be done smarter)
@@ -87,47 +110,48 @@
 				// Add original extension
 				path = [path stringByAppendingPathExtension:[screenshotPath pathExtension]];
 			}
-
-			NSError *error = nil;
-			if (![[NSFileManager defaultManager] moveItemAtPath:screenshotPath toPath:path error:&error]) {
-				NSLog(@"%s failed to rename '%@' --> '%@' because: %@", _cmd, screenshotPath, path, error);
-				path = screenshotPath;
-			}
-		}
-
-		// todo: track ismodified
-
-		// get and save image
-		CGImageRef image;
-		// This official API returns an image w/o any annotations or other funky stuff.
-		//image = [imageView image];
-		// This inofficial, private method do:
-		image = [imageView imageWithOptions:[NSDictionary dictionaryWithObjectsAndKeys:nil]];
-
-		if (image) {
-			// use ImageIO to save the image in the same format as the original
-			NSURL *url = [NSURL fileURLWithPath:path];
-			CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)url, (CFStringRef)imageUTType, 1, NULL);
-			if (dest) {
-				CGImageDestinationAddImage(dest, image, (CFDictionaryRef)imageProperties);
-				CGImageDestinationFinalize(dest);
-				CFRelease(dest);
-			}
-			else {
-				NSLog(@"%s error: CGImageDestinationCreateWithURL returned nil", _cmd);
-				image = nil;
-			}
 		}
 		else {
-			NSLog(@"%s error: no image ([imageView image] returned nil)", _cmd);
+			path = [path stringByAppendingFormat:@"/.%@", [screenshotPath pathExtension]];
 		}
 
-		// continue
-		commitBlock(path);
+		NSError *error = nil;
+		if (![[NSFileManager defaultManager] moveItemAtPath:screenshotPath toPath:path error:&error]) {
+			NSLog(@"%s failed to rename '%@' --> '%@' because: %@", _cmd, screenshotPath, path, error);
+			path = screenshotPath;
+		}
+	}
+
+	// todo: track ismodified
+
+	// get and save image
+	CGImageRef image;
+	// This official API returns an image w/o any annotations or other funky stuff.
+	//image = [imageView image];
+	// This inofficial, private method do:
+	image = [imageView imageWithOptions:[NSDictionary dictionaryWithObjectsAndKeys:nil]];
+
+	if (image) {
+		// use ImageIO to save the image in the same format as the original
+		NSURL *url = [NSURL fileURLWithPath:path];
+		CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)url, (CFStringRef)imageUTType, 1, NULL);
+		if (dest) {
+			CGImageDestinationAddImage(dest, image, (CFDictionaryRef)imageProperties);
+			CGImageDestinationFinalize(dest);
+			CFRelease(dest);
+		}
+		else {
+			NSLog(@"%s error: CGImageDestinationCreateWithURL returned nil", _cmd);
+			image = nil;
+		}
 	}
 	else {
-		NSLog(@"%s warning: no commitBlock (nil)", _cmd);
+		NSLog(@"%s error: no image ([imageView image] returned nil)", _cmd);
 	}
+
+	// continue
+	commitBlock(path);
+
 	[self clear];
 }
 
@@ -152,6 +176,7 @@
 			[commitActionButton setToolTip:@"Crop image to selected area"];
 			[commitActionButton setAction:@selector(crop:)];
 			[commitActionButton setTarget:self];
+			[commitActionButton setHidden:NO];
 			didEnableComplementaryButton = YES;
 			break;
 		case 2: // arrow
@@ -179,6 +204,7 @@
 			[commitActionButton setToolTip:@"Change font"];
 			[commitActionButton setAction:@selector(orderFrontFontPanel:)];
 			[commitActionButton setTarget:[NSFontManager sharedFontManager]];
+			[commitActionButton setHidden:NO];
 			didEnableComplementaryButton = YES;
 			break;
 	}
@@ -188,6 +214,7 @@
 		[commitActionButton setImage:nil];
 		[commitActionButton setToolTip:nil];
 		[commitActionButton setEnabled:NO];
+		[commitActionButton setHidden:YES];
 	}
 }
 

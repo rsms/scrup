@@ -21,11 +21,11 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1168"/>
+			<integer value="629"/>
 			<integer value="513"/>
 			<integer value="1107"/>
-			<integer value="629"/>
 			<integer value="57"/>
+			<integer value="1168"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1961,7 +1961,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					<object class="NSButton" id="549667444">
 						<reference key="NSNextResponder" ref="920170468"/>
 						<int key="NSvFlags">290</int>
-						<string key="NSFrame">{{199.405, 51}, {412.145, 23}}</string>
+						<string key="NSFrame">{{199.405, 51}, {435.595, 23}}</string>
 						<reference key="NSSuperview" ref="920170468"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="752375349">
@@ -2064,7 +2064,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 										<string key="NSClassName">NSImage</string>
 										<string key="NSResourceName">move</string>
 									</object>
-									<string key="NSSegmentItemTooltip">Move around the image</string>
+									<string key="NSSegmentItemTooltip">Move around in the image by holding your mouse button and moving the mouse</string>
 									<bool key="NSSegmentItemSelected">YES</bool>
 									<int key="NSSegmentItemImageScaling">2</int>
 								</object>
@@ -2084,7 +2084,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 										<string key="NSClassName">NSImage</string>
 										<string key="NSResourceName">BottomTB_line</string>
 									</object>
-									<string key="NSSegmentItemTooltip">Crop the image to only retain the most important part</string>
+									<string key="NSSegmentItemTooltip">Draw editable arrows</string>
 									<int key="NSSegmentItemTag">2</int>
 									<int key="NSSegmentItemImageScaling">0</int>
 								</object>
@@ -2094,6 +2094,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 										<string key="NSClassName">NSImage</string>
 										<string key="NSResourceName">BottomTB_ellipse</string>
 									</object>
+									<string key="NSSegmentItemTooltip">Draw ellipse</string>
 									<int key="NSSegmentItemTag">3</int>
 									<int key="NSSegmentItemImageScaling">2</int>
 								</object>
@@ -2103,6 +2104,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 										<string key="NSClassName">NSImage</string>
 										<string key="NSResourceName">BottomTB_rectangle</string>
 									</object>
+									<string key="NSSegmentItemTooltip">Draw rectangles</string>
 									<int key="NSSegmentItemImageScaling">0</int>
 								</object>
 								<object class="NSSegmentItem">
@@ -2111,6 +2113,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 										<string key="NSClassName">NSImage</string>
 										<string key="NSResourceName">BottomTB_freeText</string>
 									</object>
+									<string key="NSSegmentItemTooltip">Add text annotations</string>
 									<int key="NSSegmentItemImageScaling">0</int>
 								</object>
 							</object>
@@ -2217,31 +2220,6 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 							<int key="NSPeriodicInterval">75</int>
 						</object>
 					</object>
-					<object class="NSButton" id="1012252365">
-						<reference key="NSNextResponder" ref="920170468"/>
-						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{5, 10}, {176, 32}}</string>
-						<reference key="NSSuperview" ref="920170468"/>
-						<bool key="NSEnabled">YES</bool>
-						<object class="NSButtonCell" key="NSCell" id="590129657">
-							<int key="NSCellFlags">-1543373312</int>
-							<int key="NSCellFlags2">134217728</int>
-							<string key="NSContents">Edit in External app...</string>
-							<reference key="NSSupport" ref="660482190"/>
-							<reference key="NSControlView" ref="1012252365"/>
-							<int key="NSButtonFlags">-2034876161</int>
-							<int key="NSButtonFlags2">129</int>
-							<object class="NSFont" key="NSAlternateImage" id="1017277130">
-								<string key="NSName">LucidaGrande</string>
-								<double key="NSSize">13</double>
-								<int key="NSfFlags">16</int>
-							</object>
-							<string key="NSAlternateContents"/>
-							<string key="NSKeyEquivalent"/>
-							<int key="NSPeriodicDelay">400</int>
-							<int key="NSPeriodicInterval">75</int>
-						</object>
-					</object>
 					<object class="NSButton" id="445018527">
 						<reference key="NSNextResponder" ref="920170468"/>
 						<int key="NSvFlags">289</int>
@@ -2256,7 +2234,11 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 							<reference key="NSControlView" ref="445018527"/>
 							<int key="NSButtonFlags">-2034876161</int>
 							<int key="NSButtonFlags2">129</int>
-							<reference key="NSAlternateImage" ref="1017277130"/>
+							<object class="NSFont" key="NSAlternateImage">
+								<string key="NSName">LucidaGrande</string>
+								<double key="NSSize">13</double>
+								<int key="NSfFlags">16</int>
+							</object>
 							<string key="NSAlternateContents"/>
 							<string type="base64-UTF8" key="NSKeyEquivalent">Gw</string>
 							<int key="NSPeriodicDelay">400</int>
@@ -3407,14 +3389,6 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 						</object>
 					</object>
 					<int key="connectionID">1191</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">performCancel:</string>
-						<reference key="source" ref="808225152"/>
-						<reference key="destination" ref="1012252365"/>
-					</object>
-					<int key="connectionID">1194</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -4850,7 +4824,6 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 							<reference ref="936392616"/>
 							<reference ref="645445570"/>
 							<reference ref="445018527"/>
-							<reference ref="1012252365"/>
 							<reference ref="381914504"/>
 							<reference ref="478430710"/>
 							<reference ref="963888645"/>
@@ -4946,20 +4919,6 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 						<int key="objectID">1190</int>
 						<reference key="object" ref="614412107"/>
 						<reference key="parent" ref="225809161"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1192</int>
-						<reference key="object" ref="1012252365"/>
-						<object class="NSMutableArray" key="children">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="590129657"/>
-						</object>
-						<reference key="parent" ref="920170468"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1193</int>
-						<reference key="object" ref="590129657"/>
-						<reference key="parent" ref="1012252365"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1198</int>
@@ -5180,8 +5139,6 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					<string>1187.IBPluginDependency</string>
 					<string>1189.IBPluginDependency</string>
 					<string>1190.IBPluginDependency</string>
-					<string>1192.IBPluginDependency</string>
-					<string>1193.IBPluginDependency</string>
 					<string>1195.IBPluginDependency</string>
 					<string>1198.IBAttributePlaceholdersKey</string>
 					<string>1198.IBPluginDependency</string>
@@ -5494,7 +5451,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{196, 282}, {646, 520}}</string>
+					<string>{{191, 282}, {646, 520}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSMutableDictionary">
 						<string key="NS.key.0">ToolTip</string>
@@ -5507,8 +5464,6 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.imagekit.ibplugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5724,7 +5679,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					<integer value="1"/>
 					<string>{{192, 603}, {616, 0}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{218, 313}, {542, 218}}</string>
+					<string>{{234, 338}, {542, 218}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
