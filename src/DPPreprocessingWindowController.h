@@ -5,6 +5,7 @@
 
 @interface DPPreprocessingWindowController : NSWindowController <NSWindowDelegate> {
 	IBOutlet DPAppDelegate *appDelegate;
+	IBOutlet NSButton *defaultButton; // "Upload"
 	IBOutlet NSTextField *filenameTextField;
 	IBOutlet IKImageView *imageView;
 	IBOutlet NSButton *commitActionButton; // crop, etc

@@ -260,4 +260,8 @@
 	[imageView zoomOut:sender];
 }
 
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+	[defaultButton setKeyEquivalent:@"\r"];
+}
+
 @end

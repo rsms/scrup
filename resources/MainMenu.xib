@@ -21,11 +21,11 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="1168"/>
+			<integer value="57"/>
+			<integer value="1107"/>
 			<integer value="629"/>
 			<integer value="513"/>
-			<integer value="1107"/>
-			<integer value="57"/>
-			<integer value="1168"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3462,6 +3462,14 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 					</object>
 					<int key="connectionID">1292</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">defaultButton</string>
+						<reference key="source" ref="808225152"/>
+						<reference key="destination" ref="936392616"/>
+					</object>
+					<int key="connectionID">1293</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -5772,7 +5780,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1292</int>
+			<int key="maxID">1293</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5885,6 +5893,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>appDelegate</string>
 							<string>commitActionButton</string>
+							<string>defaultButton</string>
 							<string>filenameTextField</string>
 							<string>imageView</string>
 							<string>toolbarSegmentedControl</string>
@@ -5892,6 +5901,7 @@ ZCBzb3VyY2UgY29kZSBhdCBodHRwOi8vZ2l0aHViLmNvbS9yc21zL3NjcnVwA</string>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>DPAppDelegate</string>
+							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSTextField</string>
 							<string>IKImageView</string>
