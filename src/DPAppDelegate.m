@@ -1181,7 +1181,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 		"/tmp/output"
 	};
 	argv[PNCARGC-2] = (char *)/* this is safe -- it won't be altered */[path UTF8String];
-	tmppath = [[path stringByDeletingLastPathComponent] stringByAppendingString:@".pngcrush.XXXXXX"];
+	tmppath = [cacheDir stringByAppendingString:@"pngcrush.XXXXXX"];
 	tmpntpl = strdup([tmppath UTF8String]);
 	argv[PNCARGC-1] = mktemp(tmpntpl);
 
@@ -1200,15 +1200,16 @@ extern int pngcrush_main(int argc, char *argv[]);
 		else
 			[log debug:@"debug: [pngcrush] crushed \"%@\"", path];
 
-		if (![fm removeItemAtPath:path error:&err]){
-			[log error:@"[pngcrush] unlink(\"%@\") failed -- %@", path, err];
-		}
-		if (![fm moveItemAtPath:tmppath toPath:path error:&err]) {
-			[log error:@"error: [pngcrush] rename(\"%s\", \"%@\") failed -- %@", argv[PNCARGC-1], path, err];
+		NSURL *resultingURL = nil;
+		success = [fm replaceItemAtURL:[NSURL fileURLWithPath:path]
+										 withItemAtURL:[NSURL fileURLWithPath:tmppath]
+										backupItemName:nil
+													 options:0
+									resultingItemURL:&resultingURL
+														 error:&err];
+		if (!success) {
+			[log error:@"error: [pngcrush] atomic/safe rename \"%s\" --> \"%@\" failed: %@", argv[PNCARGC-1], path, err];
 			[fm removeItemAtPath:tmppath error:nil];
-		}
-		else {
-			success = YES;
 		}
 	}
 	else {
