@@ -8,11 +8,42 @@
 			body { margin: 2px 12px 12px 12px; font-size:13px; background:white; color:#222; }
 			p,li,a,a:hover,h1,h2,h3 { font-family:helvetica,arial,sans-serif; }
 			h2 { font-size:16px; }
+			section { display:block; clear:both; }
 		</style>
 	</head>
 	<body>
+		<section id="version-1.3">
+			<h2>Version 1.3</h2><a href="http://farm5.static.flickr.com/4058/4311662638_00be0d79d3_o.png" target="_blank"><img src="http://farm5.static.flickr.com/4058/4311662638_5ff27abfde_m.jpg" width="200" height="132" alt="Scrup 1.3" align="right" /></a>
+			<ul>
+				<li>Interactive preprocessing interface: (pictured)
+					<ul>
+						<li>Simple interactive interface automatically pops up when a new screenshot is taken.</li>
+						<li>Add arrows, lines and other basic graphics, all editable as separate "layers".</li>
+						<li>Add text annotations using different fonts and colors.</li>
+						<li>Copy, paste, obscure and duplicate parts of the image.</li>
+						<li>Crop images and apply basic adjustments like hue, saturation, brightness, etc.</li>
+						<li>Edit the filename (which is also sent to your <tt>recv.php</tt>. With some creative
+							thinking, this can be used for a wide range of tasks)</li>
+						<li>Ability to cancel certain uploads.</li>
+						<li>The interactive interface can be disabled in preferences, in which case Scrup 
+							will not steal your attention (just like the previousversion).
+						</li>
+						<li>One more thing: <em>This feature is beta quality</em> (as in "a bit shaky"). Zooming is somewhat retarded and 
+							changing color of text annotations have a stochastic success rate :). Please
+							report any issues you think are woth fixing. Thanks.
+						</li>
+					</ul>
+				</li>
+				<li>Much more robust pick-up — no more accidentally uploading stuff you save 
+					from Safari (Scrup is now reading xattrs to confirm a file is actually a legit 
+					and fresh screenshot)
+				</li>
+				<li>Respects <tt>defaults</tt> settings in the com.apple.screencapture domain.
+					Thanks to @rduenasf and @jfro</li>
+			</ul>
+		</section>
 		<section id="version-1.2">
-			<h2>Version 1.2</h2><a href="http://farm3.static.flickr.com/2700/4134384795_3c432eafb5_o.png"><img src="http://farm3.static.flickr.com/2700/4134384795_3c432eafb5_o.png" width="200" alt="Screen shot" align="right" /></a>
+			<h2>Version 1.2</h2><a href="http://farm3.static.flickr.com/2700/4134384795_3c432eafb5_o.png" target="_blank"><img src="http://farm3.static.flickr.com/2700/4134384795_3c432eafb5_o.png" width="200" alt="Screen shot" align="right" /></a>
 			<ul>
 				<li>Support for international, non-english systems.</li>
 				<li>Images in the menu making it easy to find previous uploads.</li>

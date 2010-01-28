@@ -276,7 +276,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 }
 
 
-- (void(^)(void))dequeueDisplayOfPreprocessingUI {
+- (void)dequeueDisplayOfPreprocessingUI {
 	if (preprocessingUIBlockQueue && [preprocessingUIBlockQueue count]) {
 		void(^nextBlock)(void) = [preprocessingUIBlockQueue objectAtIndex:0];
 		[preprocessingUIBlockQueue removeObjectAtIndex:0];
@@ -328,7 +328,6 @@ extern int pngcrush_main(int argc, char *argv[]);
 	NSDate *mod;
 	NSError *error;
 	NSDictionary *attrs;
-	int fd;
 
 	direntries = [fm contentsOfDirectoryAtPath:dirpath error:&error];
 	if (!direntries) {
