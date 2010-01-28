@@ -511,6 +511,16 @@ extern int pngcrush_main(int argc, char *argv[]);
 		[g_opq addOperation:postOp];
 	};
 
+	// Strip xattr:com.apple.metadata:kMDItemIsScreenCapture
+	[log debug:@"Stripping xattr:com.apple.metadata:kMDItemIsScreenCapture from %@", path];
+	NSString *cmd = [NSString stringWithFormat:@"/usr/bin/xattr -d com.apple.metadata:kMDItemIsScreenCapture %@",
+	                                           [path shellArgumentRepresentation]];
+	int rc = system([cmd UTF8String]);
+	if (rc != 0) {
+		[log warn:@"Failed to strip xattr:com.apple.metadata:kMDItemIsScreenCapture from %@ (xattr exited with %d)",
+							path, rc];
+	}
+
 	// UI-based preprocessing?
 	if (self.enablePreprocessingUI) {
 		[self enqueueDisplayOfPreprocessingUIForScreenshotAtPath:path
