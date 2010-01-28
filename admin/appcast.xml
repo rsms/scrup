@@ -65,5 +65,17 @@
 				sparkle:dsaSignature="MC4CFQCGoDGLQyuusiwWYnvPDj3J/aYkZAIVAIN3WWjvhUch8TKE9VPrgyD59kc4"
 			/>
 		</item>
+		<item>
+			<title>Version 1.3.2</title>
+			<sparkle:releaseNotesLink>http://hunch.se/scrup/release-notes.html#version-1.3.2</sparkle:releaseNotesLink>
+			<pubDate>Thu, 28 Jan 2010 18:18:55 +0100</pubDate>
+			<enclosure
+				url="http://hunch.se/scrup/dist/scrup-1.3.2.zip"
+				sparkle:version="1.3.2"
+				type="application/octet-stream"
+				length="1193275"
+				sparkle:dsaSignature="MC0CFQCKr+VNFy6pDKUzGRioEL1MN4z3pgIUTeWhIhTrgNIna4pbb2i96we3bD8="
+			/>
+		</item>
 	</channel>
 </rss>
