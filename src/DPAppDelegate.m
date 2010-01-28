@@ -26,6 +26,8 @@ extern int pngcrush_main(int argc, char *argv[]);
 
 @implementation DPAppDelegate
 
+@synthesize cacheDir;
+
 #pragma mark -
 #pragma mark Initialization & setup
 

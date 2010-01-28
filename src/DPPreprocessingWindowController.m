@@ -98,9 +98,9 @@
 
 	// renamed?
 	if (![originalName isEqualToString:fn]) {
+		NSLog(@"filename changed from '%@' --> '%@'", originalName, fn);
 		// filename changed -- move file
-		path = [screenshotPath stringByDeletingLastPathComponent];
-		NSLog(@"length = %d", [fn length]);
+		path = appDelegate.cacheDir;
 		if ([fn length] != 0) {
 			path = [path stringByAppendingPathComponent:fn];
 

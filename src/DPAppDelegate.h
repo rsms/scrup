@@ -64,6 +64,7 @@
 	trashAfterSuccessfulUpload, enablePreprocessingUI;
 
 @property(readonly) BOOL preprocessingWindowIsActive;
+@property(readonly) NSString *cacheDir;
 
 -(void)checkForScreenshotsAtPath:(NSString *)dirpath;
 -(NSDictionary *)screenshotsAtPath:(NSString *)dirpath modifiedAfterDate:(NSDate *)lmod;
