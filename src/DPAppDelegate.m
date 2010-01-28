@@ -1005,7 +1005,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	// WARNING: Possible problem: "FNObject 469-101" is a string we have found by trial-and-error
 	// and is far from official or even documented, thus might differ in future OS versions etc.
 	// But since there are a _lot_ of directory notifications received, we need this op.
-	if (obj && [obj isKindOfClass:[NSString class]] && [obj isEqualToString:@"FNObject 469-101"]) {
+	if (obj && [obj isKindOfClass:[NSString class]]) {
 		[self checkForScreenshotsAtPath:screenshotLocation];
 	}
 }
