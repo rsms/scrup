@@ -51,6 +51,7 @@
 		3A9D2A5F1061B083008923FD /* status-item-sending.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9D2A5C1061B083008923FD /* status-item-sending.png */; };
 		3A9D2A601061B083008923FD /* status-item-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9D2A5D1061B083008923FD /* status-item-selected.png */; };
 		3A9DE50C10999E35008F35E2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A9DE50B10999E35008F35E2 /* CoreServices.framework */; };
+		3AA76F2E1111F34B00D8BDC0 /* libm.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AA76F2C1111F34200D8BDC0 /* libm.dylib */; };
 		3ABE5EAF10B588700085BAC3 /* HTTPPOSTOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */; };
 		3ADC9B3210FF537F00EDEE39 /* DPCheckerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADC9B3110FF537F00EDEE39 /* DPCheckerView.m */; };
 		3ADC9B4310FF54A300EDEE39 /* checker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9B4210FF54A300EDEE39 /* checker.png */; };
@@ -196,6 +197,7 @@
 		3A9D2A5C1061B083008923FD /* status-item-sending.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-sending.png"; path = "resources/status-item-sending.png"; sourceTree = "<group>"; };
 		3A9D2A5D1061B083008923FD /* status-item-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-selected.png"; path = "resources/status-item-selected.png"; sourceTree = "<group>"; };
 		3A9DE50B10999E35008F35E2 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		3AA76F2C1111F34200D8BDC0 /* libm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libm.dylib; path = usr/lib/libm.dylib; sourceTree = SDKROOT; };
 		3ABE5EAD10B588700085BAC3 /* HTTPPOSTOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPPOSTOperation.h; path = src/HTTPPOSTOperation.h; sourceTree = "<group>"; };
 		3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HTTPPOSTOperation.m; path = src/HTTPPOSTOperation.m; sourceTree = "<group>"; };
 		3ADC9B3010FF537F00EDEE39 /* DPCheckerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPCheckerView.h; path = src/DPCheckerView.h; sourceTree = "<group>"; };
@@ -275,6 +277,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AA76F2E1111F34B00D8BDC0 /* libm.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,6 +404,7 @@
 			children = (
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+				3AA76F2C1111F34200D8BDC0 /* libm.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -798,7 +802,6 @@
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = pngcrush;
@@ -815,7 +818,9 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_AUTO_VECTORIZATION = YES;
+				GCC_DEBUGGING_SYMBOLS = used;
 				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
@@ -824,7 +829,7 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_UNROLL_LOOPS = YES;
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = pngcrush;
@@ -852,7 +857,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = NO;
 				GCC_WARN_UNUSED_VALUE = YES;
@@ -880,7 +885,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = NO;
 				GCC_WARN_UNUSED_VALUE = YES;
