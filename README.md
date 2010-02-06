@@ -1,6 +1,6 @@
 # Scrup
 
-[<img src="http://farm3.static.flickr.com/2567/4121191747_3002198bb5_o.png" width="126" height="96" alt="Scrup icon" align="right" />](http://hunch.se/scrup/dist/scrup-1.3.zip) <img src="http://farm3.static.flickr.com/2522/4122092624_b2a9450bfe_o.png" width="350" height="382" alt="Scrup in the menu bar" /> [<img src="http://farm5.static.flickr.com/4058/4311662638_5ff27abfde_m.jpg" width="240" height="158" alt="Scrup 1.3" />](http://farm5.static.flickr.com/4058/4311662638_00be0d79d3_o.png)
+[<img src="http://farm3.static.flickr.com/2567/4121191747_3002198bb5_o.png" width="126" height="96" alt="Scrup icon" align="right" />](http://hunch.se/scrup/dist/scrup-1.3.2.zip) <img src="http://farm3.static.flickr.com/2522/4122092624_b2a9450bfe_o.png" width="350" height="382" alt="Scrup in the menu bar" /> [<img src="http://farm5.static.flickr.com/4058/4311662638_5ff27abfde_m.jpg" width="240" height="158" alt="Scrup 1.3" />](http://farm5.static.flickr.com/4058/4311662638_00be0d79d3_o.png)
 
 Take a screenshot in OS X and have a URL to the picture in your pasteboard a second later.
 
@@ -10,7 +10,7 @@ For Mac OS X 10.6 Snow Leopard.
 
 ## Download & install
 
-- [Download Scrup](http://hunch.se/scrup/dist/scrup-1.3.zip)
+- [Download Scrup](http://hunch.se/scrup/dist/scrup-1.3.2.zip)
 
 - Move Scrup to your Applications folder and double-click the bastard.
 
