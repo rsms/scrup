@@ -20,7 +20,11 @@ For Mac OS X 10.6 Snow Leopard.
 
 - Take a screenshot and you should see the Scrup icon turning into a check mark, indicating success. (If you see a red badge something failed. Open Console.app and look what Scrup says.)
 
-> If you need something more advanced to receive your screenshots, have a look at [django-scrup](http://github.com/idangazit/django-scrup/) -- a django-based web receiver which stores screen captures on Amazon S3.
+## Receivers & extensions
+
+- **[django-scrup](http://github.com/idangazit/django-scrup/)** is a Django-based web receiver which stores screen captures on Amazon S3.
+
+- **[Indexr](http://code.google.com/p/indexr/)** is a "small footprint image/file lister" written in PHP which provides a sort of browser/gallery. [Live demo here](http://firedev.com/indexr/)
 
 
 ## Details
