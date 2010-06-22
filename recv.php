@@ -14,7 +14,7 @@ function pathfromid($id, $suffix='') {
 }
 # Build path and url
 if (!isset($_GET['name']) || !trim($_GET['name']))
-	rsperr('missing name parameter');
+	$_GET['name'] = strval(time());
 $id = substr(base_convert(md5($_GET['name'].' '.$_SERVER['REMOTE_ADDR']), 16, 36),0,15);
 $suffix = strrchr($_GET['name'], '.');
 $path = pathfromid($id, $suffix);
