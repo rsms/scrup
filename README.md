@@ -8,6 +8,7 @@ Take a screenshot in OS X and have a URL to the picture in your pasteboard a sec
 
 For Mac OS X 10.6 Snow Leopard.
 
+
 ## Download & install
 
 - [Download Scrup](http://hunch.se/scrup/dist/scrup-1.3.2.zip)
@@ -22,11 +23,17 @@ For Mac OS X 10.6 Snow Leopard.
 
 - Take a screenshot and you should see the Scrup icon turning into a check mark, indicating success. (If you see a red badge something failed. Open Console.app and look what Scrup says.)
 
+
 ## Receivers & extensions
 
 - **[django-scrup](http://github.com/idangazit/django-scrup/)** is a Django-based web receiver which stores screen captures on Amazon S3.
 
 - **[Indexr](http://code.google.com/p/indexr/)** is a "small footprint image/file lister" written in PHP which provides a sort of browser/gallery. [Live demo here](http://firedev.com/indexr/)
+
+
+## Alternate versions
+
+There are a few forks (alternate versions) of Scrup (e.g. adding Growl support, playing sounds, etc) which might be interesting. Check out [the fork network](http://github.com/rsms/scrup/network) for a list of these variants.
 
 
 ## Details
@@ -41,6 +48,7 @@ For Mac OS X 10.6 Snow Leopard.
 
 There is an example PHP implementation called [`recv.php`](http://github.com/rsms/scrup/blob/master/recv.php) which you can use and/or modify to setup your receiver. Make sure to set your URL in the preferences.
 
+
 ## Building
 
 You'll need libpngcrush to build Scrup. libpngcrush is an external submodule of Scrup which you'll need to update after you've checked out the scrup source:
@@ -50,9 +58,11 @@ You'll need libpngcrush to build Scrup. libpngcrush is an external submodule of 
 
 You only need to do this once. Now, build Scrup in Xcode.
 
+
 ## Authors
 
 - Rasmus Andersson <http://hunch.se/>
+
 
 ## License
 
