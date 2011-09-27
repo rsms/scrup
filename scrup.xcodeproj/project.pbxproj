@@ -50,8 +50,6 @@
 		3A9D2A5E1061B083008923FD /* status-item-standby.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9D2A5B1061B083008923FD /* status-item-standby.png */; };
 		3A9D2A5F1061B083008923FD /* status-item-sending.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9D2A5C1061B083008923FD /* status-item-sending.png */; };
 		3A9D2A601061B083008923FD /* status-item-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9D2A5D1061B083008923FD /* status-item-selected.png */; };
-		3A9DE50C10999E35008F35E2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A9DE50B10999E35008F35E2 /* CoreServices.framework */; };
-		3AA76F2E1111F34B00D8BDC0 /* libm.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AA76F2C1111F34200D8BDC0 /* libm.dylib */; };
 		3ABE5EAF10B588700085BAC3 /* HTTPPOSTOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */; };
 		3ADC9B3210FF537F00EDEE39 /* DPCheckerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADC9B3110FF537F00EDEE39 /* DPCheckerView.m */; };
 		3ADC9B4310FF54A300EDEE39 /* checker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9B4210FF54A300EDEE39 /* checker.png */; };
@@ -60,7 +58,6 @@
 		3ADC9BC010FF926200EDEE39 /* crop.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9BBF10FF926200EDEE39 /* crop.png */; };
 		3ADC9C5D10FFC04000EDEE39 /* move.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9C5C10FFC04000EDEE39 /* move.png */; };
 		3ADC9C6710FFC42200EDEE39 /* rect.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9C6610FFC42200EDEE39 /* rect.png */; };
-		3ADC9E0910FFECE200EDEE39 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ADC9E0810FFECE200EDEE39 /* QuartzCore.framework */; };
 		3ADC9E7110FFF35F00EDEE39 /* BottomTB_ellipse.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E6C10FFF35F00EDEE39 /* BottomTB_ellipse.png */; };
 		3ADC9E7210FFF35F00EDEE39 /* BottomTB_fonts.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E6D10FFF35F00EDEE39 /* BottomTB_fonts.png */; };
 		3ADC9E7310FFF35F00EDEE39 /* BottomTB_freeText.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADC9E6E10FFF35F00EDEE39 /* BottomTB_freeText.png */; };
@@ -196,8 +193,6 @@
 		3A9D2A5B1061B083008923FD /* status-item-standby.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-standby.png"; path = "resources/status-item-standby.png"; sourceTree = "<group>"; };
 		3A9D2A5C1061B083008923FD /* status-item-sending.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-sending.png"; path = "resources/status-item-sending.png"; sourceTree = "<group>"; };
 		3A9D2A5D1061B083008923FD /* status-item-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-item-selected.png"; path = "resources/status-item-selected.png"; sourceTree = "<group>"; };
-		3A9DE50B10999E35008F35E2 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
-		3AA76F2C1111F34200D8BDC0 /* libm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libm.dylib; path = usr/lib/libm.dylib; sourceTree = SDKROOT; };
 		3ABE5EAD10B588700085BAC3 /* HTTPPOSTOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPPOSTOperation.h; path = src/HTTPPOSTOperation.h; sourceTree = "<group>"; };
 		3ABE5EAE10B588700085BAC3 /* HTTPPOSTOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HTTPPOSTOperation.m; path = src/HTTPPOSTOperation.m; sourceTree = "<group>"; };
 		3ADC9B3010FF537F00EDEE39 /* DPCheckerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPCheckerView.h; path = src/DPCheckerView.h; sourceTree = "<group>"; };
@@ -208,7 +203,6 @@
 		3ADC9BBF10FF926200EDEE39 /* crop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = crop.png; path = resources/crop.png; sourceTree = "<group>"; };
 		3ADC9C5C10FFC04000EDEE39 /* move.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = move.png; path = resources/move.png; sourceTree = "<group>"; };
 		3ADC9C6610FFC42200EDEE39 /* rect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rect.png; path = resources/rect.png; sourceTree = "<group>"; };
-		3ADC9E0810FFECE200EDEE39 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3ADC9E6C10FFF35F00EDEE39 /* BottomTB_ellipse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_ellipse.png; path = resources/BottomTB_ellipse.png; sourceTree = "<group>"; };
 		3ADC9E6D10FFF35F00EDEE39 /* BottomTB_fonts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_fonts.png; path = resources/BottomTB_fonts.png; sourceTree = "<group>"; };
 		3ADC9E6E10FFF35F00EDEE39 /* BottomTB_freeText.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BottomTB_freeText.png; path = resources/BottomTB_freeText.png; sourceTree = "<group>"; };
@@ -277,7 +271,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AA76F2E1111F34B00D8BDC0 /* libm.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,10 +281,8 @@
 				3AE5605310BC9D02006A7F94 /* libpngcrush.a in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				3A919A57106586E4002D0F4B /* Sparkle.framework in Frameworks */,
-				3A9DE50C10999E35008F35E2 /* CoreServices.framework in Frameworks */,
 				3A1C752510BB0FF500BC6030 /* Security.framework in Frameworks */,
 				3A90678910FE9417009B6B2F /* Quartz.framework in Frameworks */,
-				3ADC9E0910FFECE200EDEE39 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,7 +293,6 @@
 			isa = PBXGroup;
 			children = (
 				3A90678810FE9417009B6B2F /* Quartz.framework */,
-				3A9DE50B10999E35008F35E2 /* CoreServices.framework */,
 				3A919A56106586E4002D0F4B /* Sparkle.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				3A1C752410BB0FF500BC6030 /* Security.framework */,
@@ -336,7 +326,6 @@
 				29B97317FDCFA39411CA2CEA /* resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				3ADC9E0810FFECE200EDEE39 /* QuartzCore.framework */,
 			);
 			name = Dropub;
 			sourceTree = "<group>";
@@ -404,7 +393,6 @@
 			children = (
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
-				3AA76F2C1111F34200D8BDC0 /* libm.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -568,6 +556,7 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "scrup" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
