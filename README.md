@@ -30,6 +30,8 @@ For Mac OS X 10.6 Snow Leopard.
 
 - **[Indexr](http://code.google.com/p/indexr/)** is a "small footprint image/file lister" written in PHP which provides a sort of browser/gallery. [Live demo here](http://firedev.com/indexr/)
 
+- **[scrup-node-receiver](https://github.com/benmills/scrup-node-receiver)** is a simple Scrup receiver for Node.js which keeps a backlog of images in memory rather than writing them to disk.
+
 
 ## Alternate versions
 
