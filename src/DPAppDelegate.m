@@ -65,7 +65,6 @@ extern int pngcrush_main(int argc, char *argv[]);
     eventManager = [[SCEvents alloc] init];
     [eventManager setDelegate:self];
     [eventManager setNotificationLatency:1];
-    [eventManager setIgnoreEventsFromSubDirs:YES];
 
 	// set boolean properties from user defaults or give them default values
 	#define SETDEFBOOL(_member_, _defval_) \
