@@ -114,6 +114,8 @@
 		3AE5627110BCB36B006A7F94 /* ASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5627010BCB36B006A7F94 /* ASLLogger.m */; };
 		3AE5633D10BCCB21006A7F94 /* toolbar-processing.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AE5633C10BCCB21006A7F94 /* toolbar-processing.png */; };
 		3AF2B0C810FE90610052B40E /* MAAttachedWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AF2B0C710FE90610052B40E /* MAAttachedWindow.m */; };
+		515A234C1599BA7700EC6455 /* SCEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 515A23481599BA7700EC6455 /* SCEvent.m */; };
+		515A234D1599BA7700EC6455 /* SCEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 515A234B1599BA7700EC6455 /* SCEvents.m */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -262,6 +264,12 @@
 		3AE5633C10BCCB21006A7F94 /* toolbar-processing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-processing.png"; path = "resources/toolbar-processing.png"; sourceTree = "<group>"; };
 		3AF2B0C610FE90610052B40E /* MAAttachedWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MAAttachedWindow.h; path = src/MAAttachedWindow.h; sourceTree = "<group>"; };
 		3AF2B0C710FE90610052B40E /* MAAttachedWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MAAttachedWindow.m; path = src/MAAttachedWindow.m; sourceTree = "<group>"; };
+		515A23461599BA7700EC6455 /* SCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCConstants.h; sourceTree = "<group>"; };
+		515A23471599BA7700EC6455 /* SCEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEvent.h; sourceTree = "<group>"; };
+		515A23481599BA7700EC6455 /* SCEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCEvent.m; sourceTree = "<group>"; };
+		515A23491599BA7700EC6455 /* SCEventListenerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEventListenerProtocol.h; sourceTree = "<group>"; };
+		515A234A1599BA7700EC6455 /* SCEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEvents.h; sourceTree = "<group>"; };
+		515A234B1599BA7700EC6455 /* SCEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCEvents.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; name = Info.plist; path = resources/Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Scrup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -419,6 +427,12 @@
 		3A7AD03710669AF800AF4940 /* 3rd party */ = {
 			isa = PBXGroup;
 			children = (
+				515A23461599BA7700EC6455 /* SCConstants.h */,
+				515A23471599BA7700EC6455 /* SCEvent.h */,
+				515A23481599BA7700EC6455 /* SCEvent.m */,
+				515A23491599BA7700EC6455 /* SCEventListenerProtocol.h */,
+				515A234A1599BA7700EC6455 /* SCEvents.h */,
+				515A234B1599BA7700EC6455 /* SCEvents.m */,
 				3AE55FA610BC9566006A7F94 /* pngcrush */,
 				3A1C74FC10BB0F4500BC6030 /* PFMoveApplication.h */,
 				3A1C74FD10BB0F4500BC6030 /* PFMoveApplication.m */,
@@ -701,6 +715,8 @@
 				3A90685910FE9D29009B6B2F /* DPPreprocessingWindowController.m in Sources */,
 				3ADC9B3210FF537F00EDEE39 /* DPCheckerView.m in Sources */,
 				3ADC9F1B1100AC9300EDEE39 /* DPAttachedWindow.m in Sources */,
+				515A234C1599BA7700EC6455 /* SCEvent.m in Sources */,
+				515A234D1599BA7700EC6455 /* SCEvents.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -794,7 +810,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = pngcrush;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				VALID_ARCHS = "i386 ppc ppc64 ppc7400 ppc970 x86_64";
 			};
 			name = Debug;
@@ -822,7 +838,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = pngcrush;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				VALID_ARCHS = "i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				ZERO_LINK = NO;
 			};
@@ -853,7 +869,7 @@
 				INFOPLIST_FILE = resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = Scrup;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -881,7 +897,7 @@
 				INFOPLIST_FILE = resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = Scrup;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};
