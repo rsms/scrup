@@ -64,7 +64,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 	preprocessingUIBlockQueue = [NSMutableArray array];
     eventManager = [[SCEvents alloc] init];
     [eventManager setDelegate:self];
-    [eventManager setNotificationLatency:0.5];
+    [eventManager setNotificationLatency:1];
     [eventManager setIgnoreEventsFromSubDirs:YES];
 
 	// set boolean properties from user defaults or give them default values
@@ -109,7 +109,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 				&& [[NSFileManager defaultManager] fileExistsAtPath:s]
 			 )
 		{
-			screenshotLocation = s;
+            // Trim / suffix to be sure we can ignore safely subdirectories in FSEvent
+            if([s hasSuffix:@"/"] && [s length] > 2) {
+                screenshotLocation = [s substringToIndex:[s length] - 1];
+            } else {
+                screenshotLocation = s; 
+            }
 			[log info:@"using com.apple.screencapture location => \"%@\"", screenshotLocation];
 		}
 		// type
@@ -1013,8 +1018,20 @@ extern int pngcrush_main(int argc, char *argv[]);
 }
 
 - (void)pathWatcher:(SCEvents *)pathWatcher eventOccurred:(SCEvent *)event {
+    #if DEBUG
     [log debug:@"Received SCEvents directory notification"];
-    [self checkForScreenshotsAtPath:screenshotLocation];
+    #endif
+    NSString *eventPath = [event eventPath];
+    if([eventPath hasSuffix:@"/"] && [eventPath length] > 2)
+        eventPath = [eventPath substringToIndex:[eventPath length] - 1];
+    if([eventPath isEqualToString:screenshotLocation]) {
+        [self checkForScreenshotsAtPath:screenshotLocation];
+    }
+    #if DEBUG
+    else {
+        [log debug:@"Event in subfolder, ignoring"];
+    }
+    #endif
 }
 
 - (void)startObservingDesktop {
