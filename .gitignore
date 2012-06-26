@@ -1,4 +1,5 @@
 build
 *.xcodeproj/*.pbxuser
 *.xcodeproj/*.mode1v*
+*.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserdatad
 src/pngcrush-generated.c
