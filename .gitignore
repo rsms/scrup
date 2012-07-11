@@ -4,3 +4,5 @@ build
 *.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserdatad
 *.xcodeproj/xcuserdata/*.xcuserdatad
 src/pngcrush-generated.c
+.DS_Store
+

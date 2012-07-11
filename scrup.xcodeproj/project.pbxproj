@@ -22,6 +22,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		14F5B9CA15AD484400368031 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 14F5B9C215AD484400368031 /* .gitignore */; };
+		14F5B9CB15AD484400368031 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 14F5B9C315AD484400368031 /* README.md */; };
+		14F5B9CC15AD484400368031 /* SCEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 14F5B9C615AD484400368031 /* SCEvent.m */; };
+		14F5B9CD15AD484400368031 /* SCEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 14F5B9C915AD484400368031 /* SCEvents.m */; };
 		3A1504AE10618DDF00263983 /* DPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A1504AD10618DDF00263983 /* DPAppDelegate.m */; };
 		3A199BA810BAF1E300E1F99C /* status-item-paused.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A199BA710BAF1E300E1F99C /* status-item-paused.png */; };
 		3A199BC910BAF3FF00E1F99C /* status-item-selected-paused.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A199BC810BAF3FF00E1F99C /* status-item-selected-paused.png */; };
@@ -114,8 +118,6 @@
 		3AE5627110BCB36B006A7F94 /* ASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5627010BCB36B006A7F94 /* ASLLogger.m */; };
 		3AE5633D10BCCB21006A7F94 /* toolbar-processing.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AE5633C10BCCB21006A7F94 /* toolbar-processing.png */; };
 		3AF2B0C810FE90610052B40E /* MAAttachedWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AF2B0C710FE90610052B40E /* MAAttachedWindow.m */; };
-		515A234C1599BA7700EC6455 /* SCEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 515A23481599BA7700EC6455 /* SCEvent.m */; };
-		515A234D1599BA7700EC6455 /* SCEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 515A234B1599BA7700EC6455 /* SCEvents.m */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -154,6 +156,14 @@
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		14F5B9C215AD484400368031 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		14F5B9C315AD484400368031 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		14F5B9C415AD484400368031 /* SCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCConstants.h; sourceTree = "<group>"; };
+		14F5B9C515AD484400368031 /* SCEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEvent.h; sourceTree = "<group>"; };
+		14F5B9C615AD484400368031 /* SCEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCEvent.m; sourceTree = "<group>"; };
+		14F5B9C715AD484400368031 /* SCEventListenerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEventListenerProtocol.h; sourceTree = "<group>"; };
+		14F5B9C815AD484400368031 /* SCEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEvents.h; sourceTree = "<group>"; };
+		14F5B9C915AD484400368031 /* SCEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCEvents.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = src/main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -264,12 +274,6 @@
 		3AE5633C10BCCB21006A7F94 /* toolbar-processing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-processing.png"; path = "resources/toolbar-processing.png"; sourceTree = "<group>"; };
 		3AF2B0C610FE90610052B40E /* MAAttachedWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MAAttachedWindow.h; path = src/MAAttachedWindow.h; sourceTree = "<group>"; };
 		3AF2B0C710FE90610052B40E /* MAAttachedWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MAAttachedWindow.m; path = src/MAAttachedWindow.m; sourceTree = "<group>"; };
-		515A23461599BA7700EC6455 /* SCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCConstants.h; sourceTree = "<group>"; };
-		515A23471599BA7700EC6455 /* SCEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEvent.h; sourceTree = "<group>"; };
-		515A23481599BA7700EC6455 /* SCEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCEvent.m; sourceTree = "<group>"; };
-		515A23491599BA7700EC6455 /* SCEventListenerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEventListenerProtocol.h; sourceTree = "<group>"; };
-		515A234A1599BA7700EC6455 /* SCEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEvents.h; sourceTree = "<group>"; };
-		515A234B1599BA7700EC6455 /* SCEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCEvents.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; name = Info.plist; path = resources/Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Scrup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -316,6 +320,21 @@
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		14F5B9C115AD484400368031 /* SCEvents */ = {
+			isa = PBXGroup;
+			children = (
+				14F5B9C215AD484400368031 /* .gitignore */,
+				14F5B9C315AD484400368031 /* README.md */,
+				14F5B9C415AD484400368031 /* SCConstants.h */,
+				14F5B9C515AD484400368031 /* SCEvent.h */,
+				14F5B9C615AD484400368031 /* SCEvent.m */,
+				14F5B9C715AD484400368031 /* SCEventListenerProtocol.h */,
+				14F5B9C815AD484400368031 /* SCEvents.h */,
+				14F5B9C915AD484400368031 /* SCEvents.m */,
+			);
+			path = SCEvents;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -427,13 +446,8 @@
 		3A7AD03710669AF800AF4940 /* 3rd party */ = {
 			isa = PBXGroup;
 			children = (
+				14F5B9C115AD484400368031 /* SCEvents */,
 				3AE55FA610BC9566006A7F94 /* pngcrush */,
-				515A23461599BA7700EC6455 /* SCConstants.h */,
-				515A23471599BA7700EC6455 /* SCEvent.h */,
-				515A23481599BA7700EC6455 /* SCEvent.m */,
-				515A23491599BA7700EC6455 /* SCEventListenerProtocol.h */,
-				515A234A1599BA7700EC6455 /* SCEvents.h */,
-				515A234B1599BA7700EC6455 /* SCEvents.m */,
 				3A1C74FC10BB0F4500BC6030 /* PFMoveApplication.h */,
 				3A1C74FD10BB0F4500BC6030 /* PFMoveApplication.m */,
 				3A919AA2106599EE002D0F4B /* SSYLoginItems.h */,
@@ -622,6 +636,8 @@
 				3ADC9E7410FFF35F00EDEE39 /* BottomTB_line.png in Resources */,
 				3ADC9E7510FFF35F00EDEE39 /* BottomTB_rectangle.png in Resources */,
 				3ADC9EB310FFFE2D00EDEE39 /* BottomTB_inspector.png in Resources */,
+				14F5B9CA15AD484400368031 /* .gitignore in Resources */,
+				14F5B9CB15AD484400368031 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -715,8 +731,8 @@
 				3A90685910FE9D29009B6B2F /* DPPreprocessingWindowController.m in Sources */,
 				3ADC9B3210FF537F00EDEE39 /* DPCheckerView.m in Sources */,
 				3ADC9F1B1100AC9300EDEE39 /* DPAttachedWindow.m in Sources */,
-				515A234C1599BA7700EC6455 /* SCEvent.m in Sources */,
-				515A234D1599BA7700EC6455 /* SCEvents.m in Sources */,
+				14F5B9CC15AD484400368031 /* SCEvent.m in Sources */,
+				14F5B9CD15AD484400368031 /* SCEvents.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,3 +1,6 @@
 [submodule "pngcrush"]
 	path = pngcrush
 	url = git://pmt.git.sourceforge.net/gitroot/pmt/pmt
+[submodule "SCEvents"]
+	path = SCEvents
+	url = git://github.com/mz2/SCEvents.git

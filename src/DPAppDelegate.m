@@ -1017,6 +1017,11 @@ extern int pngcrush_main(int argc, char *argv[]);
 }
 
 - (void)pathWatcher:(SCEvents *)pathWatcher eventOccurred:(SCEvent *)event {
+    // check flags for kFSEventStreamEventFlagItemCreated (0x100)
+    int flags = [event eventFlags];
+    if (!(flags & 0x100))
+        return;
+    
     #if DEBUG
     [log debug:@"Received SCEvents directory notification"];
     #endif
