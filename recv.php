@@ -1,4 +1,4 @@
-<?
+<?php
 # Example receiver of Scrup files
 #
 # Install by putting this file on your web server and give the web server 
