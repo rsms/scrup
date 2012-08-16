@@ -59,7 +59,7 @@
 
 - (IBAction)performCancel:(id)sender {
 	#if DEBUG
-		NSLog(@"%s %@", _cmd, sender);
+		NSLog(@"%@ %@", NSStringFromSelector(_cmd), sender);
 	#endif
 	[[self window] close];
 	if (cancelBlock)
@@ -69,11 +69,11 @@
 
 - (IBAction)performCommit:(id)sender {
 	#if DEBUG
-		NSLog(@"%s %@", _cmd, sender);
+		NSLog(@"%@ %@", NSStringFromSelector(_cmd), sender);
 	#endif
 
 	if (!commitBlock) {
-		NSLog(@"%s warning: no commitBlock (nil)", _cmd);
+		NSLog(@"%@ warning: no commitBlock (nil)", NSStringFromSelector(_cmd));
 		return;
 	}
 
@@ -117,7 +117,7 @@
 
 		NSError *error = nil;
 		if (![[NSFileManager defaultManager] moveItemAtPath:screenshotPath toPath:path error:&error]) {
-			NSLog(@"%s failed to rename '%@' --> '%@' because: %@", _cmd, screenshotPath, path, error);
+			NSLog(@"%@ failed to rename '%@' --> '%@' because: %@", NSStringFromSelector(_cmd), screenshotPath, path, error);
 			path = screenshotPath;
 		}
 	}
@@ -141,12 +141,12 @@
 			CFRelease(dest);
 		}
 		else {
-			NSLog(@"%s error: CGImageDestinationCreateWithURL returned nil", _cmd);
+			NSLog(@"%@ error: CGImageDestinationCreateWithURL returned nil", NSStringFromSelector(_cmd));
 			image = nil;
 		}
 	}
 	else {
-		NSLog(@"%s error: no image ([imageView image] returned nil)", _cmd);
+		NSLog(@"%@ error: no image ([imageView image] returned nil)", NSStringFromSelector(_cmd));
 	}
 
 	// continue

@@ -22,8 +22,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		14F5B9CA15AD484400368031 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 14F5B9C215AD484400368031 /* .gitignore */; };
-		14F5B9CB15AD484400368031 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 14F5B9C315AD484400368031 /* README.md */; };
 		14F5B9CC15AD484400368031 /* SCEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 14F5B9C615AD484400368031 /* SCEvent.m */; };
 		14F5B9CD15AD484400368031 /* SCEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 14F5B9C915AD484400368031 /* SCEvents.m */; };
 		3A1504AE10618DDF00263983 /* DPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A1504AD10618DDF00263983 /* DPAppDelegate.m */; };
@@ -156,8 +154,6 @@
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		14F5B9C215AD484400368031 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		14F5B9C315AD484400368031 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		14F5B9C415AD484400368031 /* SCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCConstants.h; sourceTree = "<group>"; };
 		14F5B9C515AD484400368031 /* SCEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCEvent.h; sourceTree = "<group>"; };
 		14F5B9C615AD484400368031 /* SCEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCEvent.m; sourceTree = "<group>"; };
@@ -325,8 +321,6 @@
 		14F5B9C115AD484400368031 /* SCEvents */ = {
 			isa = PBXGroup;
 			children = (
-				14F5B9C215AD484400368031 /* .gitignore */,
-				14F5B9C315AD484400368031 /* README.md */,
 				14F5B9C415AD484400368031 /* SCConstants.h */,
 				14F5B9C515AD484400368031 /* SCEvent.h */,
 				14F5B9C615AD484400368031 /* SCEvent.m */,
@@ -636,8 +630,6 @@
 				3ADC9E7410FFF35F00EDEE39 /* BottomTB_line.png in Resources */,
 				3ADC9E7510FFF35F00EDEE39 /* BottomTB_rectangle.png in Resources */,
 				3ADC9EB310FFFE2D00EDEE39 /* BottomTB_inspector.png in Resources */,
-				14F5B9CA15AD484400368031 /* .gitignore in Resources */,
-				14F5B9CB15AD484400368031 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

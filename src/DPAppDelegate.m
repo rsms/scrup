@@ -3,6 +3,7 @@
 #import "HTTPPOSTOperation.h"
 #import "NSImage+HUAdditions.h"
 #import "NSBitmapImageRep+HUAdditions.h"
+#import "SCEvent.h"
 
 #import <CoreServices/CoreServices.h>
 
@@ -62,9 +63,9 @@ extern int pngcrush_main(int argc, char *argv[]);
 	preprocessingWindow = nil;
 	preprocessingWindowController = nil;
 	preprocessingUIBlockQueue = [NSMutableArray array];
-    eventManager = [[SCEvents alloc] init];
-    [eventManager setDelegate:self];
-    [eventManager setNotificationLatency:1];
+	eventManager = [SCEvents new];
+	eventManager.delegate = self;
+	eventManager.notificationLatency = 0.25;
 
 	// set boolean properties from user defaults or give them default values
 	#define SETDEFBOOL(_member_, _defval_) \
@@ -108,12 +109,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 				&& [[NSFileManager defaultManager] fileExistsAtPath:s]
 			 )
 		{
-            // Trim / suffix to be sure we can ignore safely subdirectories in FSEvent
-            if([s hasSuffix:@"/"] && [s length] > 2) {
-                screenshotLocation = [s substringToIndex:[s length] - 1];
-            } else {
-                screenshotLocation = s; 
-            }
+			// Trim / suffix to be sure we can ignore safely subdirectories in FSEvent
+			if ([s hasSuffix:@"/"] && [s length] > 2) {
+				screenshotLocation = [s substringToIndex:[s length] - 1];
+			} else {
+				screenshotLocation = s;
+			}
 			[log info:@"using com.apple.screencapture location => \"%@\"", screenshotLocation];
 		}
 		// type
@@ -518,8 +519,7 @@ extern int pngcrush_main(int argc, char *argv[]);
 
 	// Strip xattr:com.apple.metadata:kMDItemIsScreenCapture
 	[log debug:@"Stripping xattr:com.apple.metadata:kMDItemIsScreenCapture from %@", path];
-	NSString *cmd = [NSString stringWithFormat:@"/usr/bin/xattr -d com.apple.metadata:kMDItemIsScreenCapture %@",
-	                                           [path shellArgumentRepresentation]];
+	NSString *cmd = [NSString stringWithFormat:@"/usr/bin/xattr -d com.apple.metadata:kMDItemIsScreenCapture %@", [path shellArgumentRepresentation]];
 	int rc = system([cmd UTF8String]);
 	if (rc != 0) {
 		[log warn:@"Failed to strip xattr:com.apple.metadata:kMDItemIsScreenCapture from %@ (xattr exited with %d)",
@@ -1017,43 +1017,43 @@ extern int pngcrush_main(int argc, char *argv[]);
 }
 
 - (void)pathWatcher:(SCEvents *)pathWatcher eventOccurred:(SCEvent *)event {
-    // check flags for kFSEventStreamEventFlagItemCreated (0x100)
-    int flags = [event eventFlags];
-    if (!(flags & 0x100))
-        return;
-    
-    #if DEBUG
-    [log debug:@"Received SCEvents directory notification"];
-    #endif
-    NSString *eventPath = [event eventPath];
-    if([eventPath hasSuffix:@"/"] && [eventPath length] > 2)
-        eventPath = [eventPath substringToIndex:[eventPath length] - 1];
-    if([eventPath isEqualToString:screenshotLocation]) {
-        [self checkForScreenshotsAtPath:screenshotLocation];
-    }
-    #if DEBUG
-    else {
-        [log debug:@"Event in subfolder, ignoring"];
-    }
-    #endif
+	// check flags for kFSEventStreamEventFlagItemCreated (0x100)
+	int flags = event.eventFlags;
+	if (!(flags & 0x100))
+		return;
+
+	#if DEBUG
+	[log debug:@"Received SCEvents directory notification"];
+	#endif
+	NSString *eventPath = event.eventPath;
+	if ([eventPath hasSuffix:@"/"] && [eventPath length] > 2)
+		eventPath = [eventPath substringToIndex:[eventPath length] - 1];
+	if ([eventPath isEqualToString:screenshotLocation]) {
+		[self checkForScreenshotsAtPath:screenshotLocation];
+	}
+	#if DEBUG
+	else {
+		[log debug:@"Event in subfolder, ignoring"];
+	}
+	#endif
 }
 
 - (void)startObservingDesktop {
 	if (isObservingDesktop)
 		return;
 	[log info:@"Starting observation of desktop using SCEvents"];
-    NSMutableArray *pathsToWatch = [NSMutableArray arrayWithObject:screenshotLocation];
+	NSMutableArray *pathsToWatch = [NSMutableArray arrayWithObject:screenshotLocation];
 	isObservingDesktop = [eventManager startWatchingPaths:pathsToWatch];
-    if(!isObservingDesktop)
-        [log error:@"Error while starting desktop observer"];
+	if (!isObservingDesktop)
+		[log error:@"Error while starting desktop observer"];
 }
 
 - (void)stopObservingDesktop {
 	if (!isObservingDesktop)
 		return;
 	[log info:@"Stopping observation of desktop using SCEvents"];
-    if(![eventManager stopWatchingPaths])
-        [log error:@"Error while stopping desktop observer"];
+	if (![eventManager stopWatchingPaths])
+		[log error:@"Error while stopping desktop observer"];
 	isObservingDesktop = NO;
 }
 

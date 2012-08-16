@@ -57,8 +57,8 @@
 	IBOutlet NSView *preprocessingUIView;
 	IBOutlet DPPreprocessingWindowController *preprocessingWindowController;
 	NSMutableArray *preprocessingUIBlockQueue;
-    
-    SCEvents *eventManager;
+
+	SCEvents *eventManager;
 }
 
 // UI bindings

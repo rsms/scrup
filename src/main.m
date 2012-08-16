@@ -42,7 +42,7 @@ int main(int argc, const char *argv[]) {
 	[g_opq cancelAllOperations];
 	NSArray *ops = g_opq.operations;
 	if ([ops count]) {
-		NSLog(@"waiting for %u operations to complete...", [ops count]);
+		NSLog(@"waiting for %lu operations to complete...", (unsigned long)[ops count]);
 		[g_opq waitUntilAllOperationsAreFinished];
 	}
 
