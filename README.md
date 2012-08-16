@@ -6,7 +6,7 @@ Take a screenshot in OS X and have a URL to the picture in your pasteboard a sec
 
 *A free and open source version of the different commercial variants (GrabUp, Tiny Grab, etc).*
 
-For Mac OS X 10.6 Snow Leopard.
+For Mac OS X 10.6-10.8.
 
 
 ## Download & install
