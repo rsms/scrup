@@ -5,7 +5,7 @@
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>http://hunch.se/scrup/appcast.xml</string>
+	<string>https://s.rsms.me/scrup/appcast.xml</string>
 	<key>SUScheduledCheckInterval</key>
 	<integer>30000</integer>
 	<key>SUPublicDSAKeyFile</key>
@@ -31,7 +31,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.3.2</string>
+	<string>1.3.3</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
