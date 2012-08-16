@@ -11,7 +11,7 @@ For Mac OS X 10.6 Snow Leopard.
 
 ## Download & install
 
-- [Download Scrup](http://hunch.se/scrup/dist/scrup-1.3.2.zip)
+- [Download Scrup](http://data.hunch.se/scrup/Scrup-1.3.3-6eccc9e.zip)
 
 - Move Scrup to your Applications folder and double-click the bastard.
 
@@ -56,14 +56,9 @@ There is an example PHP implementation called [`recv.php`](http://github.com/rsm
 You'll need libpngcrush to build Scrup. libpngcrush is an external submodule of Scrup which you'll need to update after you've checked out the scrup source:
 
 	cd scrup-source
-	git submodule update --init pngcrush
+	git submodule update --init pngcrush SCEvents
 
-You only need to do this once. Now, build Scrup in Xcode.
-
-
-## Authors
-
-- Rasmus Andersson <http://hunch.se/>
+You only need to do this once. Now, build the "Scrup" target in Xcode.
 
 
 ## License
