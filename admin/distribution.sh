@@ -1,124 +1,106 @@
 #!/bin/bash
 set -o errexit
 
-[ $BUILD_STYLE = Release ] || { echo Distribution target requires "'Release'" build style; false; }
+PROJECT_IDENTIFIER='Scrup'
+ARCHIVE_URL_BASE='http://data.hunch.se/scrup/'
+APPCAST_SSH_BASE='s.rsms:/var/s.rsms/www/scrup/'
 
-VERSION=$(defaults read "$BUILT_PRODUCTS_DIR/$PROJECT_NAME.app/Contents/Info" CFBundleVersion)
-DOWNLOAD_BASE_URL="http://hunch.se/scrup/dist"
-RELEASENOTES_URL="http://hunch.se/scrup/release-notes.html#version-$VERSION"
+BUNDLE_PATH="$1"
+if [ "$BUNDLE_PATH" = "" ]; then
+  echo "Usage: $0 <app bundle path>"
+  echo "Example:"
+  echo "  $0 build/Release/$PROJECT_IDENTIFIER.app"
+  exit 123
+fi
 
-ARCHIVE_FILENAME="$PROJECT_NAME-$VERSION.zip"
-DOWNLOAD_URL="$DOWNLOAD_BASE_URL/$ARCHIVE_FILENAME"
-KEYCHAIN_PRIVKEY_NAME="Scrup release signing key (private)"
+#BUILD_TAG="$("$BUNDLE_PATH/Contents/MacOS/"* --build-tag)"
+BUNDLE_PARENT_DIR="$(dirname "$BUNDLE_PATH")"
+BUNDLE_FILENAME="$(basename "$BUNDLE_PATH")"
+REVISION=$(git rev-parse --short HEAD | sed -E 's/[^0-9a-f]+//g')
+VERSION=$(plutil -convert json -o /dev/stdout "$BUNDLE_PATH/Contents/Info.plist" | sed -E 's/^.*CFBundleVersion":"([^"]+).*$/\1/g')
+if [ "$BUILD_TAG" != "" ]; then BUILD_TAG="$BUILD_TAG-"; fi
+ARCHIVE_FILENAME="$PROJECT_IDENTIFIER-${BUILD_TAG}$VERSION-$REVISION.zip"
+KEYCHAIN_PRIVKEY_NAME="$PROJECT_IDENTIFIER release signing key (private)"
 
 WD=$PWD
-cd "$BUILT_PRODUCTS_DIR"
-rm -f "$PROJECT_NAME"*.zip
-ditto -ck --keepParent "$PROJECT_NAME.app" "$ARCHIVE_FILENAME"
+cd "$BUNDLE_PARENT_DIR"
 
-SIZE=$(stat -f %z "$ARCHIVE_FILENAME")
-PUBDATE=$(LC_TIME=c date +"%a, %d %b %G %T %z")
+echo "Creating '$ARCHIVE_FILENAME'"
+rm -f "$ARCHIVE_FILENAME"
+ditto -ck --keepParent "$BUNDLE_FILENAME" "$ARCHIVE_FILENAME"
 
-# For OS X >=10.6:
-SIGNATURE=$(
-	openssl dgst -sha1 -binary < "$ARCHIVE_FILENAME" \
-	| openssl dgst -dss1 -sign <(security find-generic-password -g -s "$KEYCHAIN_PRIVKEY_NAME" 2>&1 1>/dev/null | /usr/bin/perl -pe '($_) = /"(.+)"/; s/\\012/\n/g' | /usr/bin/perl -MXML::LibXML -e 'print XML::LibXML->new()->parse_file("-")->findvalue(q(//string[preceding-sibling::key[1] = "NOTE"]))') \
-	| openssl enc -base64
-)
-# For OS X <=10.5:
-#SIGNATURE=$(
-#	openssl dgst -sha1 -binary < "$ARCHIVE_FILENAME" \
-#	| openssl dgst -dss1 -sign <(security find-generic-password -g -s "$KEYCHAIN_PRIVKEY_NAME" 2>&1 1>/dev/null | perl -pe '($_) = /"(.+)"/; s/\\012/\n/g') \
-#	| openssl enc -base64
-#)
-
-[ $SIGNATURE ] || { echo Unable to load signing private key with name "'$KEYCHAIN_PRIVKEY_NAME'" from keychain; false; }
-
-
+# Check so that version is not released already
 python - <<EOF
 # encoding: utf-8
 import sys, re
-ITEM = '''
-		<item>
-			<title>Version $VERSION</title>
-			<sparkle:releaseNotesLink>$RELEASENOTES_URL</sparkle:releaseNotesLink>
-			<pubDate>$PUBDATE</pubDate>
-			<enclosure
-				url="$DOWNLOAD_URL"
-				sparkle:version="$VERSION"
-				type="application/octet-stream"
-				length="$SIZE"
-				sparkle:dsaSignature="$SIGNATURE"
-			/>
-		</item>
-'''
-newver = re.findall(r'sparkle:version="([^"]+)"', ITEM)[0]
-newsig = re.findall(r'sparkle:dsaSignature="([^"]+)"', ITEM)[0]
 
 f = open('$WD/admin/appcast.xml','r')
 APPCAST = f.read()
 f.close()
 
-if newver in re.findall(r'sparkle:version="([^"]+)"', APPCAST):
-  print >> sys.stderr, ('Version %s is already in the appcast.xml -- you need to manually '\
-  'remove it from the appcast.xml if this is not an error.') % newver
+if r'sparkle:version="$VERSION"' in APPCAST:
+  print >> sys.stderr, 'Version $VERSION is already in admin/appcast.xml -- you need to'\
+                       ' manually remove the entry and run this scrip again'
   sys.exit(1)
-elif newsig in re.findall(r'sparkle:dsaSignature="([^"]+)"', APPCAST):
-  print >> sys.stderr, ('Signature %s is already in the appcast.xml -- you need to manually '\
-  'remove it from the appcast.xml if this is not an error.') % newsig
-  sys.exit(1)
-
-APPCAST = re.compile(r'(\n[ \r\n\t]*</channel>)', re.M).sub(ITEM.rstrip()+r'\1', APPCAST)
-open('$WD/admin/appcast.xml','w').write(APPCAST)
 EOF
+
+# Sign
+echo "Signing '$ARCHIVE_FILENAME' with key '$KEYCHAIN_PRIVKEY_NAME'"
+
+# For OS X ==10.7:
+ARCHIVE_SIGNATURE=$(openssl dgst -sha1 -binary < "$ARCHIVE_FILENAME" | openssl dgst -dss1 -sign <(security find-generic-password -g -s "$KEYCHAIN_PRIVKEY_NAME" 2>&1 | grep 'password: ' | sed -E 's/^.+("<\?xml)/\1/g' | /usr/bin/perl -pe '($_) = /"(.+)"/; s/\\012/\n/g' | /usr/bin/perl -MXML::LibXML -e 'print XML::LibXML->new()->parse_file("-")->findvalue(q(//string[preceding-sibling::key[1] = "NOTE"]))') | openssl enc -base64
+)
+
+if [ "$ARCHIVE_SIGNATURE" = "" ]; then
+  echo "Signing failed" >&2
+  false
+fi
+
+ARCHIVE_URL="${ARCHIVE_URL_BASE}${ARCHIVE_FILENAME}"
+ARCHIVE_SIZE=$(stat -f %z "$ARCHIVE_FILENAME")
+ARCHIVE_PUBDATE=$(LC_TIME=c date +"%a, %d %b %G %T %z")
 
 python - <<EOF
 # encoding: utf-8
 import sys, re
 ITEM = '''
-		<section id="version-$VERSION">
-			<h2>Version $VERSION</h2>
-			<ul>
-				<li>DESCRIPTION</li>
-			</ul>
-		</section>
+    <item>
+      <title>Version $VERSION</title>
+      <pubDate>$ARCHIVE_PUBDATE</pubDate>
+      <enclosure
+        url="$ARCHIVE_URL"
+        sparkle:version="$VERSION"
+        type="application/octet-stream"
+        length="$ARCHIVE_SIZE"
+        sparkle:dsaSignature="$ARCHIVE_SIGNATURE"
+      />
+    </item>
 '''
-VERSIONRE = r'<section id="version-([^"]+)">'
-newver = re.findall(VERSIONRE, ITEM)[0]
-
-f = open('$WD/admin/release-notes.html','r')
-HTML = f.read()
+f = open('$WD/admin/appcast.xml','r')
+APPCAST = f.read()
 f.close()
 
-if newver in re.findall(VERSIONRE, HTML):
-  print >> sys.stderr, ('Version %s is already in the release-notes.html -- you need to manually '\
-  'remove it from release-notes.html if this is not an error.') % newver
-  sys.exit(1)
-
-HTML = re.compile(r'(\n[ \r\n\t]*</body>)', re.M).sub(ITEM.rstrip()+r'\1', HTML)
-open('$WD/admin/release-notes.html','w').write(HTML)
+APPCAST = re.compile(r'(\n[ \r\n\t]*</channel>)', re.M).sub(ITEM.rstrip()+r'\1', APPCAST)
+open('$WD/admin/appcast.xml','w').write(APPCAST)
 EOF
 
-PATH=~/bin:$PATH # if mate is in home/bin
-mate -a "$WD/admin/appcast.xml" "$WD/admin/release-notes.html"
-mate -a <<EOF
+
+cat <<EOF
 
                   ------------- INSTRUCTIONS -------------
 
-1. Complete the new entry created in release-notes.html
+1. Commit, tag and push the source
 
-mate '$WD/admin/release-notes.html'
+  git commit -am 'Release $VERSION'
+  git tag -m 'Release $VERSION' 'v$VERSION'
+  git push origin master --tags
 
-2. Publish the archive, release notes and appcast -- in that order:
+2. Upload the archive:
 
-scp '$BUILT_PRODUCTS_DIR/$ARCHIVE_FILENAME' hunch.se:/var/www/hunch.se/www/public/scrup/dist/
-scp '$WD/admin/release-notes.html' hunch.se:/var/www/hunch.se/www/public/scrup/release-notes.html
-scp '$WD/admin/appcast.xml' hunch.se:/var/www/hunch.se/www/public/scrup/appcast.xml
+  $ARCHIVE_URL
 
-3. Commit, tag and push the source
+3. Publish the appcast:
 
-git ci 'Release $VERSION' -a
-git tag -sm 'Release $VERSION' 'v$VERSION'
-git pu
+  scp '$WD/admin/appcast.xml' ${APPCAST_SSH_BASE}appcast.xml
 
 EOF
