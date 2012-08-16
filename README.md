@@ -11,7 +11,7 @@ For Mac OS X 10.6-10.8.
 
 ## Download & install
 
-- [Download Scrup](http://data.hunch.se/scrup/Scrup-1.3.3-6eccc9e.zip)
+- [Download Scrup](http://data.hunch.se/scrup/Scrup-1.3.3-bd23160.zip)
 
 - Move Scrup to your Applications folder and double-click the bastard.
 
