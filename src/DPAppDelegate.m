@@ -62,6 +62,9 @@ extern int pngcrush_main(int argc, char *argv[]);
 	preprocessingWindow = nil;
 	preprocessingWindowController = nil;
 	preprocessingUIBlockQueue = [NSMutableArray array];
+    eventManager = [[SCEvents alloc] init];
+    [eventManager setDelegate:self];
+    [eventManager setNotificationLatency:1];
 
 	// set boolean properties from user defaults or give them default values
 	#define SETDEFBOOL(_member_, _defval_) \
@@ -105,7 +108,12 @@ extern int pngcrush_main(int argc, char *argv[]);
 				&& [[NSFileManager defaultManager] fileExistsAtPath:s]
 			 )
 		{
-			screenshotLocation = s;
+            // Trim / suffix to be sure we can ignore safely subdirectories in FSEvent
+            if([s hasSuffix:@"/"] && [s length] > 2) {
+                screenshotLocation = [s substringToIndex:[s length] - 1];
+            } else {
+                screenshotLocation = s; 
+            }
 			[log info:@"using com.apple.screencapture location => \"%@\"", screenshotLocation];
 		}
 		// type
@@ -294,17 +302,14 @@ extern int pngcrush_main(int argc, char *argv[]);
 #if DEBUG
 -(void)debugPerpetualStateCheck {
 	ASLLogger *tlog;
-	NSDistributedNotificationCenter *dnc;
 
 	tlog = [ASLLogger loggerForModule:@"state"];
 	if (g_debug) {
 		tlog.connection.level = ASLLoggerLevelNone;
 		[tlog addFileHandle:[NSFileHandle fileHandleWithStandardError]];
 	}
-	dnc = [NSDistributedNotificationCenter defaultCenter];
 
 	while (1) {
-		[tlog debug:@"DNC: %s", [dnc suspended] ? "suspended" : "active"];
 		[NSThread sleepForTimeInterval:10];
 	}
 }
@@ -1011,34 +1016,44 @@ extern int pngcrush_main(int argc, char *argv[]);
 	[mainWindow makeKeyAndOrderFront:sender];
 }
 
--(void)onDirectoryNotification:(NSNotification *)n {
-	id obj = [n object];
-	[log debug:@"received directory notification => %@ ([object class] => %@)", n, obj ? [obj class] : nil];
-	// WARNING: Possible problem: "FNObject 469-101" is a string we have found by trial-and-error
-	// and is far from official or even documented, thus might differ in future OS versions etc.
-	// But since there are a _lot_ of directory notifications received, we need this op.
-	if (obj && [obj isKindOfClass:[NSString class]]) {
-		[self checkForScreenshotsAtPath:screenshotLocation];
-	}
+- (void)pathWatcher:(SCEvents *)pathWatcher eventOccurred:(SCEvent *)event {
+    // check flags for kFSEventStreamEventFlagItemCreated (0x100)
+    int flags = [event eventFlags];
+    if (!(flags & 0x100))
+        return;
+    
+    #if DEBUG
+    [log debug:@"Received SCEvents directory notification"];
+    #endif
+    NSString *eventPath = [event eventPath];
+    if([eventPath hasSuffix:@"/"] && [eventPath length] > 2)
+        eventPath = [eventPath substringToIndex:[eventPath length] - 1];
+    if([eventPath isEqualToString:screenshotLocation]) {
+        [self checkForScreenshotsAtPath:screenshotLocation];
+    }
+    #if DEBUG
+    else {
+        [log debug:@"Event in subfolder, ignoring"];
+    }
+    #endif
 }
 
 - (void)startObservingDesktop {
 	if (isObservingDesktop)
 		return;
-	[log info:@"starting observation of com.apple.carbon.core.DirectoryNotification"];
-	NSDistributedNotificationCenter *dnc = [NSDistributedNotificationCenter defaultCenter];
-	// We need to use NSNotificationSuspensionBehaviorDeliverImmediately here because we're
-	// experiencing a weird suspension bug causing DNC to be suspended seemingly stochastic.
-	[dnc addObserver:self selector:@selector(onDirectoryNotification:) name:@"com.apple.carbon.core.DirectoryNotification" object:nil suspensionBehavior:NSNotificationSuspensionBehaviorDeliverImmediately];
-	isObservingDesktop = YES;
+	[log info:@"Starting observation of desktop using SCEvents"];
+    NSMutableArray *pathsToWatch = [NSMutableArray arrayWithObject:screenshotLocation];
+	isObservingDesktop = [eventManager startWatchingPaths:pathsToWatch];
+    if(!isObservingDesktop)
+        [log error:@"Error while starting desktop observer"];
 }
 
 - (void)stopObservingDesktop {
 	if (!isObservingDesktop)
 		return;
-	[log info:@"stopping observation of com.apple.carbon.core.DirectoryNotification"];
-	NSDistributedNotificationCenter *dnc = [NSDistributedNotificationCenter defaultCenter];
-	[dnc removeObserver:self name:@"com.apple.carbon.core.DirectoryNotification" object:nil];
+	[log info:@"Stopping observation of desktop using SCEvents"];
+    if(![eventManager stopWatchingPaths])
+        [log error:@"Error while stopping desktop observer"];
 	isObservingDesktop = NO;
 }
 

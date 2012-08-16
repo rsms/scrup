@@ -1,9 +1,10 @@
 #import "Sparkle/SUUpdater.h"
+#import "SCEvents.h"
 #import "HTTPPOSTOperation.h"
 #import "DPAttachedWindow.h"
 #import "DPPreprocessingWindowController.h"
 
-@interface DPAppDelegate : NSObject {
+@interface DPAppDelegate : NSObject <SCEventListenerProtocol> {
 	NSUserDefaults *defaults;
 	NSStatusItem *statusItem;
 	IBOutlet NSWindow *mainWindow;
@@ -56,6 +57,8 @@
 	IBOutlet NSView *preprocessingUIView;
 	IBOutlet DPPreprocessingWindowController *preprocessingWindowController;
 	NSMutableArray *preprocessingUIBlockQueue;
+    
+    SCEvents *eventManager;
 }
 
 // UI bindings
